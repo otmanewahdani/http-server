@@ -11,11 +11,11 @@ OBJ_DIR = objs/
 
 SRCS_DIR = srcs/
 
-VPATH = 
+SRCS = main.cpp
+
+VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 
 VPATH := $(addprefix $(SRCS_DIR),$(VPATH) )
-
-SRCS = main.cpp
 
 INCS = $(addprefix -I,$(VPATH))
 
