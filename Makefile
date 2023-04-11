@@ -11,7 +11,7 @@ OBJ_DIR = objs/
 
 SRCS_DIR = srcs/
 
-SRCS = main.cpp
+SRCS = main.cpp Config.cpp ConfigParser.cpp
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 
