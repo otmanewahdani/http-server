@@ -9,6 +9,8 @@
 
 class ConfigParser {
 	
-	ConfigParser(std::basic_istream& input, Config& config);
+	public:
+		/******* public member functions *******/
+		ConfigParser(std::istream& input, Config& config);
 
 };

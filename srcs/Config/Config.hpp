@@ -7,7 +7,9 @@
 
 #include <string>
 #include <map>
+#include <list>
 #include <set>
+#include <stdexcept>
 
 class Config {
 
@@ -42,6 +44,7 @@ class Config {
 
 		/******* alias types *******/
 		typedef std::map<Path, LocationContext> LocationsCollection;
+		typedef int Socket;
 
 		/******* nested types *******/
 		// holds information about a given server
@@ -49,16 +52,35 @@ class Config {
 			std::string hostname;
 			std::string port;
 			std::string server_name;
+			Socket socketID;
 			StatusCodesWithPaths errorPages;
 			Size clientBodySizeMax;
 			LocationsCollection locations;
+
+			// constructor
+			// initializes socketID to -1
+			ServerContext();
 		};
 
-		/******* member functions *******/
+		/******* alias types *******/
+		typedef std::list<ServerContext> Servers;
+
+		/******* public member functions *******/
 		// sets up a configuration from a config file
+		// throws std::invalid_argument exception if fileName is NULL
 		Config(const char *fileName);
+
+		Servers& getServers();
 	
 	private:
-		std::set<Extension> supportedCGIExtensions;
+		/******* private member objects *******/
+		// contains extensions that are supported for CGI requests
+		std::set<Extension> mSupportedCGIExtensions;
+
+		// contains all the user-configured servers
+		Servers mServers;
+
+		/******* private member functions *******/
+		void setSupportedCGIExtensions();
 
 };
