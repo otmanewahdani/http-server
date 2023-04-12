@@ -49,6 +49,7 @@ class Config {
 		/******* nested types *******/
 		// holds information about a given server
 		struct ServerContext {
+			/* add default const static hostname and port
 			std::string hostname;
 			std::string port;
 			std::string server_name;

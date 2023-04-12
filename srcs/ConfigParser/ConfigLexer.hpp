@@ -4,13 +4,14 @@
 
 #include <istream>
 #include <string>
+#include <stdexcept>
 
 struct Token {
 
 	/* Tokens' equivalents in config file:
 	 * SRV_NAME=server_name, ERR_PAGE=error_page, SM_COL= semi colon
-	 * EOF = end of file (last token in input stream)
-	 * CLIENT_MAX = client_body_size_max, LOC=location
+	 * EOS = end of stream (last token in input stream)
+	 * CLIENT_MAX = client_body_size_max, LOC=location, SWITCH= on/off
 	 * ALLOW=allow_methods, METHOD= actual method value (GET, POST, ..)
 	 * RDR=redirect, AUTOIN = autoindex, DEFLT=default, EXT=extension
 	 * UPLOAD=upload, LB=left brace, RB=right brace OTHER= anything else
@@ -26,6 +27,7 @@ struct Token {
 		RDR,
 		ROOT,
 		AUTOIN,
+		SWITCH,
 		DEFLT,
 		EXT,
 		UPLOAD,
@@ -34,13 +36,13 @@ struct Token {
 		NUM,
 		SM_COL,
 		OTHER,
-		EOF
+		EOS
 	};
 
 	Type type;
 	std::string value;
 
-	// initializes type to EOF
+	// initializes type to EOS
 	Token();
 
 };
@@ -65,5 +67,35 @@ class ConfigLexer {
 		// current token that was extracted from mInput by a call
 			// to next
 		Token mCurrentTok;
+
+		/******* private member functions *******/
+		// all the functions that create or modify a token,
+			// operate on mCurrentTok member
+		// gets new token from input stream
+		// skips all leading whitespace  by calling skipWhiteSpace()
+		// creates a token value of either a special character if it was
+			// the first character to be encountered , a string of
+			// characters up to the first special or whitespace
+			// character found or a an empty string if no characters
+			// were found (after skipping whitespace of course)
+		// calls checkInputHealth() at the end (throws)
+		void extractNewToken();
+
+		// checks token's value and assigns its type accordingly
+		void setTypeForNewToken();
+
+		// resets token to initial state (empty token)
+			// and sets type to EOS
+		void clearToken();
+
+		bool isSpecialChar(char c);
+
+		bool isWhiteSpace(char c);
+
+		// calls checkInputHealth() at the end (throws)
+		void skipWhiteSpace();
+
+		// throws std::runtime_error if input stream fails
+		void checkInputHealth();
 
 };
