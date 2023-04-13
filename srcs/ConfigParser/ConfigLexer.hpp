@@ -10,6 +10,7 @@
 struct Token {
 
 	/* Tokens' equivalents in config file:
+	 * SRV_BLK = server (server block)
 	 * SRV_NAME=server_name, ERR_PAGE=error_page, SM_COL= semi colon
 	 * EOS = end of stream (last token in input stream)
 	 * CLIENT_MAX = client_body_size_max, LOC=location, SWITCH= on/off
@@ -18,6 +19,7 @@ struct Token {
 	 * UPLOAD=upload, LB=left brace, RB=right brace OTHER= anything else
 	 */
 	enum Type {
+		SRV_BLK,
 		SRV_NAME,
 		LISTEN,
 		ERR_PAGE,

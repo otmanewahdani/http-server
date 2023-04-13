@@ -139,9 +139,10 @@ bool ConfigLexer::isMethod() {
 
 bool ConfigLexer::isNumber() {
 
-	// checks if it starts with '0'
+	// checks if it's empty or if it starts with '0' (hence not base 10)
 	if (mCurrentTok.value.length() == 0
-		|| mCurrentTok.value[0] == '0')
+		|| (mCurrentTok.value.length() > 1
+		&& mCurrentTok.value[0] == '0'))
 		return false;
 	
 	for (std::string::const_iterator it = mCurrentTok.value.begin();
@@ -157,6 +158,8 @@ void ConfigLexer::setTypeForNewToken() {
 
 	if (mCurrentTok.value.size() == 0)
 		mCurrentTok.type = Token::EOS;
+	else if (mCurrentTok.value == "server")
+		mCurrentTok.type = Token::SRV_BLK;
 	else if (mCurrentTok.value == "server_name")
 		mCurrentTok.type = Token::SRV_NAME;
 	else if (mCurrentTok.value == "listen")
