@@ -4,6 +4,7 @@
 
 #include <istream>
 #include <string>
+#include <cctype>
 #include <stdexcept>
 
 struct Token {
@@ -28,8 +29,9 @@ struct Token {
 		ROOT,
 		AUTOIN,
 		SWITCH,
-		DEFLT,
+		DFLT,
 		EXT,
+		CGI,
 		UPLOAD,
 		LB,
 		RB,
@@ -97,5 +99,16 @@ class ConfigLexer {
 
 		// throws std::runtime_error if input stream fails
 		void checkInputHealth();
+
+		// checks if a token's value is a file extension (.c, .html, etc.)
+			// i.e.: has Token::Type value of EXT
+		bool isExtension();
+
+		// checks if token's value has Token::Type value of METHOD
+		bool isMethod();
+
+		// checks if token's value is a number of a decimal base
+			// Token::Type == NUM
+		bool isNumber();
 
 };

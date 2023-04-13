@@ -12,5 +12,9 @@ class ConfigParser {
 	public:
 		/******* public member functions *******/
 		ConfigParser(std::istream& input, Config& config);
+	
+	private:
+		/******* private member functions *******/
+		Config& mConfig;
 
 };

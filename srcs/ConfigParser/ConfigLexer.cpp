@@ -62,13 +62,6 @@ void ConfigLexer::extractNewToken() {
 
 }
 
-void ConfigLexer::setTypeForNewToken() {
-
-	/*if (mCurrentTok.value == "listen")*/
-	mCurrentTok.type = Token::LISTEN;
-
-}
-
 void ConfigLexer::clearToken() {
 
 	// empties string
@@ -122,5 +115,87 @@ void ConfigLexer::checkInputHealth() {
 	if (mInput.fail())
 		throw std::runtime_error("ConfigLexer failed to extract"
 		" character from input stream");
+
+}
+
+bool ConfigLexer::isExtension() {
+
+	// checks that it has 2 or more characters
+	// and that the first character is a dot
+	// and that it's the only dot in the string
+	return (mCurrentTok.value.length() > 1
+		&& mCurrentTok.value[0] == '.'
+		&& mCurrentTok.value.find(1, '.') == std::string::npos);
+
+}
+
+bool ConfigLexer::isMethod() {
+
+	return (mCurrentTok.value == "GET"
+		|| mCurrentTok.value == "POST"
+		|| mCurrentTok.value == "DELETE");
+
+}
+
+bool ConfigLexer::isNumber() {
+
+	// checks if it starts with '0'
+	if (mCurrentTok.value.length() == 0
+		|| mCurrentTok.value[0] == '0')
+		return false;
+	
+	for (std::string::const_iterator it = mCurrentTok.value.begin();
+		it != mCurrentTok.value.end(); ++it)
+		if (std::isdigit(*it) == false)
+			return false;
+	
+	return true;
+
+}
+
+void ConfigLexer::setTypeForNewToken() {
+
+	if (mCurrentTok.value.size() == 0)
+		mCurrentTok.type = Token::EOS;
+	else if (mCurrentTok.value == "server_name")
+		mCurrentTok.type = Token::SRV_NAME;
+	else if (mCurrentTok.value == "listen")
+		mCurrentTok.type = Token::LISTEN;
+	else if (mCurrentTok.value == "error_page")
+		mCurrentTok.type = Token::ERR_PAGE;
+	else if (mCurrentTok.value == "client_body_size_max")
+		mCurrentTok.type = Token::CLIENT_MAX;
+	else if (mCurrentTok.value == "location")
+		mCurrentTok.type = Token::LOC;
+	else if (mCurrentTok.value == "allow_methods")
+		mCurrentTok.type = Token::ALLOW;
+	else if (isMethod())
+		mCurrentTok.type = Token::METHOD;
+	else if (mCurrentTok.value == "redirect")
+		mCurrentTok.type = Token::RDR;
+	else if (mCurrentTok.value == "root")
+		mCurrentTok.type = Token::ROOT;
+	else if (mCurrentTok.value == "autoindex")
+		mCurrentTok.type = Token::AUTOIN;
+	else if (mCurrentTok.value == "on" || mCurrentTok.value == "off")
+		mCurrentTok.type = Token::SWITCH;
+	else if (mCurrentTok.value == "default")
+		mCurrentTok.type = Token::DFLT;
+	else if (isExtension())
+		mCurrentTok.type = Token::EXT;
+	else if (mCurrentTok.value == "cgi")
+		mCurrentTok.type = Token::CGI;
+	else if (mCurrentTok.value == "upload")
+		mCurrentTok.type = Token::UPLOAD;
+	else if (mCurrentTok.value == "{")
+		mCurrentTok.type = Token::LB;
+	else if (mCurrentTok.value == "}")
+		mCurrentTok.type = Token::RB;
+	else if (isNumber())
+		mCurrentTok.type = Token::NUM;
+	else if (mCurrentTok.value == ";")
+		mCurrentTok.type = Token::SM_COL;
+	else
+		mCurrentTok.type = Token::OTHER;
 
 }

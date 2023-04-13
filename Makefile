@@ -27,11 +27,6 @@ NAME = webserv
 
 all: $(NAME)
 
-#test:
-#	@echo vpath: $(VPATH)
-#	@echo incs: $(INCS)
-#	@echo objs: $(OBJ)
-
 $(OBJ_DIR)%.o : %.cpp %.hpp
 	@test -d $(OBJ_DIR) || mkdir $(OBJ_DIR)
 	@$(CC) $(CPPFLAGS) $(INCS) $< -o $@
