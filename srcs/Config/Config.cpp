@@ -2,6 +2,9 @@
 
 #include <Config.hpp>
 
+const std::string Config::ServerContext::defaultHostname = "0.0.0.0";
+const std::string Config::ServerContext::defaultPort = "80";
+
 Config::Config(const char *fileName) {
 
 	if (!fileName)

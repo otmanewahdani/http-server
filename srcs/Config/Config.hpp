@@ -49,7 +49,6 @@ class Config {
 		/******* nested types *******/
 		// holds information about a given server
 		struct ServerContext {
-			/* add default const static hostname and port
 			std::string hostname;
 			std::string port;
 			std::string server_name;
@@ -57,6 +56,11 @@ class Config {
 			StatusCodesWithPaths errorPages;
 			Size clientBodySizeMax;
 			LocationsCollection locations;
+
+			// Config sets hostname and port to these defaults
+				// in case they were not provided in the config file
+			const static std::string defaultHostname;
+			const static std::string defaultPort;
 
 			// constructor
 			// initializes socketID to -1
