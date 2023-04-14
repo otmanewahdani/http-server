@@ -2,6 +2,8 @@
 * This lexer doesn't tokenize whitespace. Instead, it skips it.
 */
 
+#pragma once
+
 #include <istream>
 #include <string>
 #include <cctype>
