@@ -13,6 +13,10 @@
 #include <Config.hpp>
 #include <ConfigLexer.hpp>
 #include <istream>
+#include <iostream>
+#include <string>
+#include <cctype>
+#include <stdexcept>
 
 class ConfigParser {
 	
@@ -20,8 +24,11 @@ class ConfigParser {
 		/*******  alias types *******/
 		typedef Config::Servers Servers;
 		typedef Config::LocationsCollection LocationsCollection;
+		typedef Config::StatusCodesWithPaths StatusCodesWithPaths;
 		typedef Servers::iterator ServerReference;
 		typedef LocationsCollection::iterator LocationReference;
+		// for example: the class of the status code 200 is 1
+		typedef unsigned char StatusCodeClass;
  
 		/******* public member functions *******/
 		// configuration stream is parsed through this constructor
@@ -79,7 +86,13 @@ class ConfigParser {
 
 		void addNewLocation();
 
-		// calls handleParsingError if not left brace token
+		// calls handleParsingError if token's type value doesn't match
+			// the second argument
+		// e.g.: if token->type == LB and second argument is LB as well
+			// then it matches and handleParsingError() is not called
+		void isToken(const Token& token, Token::Type type);
+
+		// calls isToken
 		void isLeftBrace(const Token& token);
 
 		// same as above
@@ -88,8 +101,45 @@ class ConfigParser {
 		// same as above
 		void isSemiColon(const Token& token);
 
+		// same as above
+		void isNum(const Token& token);
+
+		// if token is a directive or a keyword like '{' , server or listen,
+			// calls handleParsingError
+		void isNotAKeyword(const Token& token);
+
+		// if EOS, calls handleParsingError()
+		void isNotEOS(const Token& token);
+
 		// initializes mServerRef's fields that were not supplied by
 			// the user to their default values
 		void defaultInitUnfilledServerFields();
+
+		// initializes mLocationRef's fields that were not supplied by
+			// the user to their default values
+		void defaultInitUnfilledLocationFields();
+
+		// returns true if str is only composed of digits
+		bool isStrNumerical(const std::string& str);
+
+		// it's called by functions like parseErrorPage() that parse
+			// directives which consists of a status code and a path
+			// arguments
+		// statusCodeClass parameter is a byte-sized integer that
+			// indicates the class of the status code that will be
+			// parsed. if a status code with a different class is found 
+			// then, an error is printed to stderr and
+			// handleParsingError() is called
+		// the saveStructure parameter is where the parsed pair (status
+			// code, path) will be saved
+		void parseStatusCodesDirectives(StatusCodeClass statusCodeClass,
+			StatusCodesWithPaths& saveStructure);
+
+		/******* functions that parse specific directives *******/
+		void parseServerName();
+
+		void parseListen();
+		
+		void parseErrorPage();
 
 };

@@ -16,10 +16,8 @@ void ConfigParser::parseGlobal() {
 	// searches for server blocks
 	Token token = mLexer.next();
 	while (token.type != Token::EOS) {
-		if (token.type == Token::SRV_BLK)
-			parseServer();
-		else
-			handleParsingError(token);
+		isToken(token, Token::SRV_BLK)
+		parseServer();
 		token = mLexer.next();
 	}
 
@@ -38,15 +36,25 @@ void ConfigParser::parseServer() {
 
 	// enters server's context and parses directives within it
 	token = mLexer.next();
-	while (token->type != Token::EOS) {
+	// while there are more tokens and a right curly brace hasn't been found
+	while (token.type != Token::EOS
+		&& token.type != Token::RB) {
 		
-		switch(toke->type) {
+		switch(toke.type) {
 			case Token::SRV_NAME:
+				parseServerName();
 				break ;
+			case Token::LISTEN:
+				parseListen();
+				break ;
+			case Token::ERR_PAGE:
 		}
 		token = mLexer.next();
 
 	}
+
+	// makes sure server context is closed with a right brace
+	isRightBrace(token);
 
 	defaultInitUnfilledServerFields();
 
@@ -87,15 +95,131 @@ void ConfigParser::addNewServer() {
 
 void addNewLocation();
 
-void ConfigParser::isLeftBrace(const Token& token) {
+void ConfigParser::isToken(const Token& token, Token::Type type) {
 
-	if (token->type != Token::LB)
+	if (token.type != type)
 		handleParsingError(token);
 
 }
 
-void isRightBrace(const Token& token);
+void ConfigParser::isLeftBrace(const Token& token) {
+	isToken(token, Token::LB);
+}
 
-void isSemiColon(const Token& token);
+void ConfigParser::isRightBrace(const Token& token) {
+	isToken(token, Token::RB);
+}
+
+void ConfigParser::isSemiColon(const Token& token) {
+	isToken(token, Token::SM_COL);
+}
+
+void ConfigParser::isNum(const Token& token) {
+	isToken(token, Token::NUM);
+}
+
+void ConfigParser::isNotAKeyword(const Token& token) {
+
+	switch (token.type) {
+		case Token::SRV_BLK:
+		case Token::SRV_NAME:
+		case Token::LISTEN:
+		case Token::ERR_PAGE:
+		case Token::CLIENT_MAX:
+		case Token::LOC:
+		case Token::ALLOW:
+		case Token::RDR:
+		case Token::ROOT:
+		case Token::AUTOIN:
+		case Token::DFLT:
+		case Token::CGI:
+		case Token::UPLOAD:
+		case Token::LB:
+		case Token::RB:
+		case Token::SM_COL:
+			handleParsingError(token);
+	}
+
+}
+
+void ConfigParser::isNotEOS(const Token& token) {
+
+	if (token.type == Token::EOS)
+		handleParsingError(token);
+
+}
 
 void defaultInitUnfilledServerFields();
+
+void defaultInitUnfilledLocationFields();
+
+bool ConfigParser::isStrNumerical(const std::string& str) {
+	
+	for (std::string::const_iterator it = str.begin();
+		it != str.end(); ++it)
+		if (std::isdigit(*it) == false)
+			return false;
+	
+	return true;
+
+}
+
+void ConfigParser::parseServerName() {
+
+	Token token = mLexer.next();
+
+	// checks if token is a valid name
+	isNotEOS(token);
+	isNotAKeyword(token);
+
+	mServerRef->server_name = token.value;
+
+	token = mLexer.next();
+
+	// makes sure directive ends in a semi-colon
+	// this applies to all directives
+	isSemiColon(token);
+
+}
+
+void ConfigParser::parseListen() {
+
+	Token token = mLexer.next();
+
+	// checks if token is a valid string
+	isNotEOS(token);
+	isNotAKeyword(token);
+
+	// makes sure target fields are empty
+	mServerRef->hostname.clear();
+	mServerRef->port.clear();
+
+	// position of the ':' that separate hostname and port
+	std::string::size_type colonPos = token.value.find(':');
+	// if a colon was found
+	if (colonPos != std::string::npos) {
+		// makes sure that colon is in the middle
+		if (colonPos == 0 || colonPos == token.value.size() - 1)
+			handleParsingError(token);
+		// sets hostname to string before colon
+		mServerRef->hostname = token.value.substr(0, colonPos);
+		// sets port to string after colon
+		mServerRef->port = token.value.substr
+			(colonPos + 1, token.value.size() - (colonPos + 1));
+	}
+	// it's a port value then
+	else if (isStrNumerical(token.value))
+		mServerRef->port = token.value;
+	// otherwise it's a hostname
+	else
+		mServerRef->hostname = token.value;
+
+	token = mLexer.next();
+	isSemiColon(token);
+
+}
+
+void parseStatusCodesDirectives(StatusCodeClass statusCodeClass,
+			StatusCodesWithPaths& saveStructure);
+		
+void parseErrorPage();
