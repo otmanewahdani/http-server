@@ -63,7 +63,7 @@ class Config {
 			const static std::string defaultPort;
 
 			// constructor
-			// initializes socketID to -1
+			// initializes socketID to -1 and clientBodySizeMax to 0
 			ServerContext();
 		};
 

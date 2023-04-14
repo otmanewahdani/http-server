@@ -1,5 +1,6 @@
 /* this file includes the definition of ConfigParser class which represents the complete logic
  * 	that parses the configuration file (given as an input stream) of the web server
+ * This implementation is based on the recursive descent concept
  * The ConfigParser parses the configuration text by passing an input
 	stream to its constructor and a Config class that gets populated
 	by the stream's content (obviously :p). An exception is thrown if
@@ -18,8 +19,9 @@ class ConfigParser {
 	public:
 		/*******  alias types *******/
 		typedef Config::Servers Servers;
-		typedef Config::ServerContext ServerContext;
-		typedef Config::LocationContext LocationContext;
+		typedef Config::LocationsCollection LocationsCollection;
+		typedef Servers::iterator ServerReference;
+		typedef LocationsCollection::iterator LocationReference;
  
 		/******* public member functions *******/
 		// configuration stream is parsed through this constructor
@@ -31,9 +33,9 @@ class ConfigParser {
 		
 		Servers& mServers;
 
-		Servers::iterator mServerIter;
+		ServerReference mServerRef;
 
-		LocationsCollection::iterator mLocationIter;
+		LocationReference mLocationRef;
 
 		ConfigLexer mLexer;
 
@@ -62,14 +64,32 @@ class ConfigParser {
 		// also creates a new location within a server
 		void parseLocation();
 
-		void handleParsingError();
+		// clears the mServers structure
+		// and throws std::runtime_error with an error string composed
+			// of the unexpected token 'lastToken'
+		void handleParsingError(const Token& lastToken);
 
-		void updateServerIterator();
+		// updates mServerRef to point to the latest server block created
+		void updateServerRef();
 
-		void updateLocationIterator();
+		void updateLocationRef();
 
+		// creates a new server block and adds it to mServers
 		void addNewServer();
 
 		void addNewLocation();
+
+		// calls handleParsingError if not left brace token
+		void isLeftBrace(const Token& token);
+
+		// same as above
+		void isRightBrace(const Token& token);
+
+		// same as above
+		void isSemiColon(const Token& token);
+
+		// initializes mServerRef's fields that were not supplied by
+			// the user to their default values
+		void defaultInitUnfilledServerFields();
 
 };

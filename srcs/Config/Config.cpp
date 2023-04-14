@@ -20,7 +20,8 @@ Config::LocationContext::LocationContext()
 	: get(), post(), del(), autoindex() {}
 
 Config::ServerContext::ServerContext()
-	: socketID(-1) {}
+	: socketID(-1)
+	, client_body_size_max() {}
 
 void Config::setSupportedCGIExtensions() {
 	

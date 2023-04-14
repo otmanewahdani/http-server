@@ -5,8 +5,6 @@
 ConfigParser::ConfigParser(std::istream& input, Config& config)
 	: mConfig(config)
 	, mServers(config.getServers())
-	, mServerContextPtr()
-	, mLocationContextPtr()
 	, mLexer(input) {
 	
 	parseGlobal();
@@ -15,18 +13,44 @@ ConfigParser::ConfigParser(std::istream& input, Config& config)
 
 void ConfigParser::parseGlobal() {
 
+	// searches for server blocks
 	Token token = mLexer.next();
 	while (token.type != Token::EOS) {
 		if (token.type == Token::SRV_BLK)
 			parseServer();
 		else
-			handleParsingError();
+			handleParsingError(token);
 		token = mLexer.next();
 	}
 
 }
 
-void parseServer();
+void ConfigParser::parseServer() {
+
+	Token token = mLexer.next();
+	// needs a left brace immediately after a server context directive
+	isLeftBrace(token);
+
+	// creates new server structure to contain the data within this
+		// context
+	addNewServer();
+	updateServerRef();
+
+	// enters server's context and parses directives within it
+	token = mLexer.next();
+	while (token->type != Token::EOS) {
+		
+		switch(toke->type) {
+			case Token::SRV_NAME:
+				break ;
+		}
+		token = mLexer.next();
+
+	}
+
+	defaultInitUnfilledServerFields();
+
+}
 
 void parseLocation();
 
@@ -45,10 +69,33 @@ void ConfigParser::handleParsingError(const Token& lastToken) {
 
 }
 
-void updateServerIterator();
+void ConfigParser::updateServerRef() {
 
-void updateLocationIterator();
+	if (!mServers.empty())
+		mServerRef = --mServers.end();
 
-void addNewServer();
+}
+
+void updateLocationRef();
+
+void ConfigParser::addNewServer() {
+
+	ServerContext tmp;
+	mServers.push_back(tmp);
+
+}
 
 void addNewLocation();
+
+void ConfigParser::isLeftBrace(const Token& token) {
+
+	if (token->type != Token::LB)
+		handleParsingError(token);
+
+}
+
+void isRightBrace(const Token& token);
+
+void isSemiColon(const Token& token);
+
+void defaultInitUnfilledServerFields();
