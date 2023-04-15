@@ -239,7 +239,26 @@ void ConfigParser::parseErrorPage() {
 
 }
 
-void parseClientBodySizeMax() {
+void ConfigParser::parseClientBodySizeMax() {
+
+	Token token = mLexer.next();
+	// size must be expressed as a positive number
+	isNum(token);
+
+	// converts token's value to number of type Size
+	try {
+		mServerRef->clientBodySizeMax =
+			convertStrToNumber<Size>(token.value);
+	}
+	catch (const std::exception& error) {
+		std::cerr << error.what() << '\n';
+		handleParsingError(token);
+	}
+
+	token = mLexer.next();
+	isSemiColon(token);
+
+}
 
 void ConfigParser::parseStatusCodeDirective
 	(const std::vector<StatusCodeClass>& statusCodeClasses,
@@ -254,7 +273,14 @@ void ConfigParser::parseStatusCodeDirective
 		handleParsingError(token);
 
 	// converts token's value to StatusCode type value
-	StatusCode code = convertStrToNumber<StatusCode>(token.value);
+	// checks for conversion exceptions
+	try {
+		StatusCode code = convertStrToNumber<StatusCode>(token.value);
+	}
+	catch (const std::exception& error) {
+		std::cerr << error.what() << '\n';
+		handleParsingError(token);
+	}
 
 	// checks that next token is appropriate for a path/route value
 	token = mLexer.next();
@@ -331,8 +357,16 @@ Number ConfigParser::convertStrToNumber(const std::string& str) {
 	Number result;
 	converter >> result;
 
-	if (converter.fail())
-		throw std::runtime_error("fatal error: couldn't convert string to number");
+	if (converter.fail()) {
+
+		if (result == std::numeric_limits<Number>::max())
+			throw std::overflow_error("number is too large to fit into "
+				"the specified type");
+		throw std::runtime_error("fatal error: couldn't convert string "
+			"to number");
+
+	}
+
 	return result;
 
 }

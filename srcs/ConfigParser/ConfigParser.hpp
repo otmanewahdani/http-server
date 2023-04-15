@@ -19,6 +19,7 @@
 #include <cctype>
 #include <stdexcept>
 #include <vector>
+#include <limits>
 
 class ConfigParser {
 	
@@ -29,9 +30,10 @@ class ConfigParser {
 		typedef Config::StatusCodesWithPaths StatusCodesWithPaths;
 		typedef Config::StatusCode StatusCode;
 		typedef Config::ServerContext ServerContext;
+		typedef Config::Size Size; 
 		typedef Servers::iterator ServerReference;
 		typedef LocationsCollection::iterator LocationReference;
-		// for example: the class of the status code 200 is 1
+		// for example: the class of the status code 200 is 2
 		typedef unsigned char StatusCodeClass;
  
 		/******* public member functions *******/
@@ -133,11 +135,13 @@ class ConfigParser {
 			// classes that are supported by the directive
 		// statusCodeClass template parameter is a byte-sized integer that
 			// indicates the class of the status code that will be parsed.
+		// the saveStructure parameter is where the parsed pair (status
+			// code, path) will be saved
 		// if the parsed status code's class doesn't match any class in
 			// statusCodeClasses vector, an error is printed to stderr and
 			// handleParsingError() is called
-		// the saveStructure parameter is where the parsed pair (status
-			// code, path) will be saved
+		// if conversion of the status code failed, an error message
+			// is printed to stderr and handleParsingError() is called
 		void parseStatusCodeDirective
 			(const std::vector<StatusCodeClass>& statusCodeClasses,
 			StatusCodesWithPaths& saveStructure);
@@ -155,8 +159,10 @@ class ConfigParser {
 			const std::string& statusCodeStr);
 
 		// converts string to integral type
-		// string must be a valid number and fits into the type passed
-		// if an error occurs, std::runtime_error is thrown
+		// string must be a positive number (0 included)
+		// if number in str is too large to fit in template type
+			// std::overflow_error is thrown.
+		// std::runtime_error is thrown for other kinds of errors
 		template<class Number>
 		Number convertStrToNumber(const std::string& str);
 
@@ -165,12 +171,16 @@ class ConfigParser {
 		void checkPathLeadingSlash(std::string& path);
 
 		/******* functions that parse specific directives *******/
+		// all these functions call handleParsingError() in case of errors
 		void parseServerName();
 
 		void parseListen();
 		
+		// calls parseStatusCodeDirective
 		void parseErrorPage();
 
+		// prints error msg to stderr if a conversion of the
+			// size argument fails
 		void parseClientBodySizeMax();
 
 };
