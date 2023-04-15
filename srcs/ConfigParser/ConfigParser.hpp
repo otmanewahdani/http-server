@@ -18,6 +18,7 @@
 #include <string>
 #include <cctype>
 #include <stdexcept>
+#include <vector>
 
 class ConfigParser {
 	
@@ -127,15 +128,30 @@ class ConfigParser {
 		// it's called by functions like parseErrorPage() that parse
 			// directives which consists of a status code and a path
 			// arguments
-		// statusCodeClass parameter is a byte-sized integer that
-			// indicates the class of the status code that will be
-			// parsed. if a status code with a different class is found 
-			// then, an error is printed to stderr and
+		// the statusCodeClasses vector parameter contains all status code
+			// classes that are supported by the directive
+		// statusCodeClass template parameter is a byte-sized integer that
+			// indicates the class of the status code that will be parsed.
+		// if the parsed status code's class doesn't match any class in
+			// statusCodeClasses vector, an error is printed to stderr and
 			// handleParsingError() is called
 		// the saveStructure parameter is where the parsed pair (status
 			// code, path) will be saved
-		void parseStatusCodeDirective(StatusCodeClass statusCodeClass,
+		void parseStatusCodeDirective
+			(const std::vector<StatusCodeClass>& statusCodeClasses,
 			StatusCodesWithPaths& saveStructure);
+
+		// checks if status code string belong to any of the status code classes
+		// read function above to understand these terms
+		bool isStatusCodeMatchClasses
+			(const std::vector<StatusCodeClass>& statusCodeClasses
+			const std::string& statusCodeStr);
+
+		// prints a specific error message  and calls
+			// handleParsingError() if status code is not valid
+		void isStatusCodeValid
+			(const std::vector<StatusCodeClass>& statusCodeClasses
+			const std::string& statusCodeStr);
 
 		// converts string to integral type
 		// string must be a valid number and fits into the type passed

@@ -220,8 +220,13 @@ void ConfigParser::parseListen() {
 	isSemiColon(token);
 
 }
+		
+void ConfigParser::parseErrorPage() {
+	parseStatusCodeDirective(
+}
 
-void ConfigParser::parseStatusCodeDirective(StatusCodeClass statusCodeClass,
+void ConfigParser::parseStatusCodeDirective
+	(const std::vector<StatusCodeClass>& statusCodeClasses,
 	StatusCodesWithPaths& saveStructure) {
 	
 	Token token = mLexer.next();
@@ -229,24 +234,7 @@ void ConfigParser::parseStatusCodeDirective(StatusCodeClass statusCodeClass,
 		// so it makes sense to have a NUM type
 	isNum(token);
 
-	// status code class is given as a single digit int,
-		// so it is converted to its digit char equivalent so
-		// that it's compared against the first character of the
-		// token's string number
-	statusCodeClass += '0';
-
-	// checks if the token's value matches the status code class
-		// and that the status code supplied (token's value) has exactly 3 digits
-	if (statusCodeClass != token.value[0]
-		|| token.value.length() != 3) {
-
-		if (token.value.length() != 3)
-			std::cerr << "status code needs to have exactly 3 digits\n";
-		else
-			std::cerr << "status code can only be of this class: " << statusCodeClass << "xx\n";
-		handleParsingError();
-
-	}
+	isStatusCodeValid(statusCodeClasses, toke.value);
 
 	// converts token's value to StatusCode type value
 	StatusCode code = convertStrToNumber<StatusCode>(token.value);
@@ -264,6 +252,55 @@ void ConfigParser::parseStatusCodeDirective(StatusCodeClass statusCodeClass,
 
 	token = mLexer.next();
 	isSemiColon(token);
+
+}
+void ConfigParser::isStatusCodeValid
+	(const std::vector<StatusCodeClass>& statusCodeClasses
+	const std::string& statusCodeStr) {
+
+	// checks if the token's value matches any of the status code classes
+		// and that the status code supplied (token's value) has exactly 3 digits
+	if (!isStatusCodeMatchClasses(statusCodeClasses, statusCodeStr))
+		|| statusCodeStr.length() != 3) {
+
+		if (statusCodeStr.length() != 3)
+			std::cerr << "status code needs to have exactly 3 digits\n";
+		else {
+			std::cerr << "status code can only be one of these classes: ";
+			for (size_t i = 0; i < statusCodeClasses.size(); ++i)
+				std::cerr << statusCodeClasses[i] + '0' << "xx";
+				if (i + 1 < statusCodeClasses.size())
+					std::cerr << ", ";
+				else
+					std::cerr << '\n';
+		}
+		handleParsingError();
+
+	}
+
+}
+
+bool ConfigParser::isStatusCodeMatchClasses
+	(const std::vector<StatusCodeClass>& statusCodeClasses
+	const std::string& statusCodeStr) {
+
+	if (StatusCodeStr.empty())
+		return false;
+
+	bool classMatched = false;
+	for (std::vector<StatusCodeClass>::const_iterator it = statusCodeClasses.begin();
+		it != statusCodeClasses.end(); ++it) {
+		// status code class is given as a single digit int,
+			// so it is converted to its digit char equivalent so
+			// that it's compared against the first character of the
+			// status code string
+		if ((*it + '0') == statusCodeStr[0]) {
+			classMatched = true;
+			break;
+		}
+
+	}
+	return classMatched;
 
 }
 
@@ -292,5 +329,3 @@ void ConfigParser::checkPathLeadingSlash(std::string& path) {
 		path.insert(0, 1, '/');
 
 }
-		
-void parseErrorPage();
