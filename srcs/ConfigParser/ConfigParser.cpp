@@ -91,7 +91,7 @@ void ConfigParser::updateServerRef() {
 
 }
 
-void updateLocationRef();
+void updateLocationRef() {
 
 void ConfigParser::addNewServer() {
 
@@ -100,7 +100,7 @@ void ConfigParser::addNewServer() {
 
 }
 
-void addNewLocation();
+void addNewLocation() {
 
 void ConfigParser::isToken(const Token& token, Token::Type type) {
 
@@ -158,9 +158,9 @@ void ConfigParser::isNotEOS(const Token& token) {
 
 }
 
-void defaultInitUnfilledServerFields();
+void defaultInitUnfilledServerFields() {
 
-void defaultInitUnfilledLocationFields();
+void defaultInitUnfilledLocationFields() {
 
 bool ConfigParser::isStrNumerical(const std::string& str) {
 	
@@ -239,7 +239,7 @@ void ConfigParser::parseErrorPage() {
 
 }
 
-void parseClientBodySizeMax();
+void parseClientBodySizeMax() {
 
 void ConfigParser::parseStatusCodeDirective
 	(const std::vector<StatusCodeClass>& statusCodeClasses,
