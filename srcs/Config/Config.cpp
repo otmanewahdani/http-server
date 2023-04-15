@@ -21,7 +21,7 @@ Config::LocationContext::LocationContext()
 
 Config::ServerContext::ServerContext()
 	: socketID(-1)
-	, client_body_size_max() {}
+	, clientBodySizeMax() {}
 
 void Config::setSupportedCGIExtensions() {
 	

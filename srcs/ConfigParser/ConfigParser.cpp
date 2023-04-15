@@ -16,7 +16,7 @@ void ConfigParser::parseGlobal() {
 	// searches for server blocks
 	Token token = mLexer.next();
 	while (token.type != Token::EOS) {
-		isToken(token, Token::SRV_BLK)
+		isToken(token, Token::SRV_BLK);
 		parseServer();
 		token = mLexer.next();
 	}
@@ -40,7 +40,7 @@ void ConfigParser::parseServer() {
 	while (token.type != Token::EOS
 		&& token.type != Token::RB) {
 		
-		switch(toke.type) {
+		switch(token.type) {
 			case Token::SRV_NAME:
 				parseServerName();
 				break;
@@ -50,6 +50,11 @@ void ConfigParser::parseServer() {
 			case Token::ERR_PAGE:
 				parseErrorPage();
 				break;
+			case Token::CLIENT_MAX:
+				parseClientBodySizeMax();
+				break;
+			default:
+				handleParsingError(token);
 		}
 		token = mLexer.next();
 
@@ -140,6 +145,8 @@ void ConfigParser::isNotAKeyword(const Token& token) {
 		case Token::RB:
 		case Token::SM_COL:
 			handleParsingError(token);
+		default:
+			return;
 	}
 
 }
@@ -222,8 +229,17 @@ void ConfigParser::parseListen() {
 }
 		
 void ConfigParser::parseErrorPage() {
-	parseStatusCodeDirective(
+
+	// set status code classes that are supported by the error_page directive
+	std::vector<StatusCodeClass> supportedClasses(2);
+	supportedClasses[0] = 4;
+	supportedClasses[1] = 5;
+
+	parseStatusCodeDirective(supportedClasses, mServerRef->errorPages);
+
 }
+
+void parseClientBodySizeMax();
 
 void ConfigParser::parseStatusCodeDirective
 	(const std::vector<StatusCodeClass>& statusCodeClasses,
@@ -234,7 +250,8 @@ void ConfigParser::parseStatusCodeDirective
 		// so it makes sense to have a NUM type
 	isNum(token);
 
-	isStatusCodeValid(statusCodeClasses, toke.value);
+	if (isStatusCodeValid(statusCodeClasses, token.value))
+		handleParsingError(token);
 
 	// converts token's value to StatusCode type value
 	StatusCode code = convertStrToNumber<StatusCode>(token.value);
@@ -254,37 +271,40 @@ void ConfigParser::parseStatusCodeDirective
 	isSemiColon(token);
 
 }
-void ConfigParser::isStatusCodeValid
-	(const std::vector<StatusCodeClass>& statusCodeClasses
+bool ConfigParser::isStatusCodeValid
+	(const std::vector<StatusCodeClass>& statusCodeClasses,
 	const std::string& statusCodeStr) {
 
 	// checks if the token's value matches any of the status code classes
 		// and that the status code supplied (token's value) has exactly 3 digits
-	if (!isStatusCodeMatchClasses(statusCodeClasses, statusCodeStr))
+	if (!isStatusCodeMatchClasses(statusCodeClasses, statusCodeStr)
 		|| statusCodeStr.length() != 3) {
 
 		if (statusCodeStr.length() != 3)
 			std::cerr << "status code needs to have exactly 3 digits\n";
 		else {
 			std::cerr << "status code can only be one of these classes: ";
-			for (size_t i = 0; i < statusCodeClasses.size(); ++i)
+			for (size_t i = 0; i < statusCodeClasses.size(); ++i) {
+				// convert form  StatusCodeClass type to char type
 				std::cerr << statusCodeClasses[i] + '0' << "xx";
+				// if there are more elements
 				if (i + 1 < statusCodeClasses.size())
 					std::cerr << ", ";
-				else
-					std::cerr << '\n';
+			}
+			std::cerr << '\n';
 		}
-		handleParsingError();
+		return false;
 
 	}
+	return true;
 
 }
 
 bool ConfigParser::isStatusCodeMatchClasses
-	(const std::vector<StatusCodeClass>& statusCodeClasses
+	(const std::vector<StatusCodeClass>& statusCodeClasses,
 	const std::string& statusCodeStr) {
 
-	if (StatusCodeStr.empty())
+	if (statusCodeStr.empty())
 		return false;
 
 	bool classMatched = false;

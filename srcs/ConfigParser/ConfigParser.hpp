@@ -28,6 +28,7 @@ class ConfigParser {
 		typedef Config::LocationsCollection LocationsCollection;
 		typedef Config::StatusCodesWithPaths StatusCodesWithPaths;
 		typedef Config::StatusCode StatusCode;
+		typedef Config::ServerContext ServerContext;
 		typedef Servers::iterator ServerReference;
 		typedef LocationsCollection::iterator LocationReference;
 		// for example: the class of the status code 200 is 1
@@ -144,13 +145,13 @@ class ConfigParser {
 		// checks if status code string belong to any of the status code classes
 		// read function above to understand these terms
 		bool isStatusCodeMatchClasses
-			(const std::vector<StatusCodeClass>& statusCodeClasses
+			(const std::vector<StatusCodeClass>& statusCodeClasses,
 			const std::string& statusCodeStr);
 
-		// prints a specific error message  and calls
-			// handleParsingError() if status code is not valid
-		void isStatusCodeValid
-			(const std::vector<StatusCodeClass>& statusCodeClasses
+		// prints a specific error message and returns
+			// false if status code is not valid
+		bool isStatusCodeValid
+			(const std::vector<StatusCodeClass>& statusCodeClasses,
 			const std::string& statusCodeStr);
 
 		// converts string to integral type
@@ -169,5 +170,7 @@ class ConfigParser {
 		void parseListen();
 		
 		void parseErrorPage();
+
+		void parseClientBodySizeMax();
 
 };
