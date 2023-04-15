@@ -53,6 +53,9 @@ void ConfigParser::parseServer() {
 			case Token::CLIENT_MAX:
 				parseClientBodySizeMax();
 				break;
+			case Token::LOC:
+				parseLocation();
+				break;
 			default:
 				handleParsingError(token);
 		}
@@ -67,7 +70,81 @@ void ConfigParser::parseServer() {
 
 }
 
-void parseLocation();
+void ConfigParser::parseLocation() {
+
+	Token token = mLexer.next();
+
+	// next token should be suitable for a route argument of
+		// the location directive
+	isNotEOS();
+	isNotAKeyword();
+
+	// adds leading directory slash to route if missing
+	checkPathLeadingSlash(token.value);
+
+	// saves path
+	const Path route = token.value;
+
+	token = mLexer.next();
+	// makes sure that a scope was actually opened
+	isLeftBrace(token);
+
+	addNewLocation(route);
+	updateLocationRef(route);
+
+	mLocationRef->route = route;
+
+	// enters location's context and parses directives within it
+	token = mLexer.next();
+	// while there are more tokens and a right curly brace hasn't been found
+	while (token.type != Token::EOS
+		&& token.type != Token::RB) {
+		
+		switch(token.type) {
+			case Token::ALLOW:
+				parseMethods();
+				break;
+			case Token::RDR:
+				parseRedirection();
+				break;
+			case Token::ROOT:
+				parseRoot();
+				break;
+			case Token::AUTOIN:
+				parseAutoIndex();
+				break;
+			default:
+				handleParsingError(token);
+		}
+		token = mLexer.next();
+
+	}
+
+	// makes sure location context is closed with a right brace
+	isRightBrace(token);
+
+	defaultInitUnfilledLocationFields();
+
+}
+
+void ConfigParser::addNewLocation(const Path& path) {
+
+	LocationContext newLocation;
+	mServerRef->locations[path] = newLocation;
+
+}
+
+void ConfigParser::updateLocationRef(const Path& path) {
+
+	mLocationRef = mServerRef.locations.find(path);
+	// if location wasn't found
+	if (mLocationRef == mServerRef.locations.end()) {
+		std::string error(path);
+		error += " couldn't be found in locations";
+		throw std::runtime_error(error);
+	}
+
+}
 
 void ConfigParser::handleParsingError(const Token& lastToken) {
 
@@ -91,8 +168,6 @@ void ConfigParser::updateServerRef() {
 
 }
 
-void updateLocationRef() {
-
 void ConfigParser::addNewServer() {
 
 	ServerContext tmp;
@@ -100,13 +175,90 @@ void ConfigParser::addNewServer() {
 
 }
 
-void addNewLocation() {
+void ConfigParser::parseMethods() {
+
+	Token token = mLexer.next();
+	// there should be at least one method supplied to the allow_methods
+		// directive, after that we can parse more methods if they
+		// were supplied
+	isMethod(token);
+	addMethod(token);
+
+	token = mLexer.next();
+	// parses more methods
+	while (token.type == METHOD) {
+		addMethod(token);
+		token = mLexer.next();
+	}
+
+	isSemiColon(token);
+
+}
+
+void ConfigParser::addMethod(const Token& token) {
+
+	if (token.value == "GET")
+		mLocationRef->get = true;
+	else if (token.value == "POST")
+		mLocationRef->post = true;
+	else if (token.value == "DELETE")
+		mLocationRef->del = true;
+	
+}
+
+void ConfigParser::parseRedirection() {
+
+	// sets status code classes that are supported by the reditect directive
+	std::vector<StatusCodeClass> supportedClasses(1);
+	supportedClasses[0] = 3;
+
+	// saves status_code:path pair in current location context
+	parseStatusCodeDirective
+		(supportedClasses, mLocationRef->redirections);
+
+}
+
+void ConfigParser::parseRoot() {
+
+	// checks that next token is appropriate for a path/route value
+	Token token = mLexer.next();
+	isNotEOS(token);
+	isNotAKeyword(token);
+
+	// adds leading slash if missing
+	checkPathLeadingSlash(token.value);
+
+	mLocationRef->root = token.value;
+
+	token = mLexer.next();
+	isSemiColon(token);
+
+}
+
+void ConfigParser::parseAutoIndex() {
+
+	Token token = mLexer.next();
+	isSwitch(token);
+
+	if (token.value == "on")
+		mLocationRef->autoindex = true;
+	else
+		mLocationRef->autoindex = false;
+
+	token = mLexer.next();
+	isSemiColon(token);
+
+}
 
 void ConfigParser::isToken(const Token& token, Token::Type type) {
 
 	if (token.type != type)
 		handleParsingError(token);
 
+}
+
+void ConfigParser::isMethod(const Token& token) {
+	isToken(token, Token::METHOD);
 }
 
 void ConfigParser::isLeftBrace(const Token& token) {
@@ -123,6 +275,10 @@ void ConfigParser::isSemiColon(const Token& token) {
 
 void ConfigParser::isNum(const Token& token) {
 	isToken(token, Token::NUM);
+}
+
+void ConfigParser::isSwitch(const Token& token) {
+	isToken(token, Token::SWITCH);
 }
 
 void ConfigParser::isNotAKeyword(const Token& token) {

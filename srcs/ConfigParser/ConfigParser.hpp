@@ -31,6 +31,7 @@ class ConfigParser {
 		typedef Config::StatusCode StatusCode;
 		typedef Config::ServerContext ServerContext;
 		typedef Config::Size Size; 
+		typedef Config::Path Path;
 		typedef Servers::iterator ServerReference;
 		typedef LocationsCollection::iterator LocationReference;
 		// for example: the class of the status code 200 is 2
@@ -38,6 +39,7 @@ class ConfigParser {
  
 		/******* public member functions *******/
 		// configuration stream is parsed through this constructor
+		// output is stored in config
 		ConfigParser(std::istream& input, Config& config);
 	
 	private:
@@ -85,12 +87,18 @@ class ConfigParser {
 		// updates mServerRef to point to the latest server block created
 		void updateServerRef();
 
-		void updateLocationRef();
-
 		// creates a new server block and adds it to mServers
 		void addNewServer();
 
-		void addNewLocation();
+		// updates  mLocationRef to the location in mServerRef
+			// containing the Path argument
+		// throws a std::runtime_error if path wasn't found
+			// mServerRef's locations
+		void updateLocationRef(const Path& path);
+
+		// creates a new location in mServerRef
+		// replaces any location with the same path
+		void addNewLocation(const Path& path);
 
 		// calls handleParsingError if token's type value doesn't match
 			// the second argument
@@ -110,12 +118,22 @@ class ConfigParser {
 		// same as above
 		void isNum(const Token& token);
 
+		// same as above
+		void isMethod(const Token& token);
+
+		// is token of type SWITCH (has value of 'on' or 'off)
+		void isSwitch(const Token& token);
+
 		// if token is a directive or a keyword like '{' , server or listen,
 			// calls handleParsingError
 		void isNotAKeyword(const Token& token);
 
 		// if EOS, calls handleParsingError()
 		void isNotEOS(const Token& token);
+
+		// adds the token (that is presumably of type METHOD)
+			// to the current location 
+		void addMethod(const Token& token);
 
 		// initializes mServerRef's fields that were not supplied by
 			// the user to their default values
@@ -182,5 +200,18 @@ class ConfigParser {
 		// prints error msg to stderr if a conversion of the
 			// size argument fails
 		void parseClientBodySizeMax();
+
+		// parses method values that are appropriate for
+			// the allow_methods directive
+		void parseMethods();
+
+		// calls parseStatusCodeDirective
+		void parseRedirection();
+
+		// parses path used as an alias path of the location path
+		void parseRoot();
+
+		// parses the switch status of autoindex directive (on or off)
+		void parseAutoIndex();
 
 };
