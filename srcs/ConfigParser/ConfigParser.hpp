@@ -13,6 +13,7 @@
 #include <Config.hpp>
 #include <ConfigLexer.hpp>
 #include <istream>
+#include <sstream>
 #include <iostream>
 #include <string>
 #include <cctype>
@@ -25,6 +26,7 @@ class ConfigParser {
 		typedef Config::Servers Servers;
 		typedef Config::LocationsCollection LocationsCollection;
 		typedef Config::StatusCodesWithPaths StatusCodesWithPaths;
+		typedef Config::StatusCode StatusCode;
 		typedef Servers::iterator ServerReference;
 		typedef LocationsCollection::iterator LocationReference;
 		// for example: the class of the status code 200 is 1
@@ -132,8 +134,18 @@ class ConfigParser {
 			// handleParsingError() is called
 		// the saveStructure parameter is where the parsed pair (status
 			// code, path) will be saved
-		void parseStatusCodesDirectives(StatusCodeClass statusCodeClass,
+		void parseStatusCodeDirective(StatusCodeClass statusCodeClass,
 			StatusCodesWithPaths& saveStructure);
+
+		// converts string to integral type
+		// string must be a valid number and fits into the type passed
+		// if an error occurs, std::runtime_error is thrown
+		template<class Number>
+		Number convertStrToNumber(const std::string& str);
+
+		// adds a leading slash to path if it's missing
+			// otherwise this function has no effect
+		void checkPathLeadingSlash(std::string& path);
 
 		/******* functions that parse specific directives *******/
 		void parseServerName();

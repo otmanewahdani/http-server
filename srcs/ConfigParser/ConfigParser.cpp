@@ -43,11 +43,13 @@ void ConfigParser::parseServer() {
 		switch(toke.type) {
 			case Token::SRV_NAME:
 				parseServerName();
-				break ;
+				break;
 			case Token::LISTEN:
 				parseListen();
-				break ;
+				break;
 			case Token::ERR_PAGE:
+				parseErrorPage();
+				break;
 		}
 		token = mLexer.next();
 
@@ -219,7 +221,76 @@ void ConfigParser::parseListen() {
 
 }
 
-void parseStatusCodesDirectives(StatusCodeClass statusCodeClass,
-			StatusCodesWithPaths& saveStructure);
+void ConfigParser::parseStatusCodeDirective(StatusCodeClass statusCodeClass,
+	StatusCodesWithPaths& saveStructure) {
+	
+	Token token = mLexer.next();
+	// this token must be a status code,
+		// so it makes sense to have a NUM type
+	isNum(token);
+
+	// status code class is given as a single digit int,
+		// so it is converted to its digit char equivalent so
+		// that it's compared against the first character of the
+		// token's string number
+	statusCodeClass += '0';
+
+	// checks if the token's value matches the status code class
+		// and that the status code supplied (token's value) has exactly 3 digits
+	if (statusCodeClass != token.value[0]
+		|| token.value.length() != 3) {
+
+		if (token.value.length() != 3)
+			std::cerr << "status code needs to have exactly 3 digits\n";
+		else
+			std::cerr << "status code can only be of this class: " << statusCodeClass << "xx\n";
+		handleParsingError();
+
+	}
+
+	// converts token's value to StatusCode type value
+	StatusCode code = convertStrToNumber<StatusCode>(token.value);
+
+	// checks that next token is appropriate for a path/route value
+	token = mLexer.next();
+	isNotEOS(token);
+	isNotAKeyword(token);
+
+	// adds leading slash if missing
+	checkPathLeadingSlash(token.value);
+
+	// creates a pair of status code and path
+	saveStructure[code] = token.value;
+
+	token = mLexer.next();
+	isSemiColon(token);
+
+}
+
+template<class Number>
+Number ConfigParser::convertStrToNumber(const std::string& str) {
+
+	std::stringstream converter(str);
+	Number result;
+	converter >> result;
+
+	if (converter.fail())
+		throw std::runtime_error("fatal error: couldn't convert string to number");
+	return result;
+
+}
+
+void ConfigParser::checkPathLeadingSlash(std::string& path) {
+	
+	if (path.empty()) {
+		path += '/';
+		return ;
+	}
+
+	if (path[0] != '/')
+		// prepends one slash to path
+		path.insert(0, 1, '/');
+
+}
 		
 void parseErrorPage();
