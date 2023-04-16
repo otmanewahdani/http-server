@@ -548,7 +548,8 @@ bool ConfigParser::isStatusCodeValid
 			std::cerr << "status code can only be one of these classes: ";
 			for (size_t i = 0; i < statusCodeClasses.size(); ++i) {
 				// convert form  StatusCodeClass type to char type
-				std::cerr << statusCodeClasses[i] + '0' << "xx";
+				std::cerr << static_cast<char>('0' + statusCodeClasses[i])
+					<< "xx";
 				// if there are more elements
 				if (i + 1 < statusCodeClasses.size())
 					std::cerr << ", ";

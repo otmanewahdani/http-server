@@ -16,13 +16,13 @@ server{
 
 		root /path/to/dir;
 		
-		autoindex off;
+		autoindex on;
 
 		default /default.html;
 
-		cgi .py /bin/python3;
+		cgi .php /bin/python3;
 
-		upload /path/to/upload;
+		upload /goinfre;
 
 	}
 
