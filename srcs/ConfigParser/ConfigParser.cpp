@@ -280,6 +280,18 @@ void ConfigParser::parseCGI() {
 
 void ConfigParser::parseUpload() {
 
+	parsePath(mLocationRef->uploadRoute);
+
+	// checks if path is a directory
+	if (!isDir(mLocationRef->uploadRoute)) {
+		std::string error = mLocationRef->uploadRoute;
+		error += " is not a valid directory";
+		mServers.clear();
+		throw std::runtime_error(error);
+	}
+
+}
+
 void ConfigParser::parseAutoIndex() {
 
 	Token token = mLexer.next();

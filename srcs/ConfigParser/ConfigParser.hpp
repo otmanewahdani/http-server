@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <vector>
 #include <limits>
+#include <utils.hpp>
 
 class ConfigParser {
 	
@@ -242,7 +243,8 @@ class ConfigParser {
 
 		// parses upload route
 		// if route isn't a directory
-			// an error msg is printed to stderr
+			// clears mServers and 
+			// throws a std::runtime_error
 		void parseUpload();
 
 };
