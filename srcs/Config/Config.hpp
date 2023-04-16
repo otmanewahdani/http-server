@@ -11,7 +11,8 @@
 #include <set>
 #include <stdexcept>
 #include <fstream>
-#include <ConfigParser.hpp>
+
+// there are more include directives at the end of class definitions
 
 class Config {
 
@@ -95,3 +96,8 @@ class Config {
 		void initSupportedCGIExtensions();
 
 };
+
+// this include directive was brought down here because the included file
+// includes this Config.hpp as well and relies on the full definition
+// of the Config class
+#include <ConfigParser.hpp>

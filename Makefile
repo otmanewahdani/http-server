@@ -13,9 +13,9 @@ SRCS_DIR = srcs/
 
 CONFIG_SRC := Config.cpp ConfigParser.cpp ConfigLexer.cpp
 
-UTIL_SRC := utils.cpp
+GENERAL_SRC := utils.cpp main.cpp
 
-SRCS := main.cpp $(CONFIG_SRC) $(UTIL_SRC)
+SRCS := $(CONFIG_SRC) $(GENERAL_SRC)
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 
