@@ -10,4 +10,4 @@
 #include <sys/stat.h>
 
 // returns true if path is a directory
-bool isDir(const string& path);
+bool isDir(const std::string& path);

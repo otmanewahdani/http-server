@@ -5,6 +5,7 @@
 ConfigParser::ConfigParser(std::istream& input, Config& config)
 	: mConfig(config)
 	, mServers(config.getServers())
+	, mLocationRef()
 	, mLexer(input) {
 	
 	parseGlobal();
@@ -76,8 +77,8 @@ void ConfigParser::parseLocation() {
 
 	// next token should be suitable for a route argument of
 		// the location directive
-	isNotEOS();
-	isNotAKeyword();
+	isNotEOS(token);
+	isNotAKeyword(token);
 
 	// adds leading directory slash to route if missing
 	checkPathLeadingSlash(token.value);
@@ -113,10 +114,10 @@ void ConfigParser::parseLocation() {
 			case Token::AUTOIN:
 				parseAutoIndex();
 				break;
-			case Token::DFLT
+			case Token::DFLT:
 				parseDefault();
 				break;
-			case Token::CGI
+			case Token::CGI:
 				parseCGI();
 				break;
 			case Token::UPLOAD:
@@ -145,13 +146,16 @@ void ConfigParser::addNewLocation(const Path& path) {
 
 void ConfigParser::updateLocationRef(const Path& path) {
 
-	mLocationRef = mServerRef.locations.find(path);
+	LocationsCollection::iterator search =
+		mServerRef->locations.find(path);
 	// if location wasn't found
-	if (mLocationRef == mServerRef.locations.end()) {
+	if (search == mServerRef->locations.end()) {
 		std::string error(path);
 		error += " couldn't be found in locations";
 		throw std::runtime_error(error);
 	}
+
+	mLocationRef = &search->second;
 
 }
 
@@ -195,7 +199,7 @@ void ConfigParser::parseMethods() {
 
 	token = mLexer.next();
 	// parses more methods
-	while (token.type == METHOD) {
+	while (token.type == Token::METHOD) {
 		addMethod(token);
 		token = mLexer.next();
 	}
@@ -271,7 +275,7 @@ void ConfigParser::parseCGI() {
 	parsePath(CGIExecutableLocation);
 
 	// finally stores the parsed data
-	mLocationRef->CGISystems[extension] = CGIExecutableLocation;
+	mLocationRef->supportedCGIs[extension] = CGIExecutableLocation;
 
 	// no need to check for semi-colon since it was
 		// already checked in the call to parsePath()

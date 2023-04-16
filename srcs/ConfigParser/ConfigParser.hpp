@@ -31,11 +31,12 @@ class ConfigParser {
 		typedef Config::StatusCodesWithPaths StatusCodesWithPaths;
 		typedef Config::StatusCode StatusCode;
 		typedef Config::ServerContext ServerContext;
+		typedef Config::LocationContext LocationContext;
 		typedef Config::Size Size; 
 		typedef Config::Path Path;
 		typedef Config::Extension Extension;
 		typedef Servers::iterator ServerReference;
-		typedef LocationsCollection::iterator LocationReference;
+		typedef LocationsCollection::mapped_type* LocationReference;
 		// for example: the class of the status code 200 is 2
 		typedef unsigned char StatusCodeClass;
  

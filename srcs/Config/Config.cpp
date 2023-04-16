@@ -39,7 +39,7 @@ bool Config::isCGIExtensionSupported
 
 		// found if it doesn't equal past-the-end iterator
 		if (mSupportedCGIExtensions.find(extension) !=
-			mSupportedCGIExtensions.end());
+			mSupportedCGIExtensions.end())
 				return true;
 
 		return false;
