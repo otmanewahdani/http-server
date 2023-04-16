@@ -22,7 +22,7 @@ Config::Config(const char *fileName) {
 
 	// passes the this Config object to ConfigParser so that the parsing
 		// result is stored in it
-	ConfigParser(configFile, *this);
+	ConfigParser configParser(configFile, *this);
 
 	configFile.close();
 
