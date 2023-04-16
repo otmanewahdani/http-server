@@ -23,7 +23,7 @@ VPATH := $(addprefix $(SRCS_DIR),$(VPATH) )
 
 INCS = $(addprefix -I,$(VPATH))
 
-OBJ = $(addprefix $(OBJ_DIR), $(patsubst %.cpp,%.o,$(SRCS)) ) 
+OBJ = $(addprefix $(OBJ_DIR), $(patsubst %.cpp,%.o,$(SRCS)) )
 
 NAME = webserv
 
