@@ -504,7 +504,7 @@ void ConfigParser::parseStatusCodeDirective
 		// so it makes sense to have a NUM type
 	isNum(token);
 
-	if (isStatusCodeValid(statusCodeClasses, token.value))
+	if (isStatusCodeValid(statusCodeClasses, token.value) == false)
 		handleParsingError(token);
 
 	// converts token's value to StatusCode type value
