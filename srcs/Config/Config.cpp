@@ -10,7 +10,7 @@ Config::Config(const char *fileName) {
 	if (!fileName)
 		throw std::invalid_argument("file name cannot be NULL");
 
-	setSupportedCGIExtensions();
+	initSupportedCGIExtensions();
 
 }
 
@@ -23,7 +23,7 @@ Config::ServerContext::ServerContext()
 	: socketID(-1)
 	, clientBodySizeMax() {}
 
-void Config::setSupportedCGIExtensions() {
+void Config::initSupportedCGIExtensions() {
 	
 	// defines the supported cgi extensions
 	const char extensionsArray[][10] = {".py", ".php"};
@@ -31,5 +31,17 @@ void Config::setSupportedCGIExtensions() {
 	// adds the supported cgi extensions to the member mSupportedCGIExtensions
 	for (size_t i = 0; i < sizeof(extensionsArray) / sizeof(extensionsArray[0]); ++i)
 		mSupportedCGIExtensions.insert(extensionsArray[i]);
+
+}
+
+bool Config::isCGIExtensionSupported
+	(const Extension& extension) {
+
+		// found if it doesn't equal past-the-end iterator
+		if (mSupportedCGIExtensions.find(extension) !=
+			mSupportedCGIExtensions.end());
+				return true;
+
+		return false;
 
 }

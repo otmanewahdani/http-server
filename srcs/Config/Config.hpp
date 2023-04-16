@@ -76,6 +76,9 @@ class Config {
 		Config(const char *fileName);
 
 		Servers& getServers();
+
+		bool isCGIExtensionSupported
+			(const Extension& extension);
 	
 	private:
 		/******* private member objects *******/
@@ -86,6 +89,6 @@ class Config {
 		Servers mServers;
 
 		/******* private member functions *******/
-		void setSupportedCGIExtensions();
+		void initSupportedCGIExtensions();
 
 };

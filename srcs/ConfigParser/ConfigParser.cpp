@@ -113,6 +113,15 @@ void ConfigParser::parseLocation() {
 			case Token::AUTOIN:
 				parseAutoIndex();
 				break;
+			case Token::DFLT
+				parseDefault();
+				break;
+			case Token::CGI
+				parseCGI();
+				break;
+			case Token::UPLOAD:
+				parseUpload();
+				break;
 			default:
 				handleParsingError(token);
 		}
@@ -218,7 +227,7 @@ void ConfigParser::parseRedirection() {
 
 }
 
-void ConfigParser::parseRoot() {
+void ConfigParser::parsePath(Path& pathLoc) {
 
 	// checks that next token is appropriate for a path/route value
 	Token token = mLexer.next();
@@ -228,12 +237,48 @@ void ConfigParser::parseRoot() {
 	// adds leading slash if missing
 	checkPathLeadingSlash(token.value);
 
-	mLocationRef->root = token.value;
+	pathLoc = token.value;
 
 	token = mLexer.next();
 	isSemiColon(token);
 
 }
+
+void ConfigParser::parseRoot() {
+	parsePath(mLocationRef->root);
+}
+
+void ConfigParser::parseDefault() {
+	parsePath(mLocationRef->defaultFile);
+}
+
+void ConfigParser::parseCGI() {
+	
+	// first argument to cgi directive is a file extension
+	Token token = mLexer.next();
+	isExtension(token);
+
+	const Extension& extension = token.value;
+	if (!mConfig.isCGIExtensionSupported(extension)) {
+		std::cerr << extension << " extension";
+		std::cerr << " isn't a supported CGI extension\n";
+		handleParsingError(token);
+	}
+
+	// next argument is a path to an executable that runs
+		// program files with the extension found above
+	Path CGIExecutableLocation;
+	parsePath(CGIExecutableLocation);
+
+	// finally stores the parsed data
+	mLocationRef->CGISystems[extension] = CGIExecutableLocation;
+
+	// no need to check for semi-colon since it was
+		// already checked in the call to parsePath()
+
+}
+
+void ConfigParser::parseUpload() {
 
 void ConfigParser::parseAutoIndex() {
 
@@ -257,8 +302,10 @@ void ConfigParser::isToken(const Token& token, Token::Type type) {
 
 }
 
-void ConfigParser::isMethod(const Token& token) {
-	isToken(token, Token::METHOD);
+void ConfigParser::isExtension(const Token& token) {
+	isToken(token, Token::EXT);
+}
+void ConfigParser::isMethod(const Token& token) { isToken(token, Token::METHOD);
 }
 
 void ConfigParser::isLeftBrace(const Token& token) {

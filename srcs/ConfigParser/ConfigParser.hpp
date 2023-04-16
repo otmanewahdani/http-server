@@ -32,6 +32,7 @@ class ConfigParser {
 		typedef Config::ServerContext ServerContext;
 		typedef Config::Size Size; 
 		typedef Config::Path Path;
+		typedef Config::Extension Extension;
 		typedef Servers::iterator ServerReference;
 		typedef LocationsCollection::iterator LocationReference;
 		// for example: the class of the status code 200 is 2
@@ -121,7 +122,12 @@ class ConfigParser {
 		// same as above
 		void isMethod(const Token& token);
 
-		// is token of type SWITCH (has value of 'on' or 'off)
+		// same as above
+		void isExtension(const Token& token);
+
+		// checks if token is of type
+			// SWITCH (has value of 'on' or 'off)
+		// same as above
 		void isSwitch(const Token& token);
 
 		// if token is a directive or a keyword like '{' , server or listen,
@@ -201,6 +207,18 @@ class ConfigParser {
 			// size argument fails
 		void parseClientBodySizeMax();
 
+		// parses a path token and ensures that the
+			// token that follows it is a semi-colon
+		// if a leading slash doesn't exist in the path
+			// it appends it
+		// it is used by directives that that take a path
+			// argument as their one and only argument
+		// example of directives that use this util:
+			// root, default, uplod
+		// the pathLoc argument indicates where the
+			// parsed path should be stored
+		void parsePath(Path& pathLoc);
+
 		// parses method values that are appropriate for
 			// the allow_methods directive
 		void parseMethods();
@@ -213,5 +231,18 @@ class ConfigParser {
 
 		// parses the switch status of autoindex directive (on or off)
 		void parseAutoIndex();
+
+		// parses path specified in the default directive
+		void parseDefault();
+
+		// parses cgi directive
+		// if a file extension isn't supported,
+			// an error msg is printed to stderr
+		void parseCGI();
+
+		// parses upload route
+		// if route isn't a directory
+			// an error msg is printed to stderr
+		void parseUpload();
 
 };
