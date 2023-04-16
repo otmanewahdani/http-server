@@ -9,7 +9,7 @@ bool isDir(const std::string& path) {
 	struct stat pathInfo;
 
 	// if file doesn't exist
-	if (stat(path.c_str()))
+	if (stat(path.c_str(), &pathInfo))
 		return false;
 	// if file exists but isn't a directory
 	if ( !(pathInfo.st_mode & S_IFDIR)  )

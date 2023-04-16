@@ -377,9 +377,25 @@ void ConfigParser::isNotEOS(const Token& token) {
 
 }
 
-void defaultInitUnfilledServerFields() {
+void ConfigParser::defaultInitUnfilledServerFields() {
 
-void defaultInitUnfilledLocationFields() {
+	if (mServerRef->hostname.empty())
+		mServerRef->hostname = ServerContext::defaultHostname;
+	
+	if (mServerRef->port.empty())
+		mServerRef->port = ServerContext::defaultPort;
+
+}
+
+void ConfigParser::defaultInitUnfilledLocationFields() {
+
+	// if no method was allowed for location, then the
+		// the default is to enable get method
+	if (!mLocationRef->get && !mLocationRef->post
+		&& !mLocationRef->del)
+		mLocationRef->get = true;
+
+}
 
 bool ConfigParser::isStrNumerical(const std::string& str) {
 	
@@ -493,8 +509,9 @@ void ConfigParser::parseStatusCodeDirective
 
 	// converts token's value to StatusCode type value
 	// checks for conversion exceptions
+	StatusCode code = 0;
 	try {
-		StatusCode code = convertStrToNumber<StatusCode>(token.value);
+		code = convertStrToNumber<StatusCode>(token.value);
 	}
 	catch (const std::exception& error) {
 		std::cerr << error.what() << '\n';
