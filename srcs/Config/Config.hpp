@@ -10,6 +10,8 @@
 #include <list>
 #include <set>
 #include <stdexcept>
+#include <fstream>
+#include <ConfigParser.hpp>
 
 class Config {
 
@@ -73,6 +75,7 @@ class Config {
 		/******* public member functions *******/
 		// sets up a configuration from a config file
 		// throws std::invalid_argument exception if fileName is NULL
+			// or cannot be opened
 		Config(const char *fileName);
 
 		Servers& getServers();

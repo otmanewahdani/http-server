@@ -9,8 +9,22 @@ Config::Config(const char *fileName) {
 
 	if (!fileName)
 		throw std::invalid_argument("file name cannot be NULL");
+	
+	std::fstream configFile(fileName);
+	if (!configFile) {
+		std::string error = "config file '";
+		error += fileName;
+		error += "' couldn't be opened for reading";
+		throw std::invalid_argument(error);
+	}
 
 	initSupportedCGIExtensions();
+
+	// passes the this Config object to ConfigParser so that the parsing
+		// result is stored in it
+	ConfigParser(configFile, *this);
+
+	configFile.close();
 
 }
 
