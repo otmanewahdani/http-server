@@ -77,7 +77,7 @@ void Config::print() {
 
 void Config::printServer(const ServerContext& server, int indent) {
 
-	std::string indentStr(indent, '\t');
+	const std::string indentStr(indent, '\t');
 
 	std::cout << indentStr << "SERVER_NAME: '"
 		<< server.server_name << "'\n";
@@ -110,7 +110,7 @@ void Config::printServer(const ServerContext& server, int indent) {
 
 void Config::printLocation(const LocationContext& location, int indent) {
 
-	std::string indentStr(indent, '\t');
+	const std::string indentStr(indent, '\t');
 	
 	std::cout << indentStr << "ALLOW_METHODS\n";
 	if (location.get)
@@ -142,7 +142,7 @@ void Config::printLocation(const LocationContext& location, int indent) {
 template <class Map>
 void Config::printMap(const Map& elems, int indent) {
 
-	std::string indentStr(indent, '\t');
+	const std::string indentStr(indent, '\t');
 
 	for (typename Map::const_iterator it = elems.begin();
 		it != elems.end(); ++it) {
