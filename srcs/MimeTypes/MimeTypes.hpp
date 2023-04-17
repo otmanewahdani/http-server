@@ -9,16 +9,20 @@
 
 #include <map>
 #include <string>
+#include <stdexcept>
+#include <fstream>
 
 class MimeTypes {
 
 	public:
+		/******* public member variables *******/
+		//const defaultType;
 		/******* alias types *******/
 		typedef std::string Extension;
 		typedef std::string MimeType;
 		// underlying container type that holds
 			// (extension, mime type) pairs
-		// One file extension maps to at most one MIME type. One MIME type maps to zero or more file extensions
+		// One file extension maps to at most one MIME type. One MIME type maps to zero or more file extensions?
 		typedef std::multimap<Extension, MimeType> MimeTypesContainer;
 
 		/******* public member functions *******/
@@ -31,9 +35,16 @@ class MimeTypes {
 		// most servers (ex : nginx) will typically send the file with a default MIME type of application/octet-stream.
 		// This MIME type indicates that the file is a binary file and that the server does not know how to handle it.	
 		const MimeType& getType(const Extension& extension) const ;
+
+		//overload the operator [] to returns the Mimetype of a given key and the default type
+		// if an extansion is invalid or doesn't exists
+		const MimeType& operator[] (const Extension& extension) const;
 	
 	private:
 		/******* private member objects *******/
-		MimeTypesContainer mData;
+		MimeTypesContainer MimeData;
+		//BuiltinstMimeData
 
+		/******* private member functions *******/
+		void ParseMimeData(std::istream& MimeFile);
 };
