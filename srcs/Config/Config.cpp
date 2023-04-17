@@ -40,7 +40,7 @@ Config::ServerContext::ServerContext()
 void Config::initSupportedCGIExtensions() {
 	
 	// defines the supported cgi extensions
-	const char extensionsArray[][10] = {".py", ".php"};
+	const char extensionsArray[][10] = {".pl", ".php"};
 
 	// adds the supported cgi extensions to the member mSupportedCGIExtensions
 	for (size_t i = 0; i < sizeof(extensionsArray) / sizeof(extensionsArray[0]); ++i)
