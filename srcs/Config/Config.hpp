@@ -22,7 +22,6 @@ class Config {
 		typedef std::string Extension;
 		typedef unsigned short StatusCode;
 		typedef unsigned long Size;
-		typedef std::map<StatusCode, Path> StatusCodesWithPaths;
 		typedef std::map<Extension, Path> CGISystems;
 
 		/******* nested types *******/
@@ -34,7 +33,7 @@ class Config {
 			bool post;
 			bool del;
 			// end of http methods
-			StatusCodesWithPaths redirections;
+			std::map<Path, StatusCode> redirections;
 			Path root;
 			bool autoindex;
 			Path defaultFile;
@@ -56,7 +55,7 @@ class Config {
 			std::string port;
 			std::string server_name;
 			Socket socketID;
-			StatusCodesWithPaths errorPages;
+			std::map<StatusCode, Path> errorPages;
 			Size clientBodySizeMax;
 			LocationsCollection locations;
 
@@ -106,9 +105,11 @@ class Config {
 		// same as above
 		void printLocation(const LocationContext& location, int indent);
 
-		// same as above
-		void printStatusCodesWithPaths
-			(const StatusCodesWithPaths& elems, int indent);
+		// prints elements of directives that have key/value pairs
+		// and represented as map like error_page and redirect
+		// indent param same as above
+		template <class Map>
+		void printMap(const Map& elems, int indent);
 
 };
 

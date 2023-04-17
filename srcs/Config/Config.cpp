@@ -92,7 +92,7 @@ void Config::printServer(const ServerContext& server, int indent) {
 		<< server.clientBodySizeMax << '\n';
 	
 	std::cout << indentStr << "ERROR_PAGES\n";
-	printStatusCodesWithPaths(server.errorPages, indent + 1);
+	printMap(server.errorPages, indent + 1);
 
 	// taverses location's elements
 	for (LocationsCollection::const_iterator
@@ -121,7 +121,7 @@ void Config::printLocation(const LocationContext& location, int indent) {
 		std::cout << indentStr + '\t' << "DELETE\n";
 
 	std::cout << indentStr << "REDIRECTIONS\n";
-	printStatusCodesWithPaths(location.redirections, indent + 1);
+	printMap(location.redirections, indent + 1);
 
 	std::cout << indentStr << "ROOT: '" << location.root << "'\n";
 
@@ -132,26 +132,19 @@ void Config::printLocation(const LocationContext& location, int indent) {
 		<< location.defaultFile << "'\n";
 
 	std::cout << indentStr << "CGI\n";
-	for (CGISystems::const_iterator it =
-		location.supportedCGIs.begin();
-		it != location.supportedCGIs.end(); ++it) {
-		
-		std::cout << indentStr + '\t' << it->first;
-		std::cout << " -> " << it->second << '\n';
-
-	}
+	printMap(location.supportedCGIs, indent + 1);
 
 	std::cout << indentStr << "UPLOAD: '"
 		<< location.uploadRoute << "'\n";
 
 }
 
-void Config::printStatusCodesWithPaths
-	(const StatusCodesWithPaths& elems, int indent) {
+template <class Map>
+void Config::printMap(const Map& elems, int indent) {
 
 	std::string indentStr(indent, '\t');
 
-	for (StatusCodesWithPaths::const_iterator it = elems.begin();
+	for (typename Map::const_iterator it = elems.begin();
 		it != elems.end(); ++it) {
 		std::cout << indentStr << it->first << " -> ";
 		std::cout << it->second << '\n';

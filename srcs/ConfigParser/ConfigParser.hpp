@@ -28,7 +28,6 @@ class ConfigParser {
 		/*******  alias types *******/
 		typedef Config::Servers Servers;
 		typedef Config::LocationsCollection LocationsCollection;
-		typedef Config::StatusCodesWithPaths StatusCodesWithPaths;
 		typedef Config::StatusCode StatusCode;
 		typedef Config::ServerContext ServerContext;
 		typedef Config::LocationContext LocationContext;
@@ -154,24 +153,6 @@ class ConfigParser {
 		// returns true if str is only composed of digits
 		bool isStrNumerical(const std::string& str);
 
-		// it's called by functions like parseErrorPage() that parse
-			// directives which consists of a status code and a path
-			// arguments
-		// the statusCodeClasses vector parameter contains all status code
-			// classes that are supported by the directive
-		// statusCodeClass template parameter is a byte-sized integer that
-			// indicates the class of the status code that will be parsed.
-		// the saveStructure parameter is where the parsed pair (status
-			// code, path) will be saved
-		// if the parsed status code's class doesn't match any class in
-			// statusCodeClasses vector, an error is printed to stderr and
-			// handleParsingError() is called
-		// if conversion of the status code failed, an error message
-			// is printed to stderr and handleParsingError() is called
-		void parseStatusCodeDirective
-			(const std::vector<StatusCodeClass>& statusCodeClasses,
-			StatusCodesWithPaths& saveStructure);
-
 		// checks if status code string belong to any of the status code classes
 		// read function above to understand these terms
 		bool isStatusCodeMatchClasses
@@ -202,7 +183,8 @@ class ConfigParser {
 
 		void parseListen();
 		
-		// calls parseStatusCodeDirective
+		// if conversion of the status code failed, an error message
+			// is printed to stderr and handleParsingError() is called
 		void parseErrorPage();
 
 		// prints error msg to stderr if a conversion of the
@@ -225,7 +207,8 @@ class ConfigParser {
 			// the allow_methods directive
 		void parseMethods();
 
-		// calls parseStatusCodeDirective
+		// if conversion of the status code failed, an error message
+			// is printed to stderr and handleParsingError() is called
 		void parseRedirection();
 
 		// parses path used as an alias path of the location path

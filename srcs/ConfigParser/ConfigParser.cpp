@@ -221,13 +221,36 @@ void ConfigParser::addMethod(const Token& token) {
 
 void ConfigParser::parseRedirection() {
 
-	// sets status code classes that are supported by the reditect directive
+	// sets status code classes that are supported by the redirect directive
 	std::vector<StatusCodeClass> supportedClasses(1);
 	supportedClasses[0] = 3;
+	
+	Token token = mLexer.next();
+	// this token must be a status code,
+		// so it makes sense to have a NUM type
+	isNum(token);
 
-	// saves status_code:path pair in current location context
-	parseStatusCodeDirective
-		(supportedClasses, mLocationRef->redirections);
+	if (isStatusCodeValid(supportedClasses, token.value) == false)
+		handleParsingError(token);
+
+	// converts token's value to StatusCode type value
+	// checks for conversion exceptions
+	StatusCode code = 0;
+	try {
+		code = convertStrToNumber<StatusCode>(token.value);
+	}
+	catch (const std::exception& error) {
+		std::cerr << error.what() << '\n';
+		handleParsingError(token);
+	}
+
+	Path redirectPath;
+	// expects next token to be a path, parses it
+	// and saves it in redirectPath;
+	parsePath(redirectPath);
+
+	// saves redirectPath:code pair in current location context
+	mLocationRef->redirections[redirectPath] = code;
 
 }
 
@@ -469,8 +492,29 @@ void ConfigParser::parseErrorPage() {
 	std::vector<StatusCodeClass> supportedClasses(2);
 	supportedClasses[0] = 4;
 	supportedClasses[1] = 5;
+	
+	Token token = mLexer.next();
+	// this token must be a status code,
+		// so it makes sense to have a NUM type
+	isNum(token);
 
-	parseStatusCodeDirective(supportedClasses, mServerRef->errorPages);
+	if (isStatusCodeValid(supportedClasses, token.value) == false)
+		handleParsingError(token);
+
+	// converts token's value to StatusCode type value
+	// checks for conversion exceptions
+	StatusCode code = 0;
+	try {
+		code = convertStrToNumber<StatusCode>(token.value);
+	}
+	catch (const std::exception& error) {
+		std::cerr << error.what() << '\n';
+		handleParsingError(token);
+	}
+
+	// parses path and creates a pair of status code and a path as
+		// the corresponding error page in current server context
+	parsePath(mServerRef->errorPages[code]);
 
 }
 
@@ -495,44 +539,6 @@ void ConfigParser::parseClientBodySizeMax() {
 
 }
 
-void ConfigParser::parseStatusCodeDirective
-	(const std::vector<StatusCodeClass>& statusCodeClasses,
-	StatusCodesWithPaths& saveStructure) {
-	
-	Token token = mLexer.next();
-	// this token must be a status code,
-		// so it makes sense to have a NUM type
-	isNum(token);
-
-	if (isStatusCodeValid(statusCodeClasses, token.value) == false)
-		handleParsingError(token);
-
-	// converts token's value to StatusCode type value
-	// checks for conversion exceptions
-	StatusCode code = 0;
-	try {
-		code = convertStrToNumber<StatusCode>(token.value);
-	}
-	catch (const std::exception& error) {
-		std::cerr << error.what() << '\n';
-		handleParsingError(token);
-	}
-
-	// checks that next token is appropriate for a path/route value
-	token = mLexer.next();
-	isNotEOS(token);
-	isNotAKeyword(token);
-
-	// adds leading slash if missing
-	checkPathLeadingSlash(token.value);
-
-	// creates a pair of status code and path
-	saveStructure[code] = token.value;
-
-	token = mLexer.next();
-	isSemiColon(token);
-
-}
 bool ConfigParser::isStatusCodeValid
 	(const std::vector<StatusCodeClass>& statusCodeClasses,
 	const std::string& statusCodeStr) {
