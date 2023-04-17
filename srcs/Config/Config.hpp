@@ -83,6 +83,9 @@ class Config {
 
 		bool isCGIExtensionSupported
 			(const Extension& extension);
+
+		// prints all the servers' configuration
+		void print();
 	
 	private:
 		/******* private member objects *******/
@@ -94,6 +97,18 @@ class Config {
 
 		/******* private member functions *******/
 		void initSupportedCGIExtensions();
+
+		// prints a server block elements
+		// indent specify amount of indentation before
+			// printing each of the server's elements
+		void printServer(const ServerContext& server, int indent);
+
+		// same as above
+		void printLocation(const LocationContext& location, int indent);
+
+		// same as above
+		void printStatusCodesWithPaths
+			(const StatusCodesWithPaths& elems, int indent);
 
 };
 

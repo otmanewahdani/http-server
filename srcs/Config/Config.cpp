@@ -59,3 +59,102 @@ bool Config::isCGIExtensionSupported
 		return false;
 
 }
+
+void Config::print() {
+
+	int serverNum = 1;
+	// traverses server's elements
+	for (Servers::const_iterator server = mServers.begin();
+			server != mServers.end(); ++server) {
+
+		std::cout << "SERVER " << serverNum++ << "\n";
+		printServer(*server, 1);
+		std::cout << '\n';
+
+	}
+
+}
+
+void Config::printServer(const ServerContext& server, int indent) {
+
+	std::string indentStr(indent, '\t');
+
+	std::cout << indentStr << "SERVER_NAME: '"
+		<< server.server_name << "'\n";
+
+	std::cout << indentStr << "LISTEN: "
+		<< server.hostname << ':' << server.port << '\n';
+
+	std::cout << indentStr << "SOCKET_ID: "
+		<< server.socketID << "\n";
+
+	std::cout << indentStr << "CLIENT_BODY_SIZE_MAX: "
+		<< server.clientBodySizeMax << '\n';
+	
+	std::cout << indentStr << "ERROR_PAGES\n";
+	printStatusCodesWithPaths(server.errorPages, indent + 1);
+
+	// taverses location's elements
+	for (LocationsCollection::const_iterator
+		it = server.locations.begin();
+		it != server.locations.end(); ++it) {
+
+		std::cout << indentStr << "LOCATION "
+			<< it->first << '\n';
+		printLocation(it->second, indent + 1);
+		std::cout << '\n';
+
+	}
+
+}
+
+void Config::printLocation(const LocationContext& location, int indent) {
+
+	std::string indentStr(indent, '\t');
+	
+	std::cout << indentStr << "ALLOW_METHODS\n";
+	if (location.get)
+		std::cout << indentStr + '\t' << "GET\n";
+	if (location.post)
+		std::cout << indentStr + '\t' << "POST\n";
+	if (location.del)
+		std::cout << indentStr + '\t' << "DELETE\n";
+
+	std::cout << indentStr << "REDIRECTIONS\n";
+	printStatusCodesWithPaths(location.redirections, indent + 1);
+
+	std::cout << indentStr << "ROOT: '" << location.root << "'\n";
+
+	std::cout << indentStr << "AUTOINDEX: "
+		<< (location.autoindex ? "ON\n" : "OFF\n");
+
+	std::cout << indentStr << "DEFAULT: '"
+		<< location.defaultFile << "'\n";
+
+	std::cout << indentStr << "CGI\n";
+	for (CGISystems::const_iterator it =
+		location.supportedCGIs.begin();
+		it != location.supportedCGIs.end(); ++it) {
+		
+		std::cout << indentStr + '\t' << it->first;
+		std::cout << " -> " << it->second << '\n';
+
+	}
+
+	std::cout << indentStr << "UPLOAD: '"
+		<< location.uploadRoute << "'\n";
+
+}
+
+void Config::printStatusCodesWithPaths
+	(const StatusCodesWithPaths& elems, int indent) {
+
+	std::string indentStr(indent, '\t');
+
+	for (StatusCodesWithPaths::const_iterator it = elems.begin();
+		it != elems.end(); ++it) {
+		std::cout << indentStr << it->first << " -> ";
+		std::cout << it->second << '\n';
+	}
+
+}
