@@ -18,6 +18,7 @@ class MimeTypes {
 		typedef std::string MimeType;
 		// underlying container type that holds
 			// (extension, mime type) pairs
+		// One file extension maps to at most one MIME type. One MIME type maps to zero or more file extensions
 		typedef std::multimap<Extension, MimeType> MimeTypesContainer;
 
 		/******* public member functions *******/
@@ -25,6 +26,10 @@ class MimeTypes {
 
 		// returns mime type associated with the extension
 		// if not found, returns empty value
+	
+		// Note : If a file extension is not recognized or specified in the server's configuration
+		// most servers (ex : nginx) will typically send the file with a default MIME type of application/octet-stream.
+		// This MIME type indicates that the file is a binary file and that the server does not know how to handle it.	
 		const MimeType& getType(const Extension& extension) const ;
 	
 	private:
