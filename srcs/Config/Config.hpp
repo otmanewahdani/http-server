@@ -94,6 +94,10 @@ class Config {
 		// contains all the user-configured servers
 		Servers mServers;
 
+		// default path to configuration file
+			// if a path was not specified
+		const static std::string defaultConfigFileName;
+
 		/******* private member functions *******/
 		void initSupportedCGIExtensions();
 
@@ -114,6 +118,6 @@ class Config {
 };
 
 // this include directive was brought down here because the included file
-// includes this Config.hpp as well and relies on the full definition
+// includes this file (Config.hpp) as well and relies on the full definition
 // of the Config class
 #include <ConfigParser.hpp>

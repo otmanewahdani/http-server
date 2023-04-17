@@ -5,10 +5,12 @@
 const std::string Config::ServerContext::defaultHostname = "0.0.0.0";
 const std::string Config::ServerContext::defaultPort = "80";
 
+const std::string defaultConfigFileName = "./config_files/default_config";
+
 Config::Config(const char *fileName) {
 
 	if (!fileName)
-		throw std::invalid_argument("file name cannot be NULL");
+		fileName = defaultConfigFileName.c_str();
 	
 	std::fstream configFile(fileName);
 	if (!configFile) {
