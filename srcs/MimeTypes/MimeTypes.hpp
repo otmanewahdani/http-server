@@ -13,6 +13,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string.h>
 
 class MimeTypes {
 
@@ -20,6 +21,7 @@ class MimeTypes {
 		/******* alias types *******/
 		typedef std::string Extension;
 		typedef std::string MimeType;
+
 		// underlying container type that holds
 			// (extension, mime type) pairs
 		typedef std::map<Extension, MimeType> MimeTypesContainer;
@@ -40,21 +42,34 @@ class MimeTypes {
 
 		/******* private member functions *******/
 
-		//parse the mime file and fill in the underlying map
+		//parse the mime file and store the result in the underlying map
 		void ParseMimeData(std::ifstream& mimeFile);
 
-		//check if the file is empty
-		bool IsEmptyFile(std::ifstream& mimeFile);
+		//read next token of a stream line and store it in the token
+		bool NextToken(std::istringstream& streamLine, std::string &token);
 
-		// check and set the type , throw excpt if the type format is not valid
-		void GetType(std::string& line, std::string &type);
-
+		
 		//check if the given token has a valid type format else throw excpt
 		bool IsType(std::string &type);
 
-		//check if the given token has a valid Extension format else throw excpt
-		bool IsExtension();
+		// read token  and check if it's a valid type
+		void AddType(std::istringstream& streamLine, MimeType &type);
 
-		//peek the token from stream and store it in token (by ref)
-		const std::string &NextToken(const std::string& line);
+
+		//check if the given token has a valid Extension format else throw excpt
+		bool IsExtension(Extension &extension);
+
+		//check if the extention contain a special char
+		bool IsSpecialCharacter(Extension &extension);
+
+		// read token  and check if it's a valid extension
+		void AddExtension(std::istringstream& streamLine, Extension &extension);
+
+
+		// add a new entry of pair<extension , type> to the underlying map
+		void AddPair(Extension &extension, MimeType& type);
+
+		//throw expt of the msg passed as paramater
+		void ThrowParsingExcpt(std::string tokenType, std::string token);
+
 };

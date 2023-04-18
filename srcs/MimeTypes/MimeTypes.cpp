@@ -8,6 +8,7 @@ MimeTypes::MimeTypes(const char* fileNamePath) {
 
     if (!fileNamePath)
 		throw std::invalid_argument("Mime filename is NULL");
+
 	std::ifstream MimeFile(fileNamePath);
 	if (!MimeFile) {
         std::string ErroMsg = "Failed to open Mime file : "; 
@@ -25,7 +26,9 @@ const MimeTypes::MimeType& MimeTypes::getType(const Extension& extension) const 
 
     MimeTypesContainer::const_iterator it;
 
+    //search for the given extension
     it = mData.find(extension);
+
     //if extension is not found 
     if(extension.empty() || it == mData.end())
         return defaultType;
@@ -34,31 +37,88 @@ const MimeTypes::MimeType& MimeTypes::getType(const Extension& extension) const 
 
 }
 
-bool MimeTypes::IsEmptyFile(std::ifstream& mimeFile) {
-    //if the first char is EOF then the file is empty 
-    return mimeFile.peek() == mimeFile.eof();
+//throw a parsing excpt depending on the token type and value
+void MimeTypes::ThrowParsingExcpt(std::string tokenType, std::string token) {
+
+    std::string errorMsg = "Invalid ";
+    errorMsg += tokenType ;
+    errorMsg += " : ";
+    if(token.empty())
+        errorMsg += "empty token";
+    else
+        errorMsg += token;
+
+    throw std::runtime_error(errorMsg);
 }
 
-void MimeTypes::GetType(std::string& line, std::string &type) {
+//extract individual tokens from the streamLine 
+    //and return false to indicate extraction failure
+bool MimeTypes::NextToken(std::istringstream& streamLine, std::string &token) {
+    return bool(streamLine >> token);
+}
 
-    //read first token
-    type = strtok(&line[0] , " ");
+void MimeTypes::AddType(std::istringstream& streamLine, std::string &type) {
 
+    //clean type string from previous value
+    type.erase();
+
+    //read first token , empty if not found
+    NextToken(streamLine,type);
+
+    //throw excpt if type format is invalid
     IsType(type);
+
 }
 
+void MimeTypes::AddExtension(std::istringstream& streamLine, Extension &extension) {
+
+    // //clean extension string from previous value
+    extension.erase();
+
+    // read next token , empty if not found
+    NextToken(streamLine, extension);
+
+    //throw excpt if extension format is invalid
+    IsExtension(extension);
+
+}
+
+//check if the token has a valid type format : "type/subtype"
 bool MimeTypes::IsType(std::string &type) {
-
-    //check if there's a '/' in the middle of the string 
+  
     std::size_t found = type.find("/");
-    if(type.empty() || found == std::string::npos || found == 0 || found == type.size() - 1)
-    {
-        std::string errorMsg = "Invalid Mime type : ";
-        errorMsg += type;
-        throw std::runtime_error(errorMsg);
-    }
 
+    // check if the character '/' exist and is in the middle
+    if(type.empty() || found == std::string::npos 
+    || found == 0 || found == type.size() - 1)
+        ThrowParsingExcpt("Mimetype", type);
+
+    return true;
 }
+
+bool MimeTypes::IsSpecialCharacter(Extension &extension) {
+
+    //check if extension has a special char
+    if(extension.find_first_of(" :\\/?*\"<>[]{}%") != std::string::npos)
+        return true;
+
+    return (false);
+}
+
+//check if the token has a valid extension format
+bool MimeTypes::IsExtension(Extension &extension) {
+
+    if(extension.empty() || IsSpecialCharacter(extension))
+        ThrowParsingExcpt("Extension", extension);
+        
+    return (true);
+}
+
+//add entrey to our underlying map
+void MimeTypes::AddPair(Extension &extension, MimeType& type) {
+    mData.insert(std::make_pair(extension, type));
+}
+
 
 void MimeTypes::ParseMimeData(std::ifstream& mimeFile) {
 
@@ -66,17 +126,24 @@ void MimeTypes::ParseMimeData(std::ifstream& mimeFile) {
     MimeType type;
     Extension extension;
 
-    //read line by line
+    //reading line by line
     while(std::getline(mimeFile, line)) {
+
+        //ignore empty line
         if(line.empty())
             continue;
-        GetType(line, type);
-        //GetExtension();
-        //AddPair();
-        // while()
-        // {
-        //     //GetExtension();
-        //     //addpair();
-        // }
+
+        //creates an object of type std::istringstream named streamLine
+            //and initialize it with the string line
+        std::istringstream streamLine(line);
+
+        AddType(streamLine, type);
+        AddExtension(streamLine, extension);
+
+        AddPair(extension, type);
+
+        while(NextToken(streamLine,extension) && IsExtension(extension))
+            AddPair(extension, type);
     }
 }
+
