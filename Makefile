@@ -13,11 +13,13 @@ SRCS_DIR = srcs/
 
 CONFIG_SRC := Config.cpp ConfigParser.cpp ConfigLexer.cpp
 
+NET_SRC := Network.cpp
+
 SERVER_SRC := ServerManager.cpp
 
 GENERAL_SRC := utils.cpp main.cpp
 
-SRCS := $(CONFIG_SRC) $(GENERAL_SRC)
+SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC)
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 

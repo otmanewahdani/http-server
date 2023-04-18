@@ -10,14 +10,18 @@
 #pragma once
 
 #include <Config.hpp>
+#include <sys/errno.h>
 
 class ServerManager {
 
 	public:
+		/******* public alias types *******/
+		typedef Config::Servers Servers;
+
 		/******* public member functions *******/
 		// takes a configuration file path
 			// and passes it to Config
-		// and calls initSockets
+		// and calls Network::initServersSockets()
 		ServerManager(const char* configFileName);
 
 		// starts the operations of the server
@@ -29,10 +33,5 @@ class ServerManager {
 		Config mConfig;
 
 		/******* private member functions *******/
-		// traverses the servers in mConfig and creates
-			// listening sockets for each one in socketID
-		// the sockets are created depending on the
-			// values of hostname and port in each server
-		void initSockets();
 
 };
