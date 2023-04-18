@@ -9,6 +9,7 @@
 #include <Config.hpp>
 #include <fcntl.h>
 #include <string>
+#include <strings.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -20,6 +21,9 @@ class Network {
 		/******* public alias types *******/
 		typedef Config::Servers Servers;
 		typedef Config::Socket Socket;
+		// datatype that refers to a specific server
+		typedef Servers::iterator ServerRef;
+		typedef struct addrinfo AddrInfo;
 
 		/******* public member functions *******/
 		// traverses the servers and creates listening
@@ -60,5 +64,18 @@ class Network {
 
 		// same as above in case of error
 		static void makeSocketNonBlocking(const Socket& socketID, Servers& servers);
+
+		// binds server's socket to their corresponding hostname and port
+			// and makes it listen for connections on it
+		// same as above in case of error
+		static void makeServerListen(const ServerRef& server, Servers& servers);
+
+		// gets AddrInfo structure for a specific server's host and port
+		// The structure is suitable for socket binding and listening
+		// same as above in case of error
+		static AddrInfo* getServerAddrInfo(const ServerRef& server, Servers& servers);
+
+		// frees the structure passed by getServerAddrInfo
+		static void freeServerAddrInfo(AddrInfo* addr);
 
 };

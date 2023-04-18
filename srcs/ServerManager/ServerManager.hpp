@@ -27,6 +27,8 @@ class ServerManager {
 		// starts the operations of the server
 			// (handling clients, requests, etc..)
 		void start();
+
+		void printConfig();
 	
 	private:
 		/******* private member objects *******/
