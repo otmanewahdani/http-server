@@ -59,9 +59,6 @@ bool MimeTypes::NextToken(std::istringstream& streamLine, std::string &token) {
 
 void MimeTypes::AddType(std::istringstream& streamLine, std::string &type) {
 
-    //clean type string from previous value
-    type.erase();
-
     //read first token , empty if not found
     NextToken(streamLine,type);
 
@@ -88,9 +85,9 @@ bool MimeTypes::IsType(std::string &type) {
   
     std::size_t found = type.find("/");
 
-    // check if the character '/' exist and is in the middle
-    if(type.empty() || found == std::string::npos 
-    || found == 0 || found == type.size() - 1)
+    // check if the character '/' exist once and is in the middle
+    if(type.empty() || found == std::string::npos || type.find("/" , found+1) != std::string::npos
+    || found == 0 || found == type.size() - 1 )
         ThrowParsingExcpt("Mimetype", type);
 
     return true;
@@ -110,7 +107,7 @@ bool MimeTypes::IsExtension(Extension &extension) {
 
     if(extension.empty() || IsSpecialCharacter(extension))
         ThrowParsingExcpt("Extension", extension);
-        
+    
     return (true);
 }
 
@@ -137,13 +134,27 @@ void MimeTypes::ParseMimeData(std::ifstream& mimeFile) {
             //and initialize it with the string line
         std::istringstream streamLine(line);
 
+        //parse the type and extension of the first entry of the line 
         AddType(streamLine, type);
         AddExtension(streamLine, extension);
 
         AddPair(extension, type);
 
+        //parse and add entries with additional extensions who has same mimetype
         while(NextToken(streamLine,extension) && IsExtension(extension))
             AddPair(extension, type);
     }
 }
 
+
+void MimeTypes::Print() {
+
+    for(MimeTypesContainer::iterator it = mData.begin() ; it != mData.end() ; it++)
+    {
+        std::cout << "Entry : < " <<  it->first << " , " << it->second << " >\n";
+        std::cout << "      Extension : " << "\"" << it->first << "\";\n"; 
+        std::cout << "      Type : " << "\"" << it->second << "\";\n\n"; 
+    }
+
+    std::cout << "Parsing Status : OK\n";
+}

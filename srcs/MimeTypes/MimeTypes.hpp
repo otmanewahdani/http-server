@@ -33,7 +33,8 @@ class MimeTypes {
 		//or the default type if it's not found
 		const MimeType& getType(const Extension& extension) const ;
 	
-		//print()
+		void Print();
+		
 	private:
 		/******* private member objects *******/
 		MimeTypesContainer mData;
