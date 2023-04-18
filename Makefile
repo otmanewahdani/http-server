@@ -13,6 +13,8 @@ SRCS_DIR = srcs/
 
 CONFIG_SRC := Config.cpp ConfigParser.cpp ConfigLexer.cpp
 
+SERVER_SRC := ServerManager.cpp
+
 GENERAL_SRC := utils.cpp main.cpp
 
 SRCS := $(CONFIG_SRC) $(GENERAL_SRC)

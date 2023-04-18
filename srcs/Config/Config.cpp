@@ -5,7 +5,8 @@
 const std::string Config::ServerContext::defaultHostname = "0.0.0.0";
 const std::string Config::ServerContext::defaultPort = "80";
 
-const std::string defaultConfigFileName = "./config_files/default_config";
+const std::string Config::defaultConfigFileName
+	= "./config_files/default_config";
 
 Config::Config(const char *fileName) {
 
