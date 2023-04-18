@@ -69,8 +69,10 @@ class MimeTypes {
 		// add a new entry of pair<extension , type> to the underlying map
 		void addPair(MimePair &mimePair);
 
-		//throw a parsing excpt depending on the token type(type or extension) 
-		void throwParsingExcpt(std::string tokneType, const MimePair &mimePair);
+		//throw a parsing excpt if the token has invalid mime type format
+		void throwInvalidType(const MimeType &type);
 
+		//throw a parsing excpt if the token has invalid extension format
+		void throwInvalidExtention(const MimePair &mimePair);
 
 };

@@ -37,20 +37,23 @@ const MimeTypes::MimeType& MimeTypes::getType(const Extension& extension) const 
 
 }
 
+void MimeTypes::throwInvalidType(const MimeType &type) {
 
-void MimeTypes::throwParsingExcpt(std::string tokenType, const MimePair &mimePair) {
-   
+    std::string errorMsg ;
+    errorMsg = "Invalid mime type : ";
+    errorMsg += type;
+
+    throw std::runtime_error(errorMsg);
+}
+
+void MimeTypes::throwInvalidExtention(const MimePair &mimePair) {
+
     std::string errorMsg ;
 
-    if(tokenType == "type")
-        errorMsg = "Invalid mime type : ";
-    else if(tokenType == "extension")
-    {
-        errorMsg = "Invalid extension \" ";
-        errorMsg += mimePair.first;
-        errorMsg += " \" for type : ";
-    }
-    errorMsg += mimePair.second;     
+    errorMsg = "Invalid extension \" ";
+    errorMsg += mimePair.first;
+    errorMsg += " \" for type : ";
+    errorMsg += mimePair.second;
 
     throw std::runtime_error(errorMsg);
 }
@@ -61,7 +64,7 @@ void MimeTypes::addType(Tokenizer &tokenizer, MimePair &mimePair) {
     tokenizer.nextToken(mimePair.second);
 
     //throw excpt if type format is invalid
-    isType(mimePair);
+    isType(mimePair); 
 
 }
 
@@ -71,9 +74,10 @@ bool MimeTypes::isType(MimePair &mimePair) {
     std::size_t found = mimePair.second.find("/");
 
     // check if the character '/' exist once and is in the middle
-    if(mimePair.second.empty() || found == std::string::npos || mimePair.second.find("/" , found+1) != std::string::npos
+    if(mimePair.second.empty() || found == std::string::npos 
+    || mimePair.second.find("/" , found+1) != std::string::npos
     || found == 0 || found == mimePair.second.size() - 1 )
-        throwParsingExcpt("type", mimePair);
+        throwInvalidType(mimePair.second);
 
     return true;
 }
@@ -102,7 +106,7 @@ bool MimeTypes::isSpecialCharacter(Extension &extension) {
 bool MimeTypes::isExtension(MimePair &mimePair) {
 
     if(mimePair.first.empty() || isSpecialCharacter(mimePair.first))
-        throwParsingExcpt("extension", mimePair);
+        throwInvalidExtention(mimePair);
     
     return (true);
 }
@@ -152,6 +156,4 @@ void MimeTypes::print() {
         std::cout << "      Extension : " << "\"" << it->first << "\";\n"; 
         std::cout << "      Type : " << "\"" << it->second << "\";\n\n"; 
     }
-
-    std::cout << "Parsing Status : OK\n";
 }
