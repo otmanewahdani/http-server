@@ -11,40 +11,50 @@
 #include <string>
 #include <stdexcept>
 #include <fstream>
+#include <sstream>
+#include <iostream>
 
 class MimeTypes {
 
 	public:
-		/******* public member variables *******/
-		//const defaultType;
 		/******* alias types *******/
 		typedef std::string Extension;
 		typedef std::string MimeType;
 		// underlying container type that holds
 			// (extension, mime type) pairs
-		// One file extension maps to at most one MIME type. One MIME type maps to zero or more file extensions?
-		typedef std::multimap<Extension, MimeType> MimeTypesContainer;
+		typedef std::map<Extension, MimeType> MimeTypesContainer;
 
 		/******* public member functions *******/
 		MimeTypes(const char* fileNamePath);
 
-		// returns mime type associated with the extension
-		// if not found, returns empty value
-	
-		// Note : If a file extension is not recognized or specified in the server's configuration
-		// most servers (ex : nginx) will typically send the file with a default MIME type of application/octet-stream.
-		// This MIME type indicates that the file is a binary file and that the server does not know how to handle it.	
+		// returns mime type associated with the extension 
+		//or the default type if it's not found
 		const MimeType& getType(const Extension& extension) const ;
-
-		//overload the operator [] to returns the Mimetype of a given key and the default type
-		// if an extansion is invalid or doesn't exists
-		const MimeType& operator[] (const Extension& extension) const;
 	
 	private:
 		/******* private member objects *******/
-		MimeTypesContainer MimeData;
-		//BuiltinstMimeData
+		MimeTypesContainer mData;
+
+		//default mime type returned if an extension isn't found
+		const static std::string defaultType ;
 
 		/******* private member functions *******/
-		void ParseMimeData(std::istream& MimeFile);
+
+		//parse the mime file and fill in the underlying map
+		void ParseMimeData(std::ifstream& mimeFile);
+
+		//check if the file is empty
+		bool IsEmptyFile(std::ifstream& mimeFile);
+
+		// check and set the type , throw excpt if the type format is not valid
+		void GetType(std::string& line, std::string &type);
+
+		//check if the given token has a valid type format else throw excpt
+		bool IsType(std::string &type);
+
+		//check if the given token has a valid Extension format else throw excpt
+		bool IsExtension();
+
+		//peek the token from stream and store it in token (by ref)
+		const std::string &NextToken(const std::string& line);
 };
