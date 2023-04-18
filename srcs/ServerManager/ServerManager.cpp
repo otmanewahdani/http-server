@@ -2,7 +2,6 @@
  */
 
 #include <ServerManager.hpp>
-#include <Network.hpp>
 
 ServerManager::ServerManager(const char* configFileName)
 	: mConfig(configFileName) {

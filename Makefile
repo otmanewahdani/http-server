@@ -19,7 +19,7 @@ SERVER_SRC := ServerManager.cpp
 
 GENERAL_SRC := utils.cpp main.cpp
 
-SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC)
+SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) $(SERVER_SRC)
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 

@@ -65,7 +65,7 @@ void Network::makeServerListen(const ServerRef& server, Servers& servers) {
 		serverAddr->ai_addrlen) == -1) {
 
 		std::string error = "failed to bind socket to ";
-		error += server->hostname + ':' + server->port + ": ";
+		error += server->hostname + ':' + server->port;
 		clearServersSockets(servers);
 		throwErrnoException(error);
 
@@ -76,7 +76,7 @@ void Network::makeServerListen(const ServerRef& server, Servers& servers) {
 	if (listen(server->socketID, SOMAXCONN) == -1) {
 
 		std::string error = "failed to listen on ";
-		error += server->hostname + ':' + server->port + ": ";
+		error += server->hostname + ':' + server->port;
 		clearServersSockets(servers);
 		throwErrnoException(error);
 

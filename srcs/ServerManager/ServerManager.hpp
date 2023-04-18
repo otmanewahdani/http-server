@@ -10,7 +10,7 @@
 #pragma once
 
 #include <Config.hpp>
-#include <sys/errno.h>
+#include <Network.hpp>
 
 class ServerManager {
 
