@@ -14,6 +14,7 @@
 #include <sstream>
 #include <iostream>
 #include <string.h>
+#include <Tokenizer.hpp>
 
 class MimeTypes {
 
@@ -33,9 +34,12 @@ class MimeTypes {
 		//or the default type if it's not found
 		const MimeType& getType(const Extension& extension) const ;
 	
-		void Print();
-		
+		void print();
+
 	private:
+		/******* private nested types *********/
+		typedef std::pair<MimeType,Extension> MimePair;
+		
 		/******* private member objects *******/
 		MimeTypesContainer mData;
 
@@ -45,33 +49,28 @@ class MimeTypes {
 		/******* private member functions *******/
 
 		//parse the mime file and store the result in the underlying map
-		void ParseMimeData(std::ifstream& mimeFile);
-
-		//read next token of a stream line and store it in the token
-		bool NextToken(std::istringstream& streamLine, std::string &token);
-
-		
-		//check if the given token has a valid type format else throw excpt
-		bool IsType(std::string &type);
+		void parseMimeData(std::ifstream& mimeFile);
 
 		// read token  and check if it's a valid type
-		void AddType(std::istringstream& streamLine, MimeType &type);
+		void addType(Tokenizer &tokenizer, MimePair &mimePair);
 
-
-		//check if the given token has a valid Extension format else throw excpt
-		bool IsExtension(Extension &extension);
-
-		//check if the extention contain a special char
-		bool IsSpecialCharacter(Extension &extension);
+		//check if the given token has a valid type format else throw excpt
+		bool isType(MimePair &mimePair);
 
 		// read token  and check if it's a valid extension
-		void AddExtension(std::istringstream& streamLine, Extension &extension);
+		void addExtension(Tokenizer &tokenizer, MimePair &mimePair);
 
+		//check if the given token has a valid Extension format else throw excpt
+		bool isExtension(MimePair &mimePair);
+
+		//check if the extention contain a special char
+		bool isSpecialCharacter(Extension &extension);
 
 		// add a new entry of pair<extension , type> to the underlying map
-		void AddPair(Extension &extension, MimeType& type);
+		void addPair(MimePair &mimePair);
 
-		//throw expt of the msg passed as paramater
-		void ThrowParsingExcpt(std::string tokenType, std::string token);
+		//throw a parsing excpt depending on the token type(type or extension) 
+		void throwParsingExcpt(std::string tokneType, const MimePair &mimePair);
+
 
 };

@@ -16,7 +16,7 @@ MimeTypes::MimeTypes(const char* fileNamePath) {
         throw std::runtime_error(ErroMsg);
     }
 
-    ParseMimeData(MimeFile);
+    parseMimeData(MimeFile);
 
     MimeFile.close();
 
@@ -37,63 +37,59 @@ const MimeTypes::MimeType& MimeTypes::getType(const Extension& extension) const 
 
 }
 
-//throw a parsing excpt depending on the token type and value
-void MimeTypes::ThrowParsingExcpt(std::string tokenType, std::string token) {
 
-    std::string errorMsg = "Invalid ";
-    errorMsg += tokenType ;
-    errorMsg += " : ";
-    if(token.empty())
-        errorMsg += "empty token";
-    else
-        errorMsg += token;
+void MimeTypes::throwParsingExcpt(std::string tokenType, const MimePair &mimePair) {
+   
+    std::string errorMsg ;
+
+    if(tokenType == "type")
+        errorMsg = "Invalid mime type : ";
+    else if(tokenType == "extension")
+    {
+        errorMsg = "Invalid extension \" ";
+        errorMsg += mimePair.first;
+        errorMsg += " \" for type : ";
+    }
+    errorMsg += mimePair.second;     
 
     throw std::runtime_error(errorMsg);
 }
 
-//extract individual tokens from the streamLine 
-    //and return false to indicate extraction failure
-bool MimeTypes::NextToken(std::istringstream& streamLine, std::string &token) {
-    return bool(streamLine >> token);
-}
-
-void MimeTypes::AddType(std::istringstream& streamLine, std::string &type) {
+void MimeTypes::addType(Tokenizer &tokenizer, MimePair &mimePair) {
 
     //read first token , empty if not found
-    NextToken(streamLine,type);
+    tokenizer.nextToken(mimePair.second);
 
     //throw excpt if type format is invalid
-    IsType(type);
-
-}
-
-void MimeTypes::AddExtension(std::istringstream& streamLine, Extension &extension) {
-
-    // //clean extension string from previous value
-    extension.erase();
-
-    // read next token , empty if not found
-    NextToken(streamLine, extension);
-
-    //throw excpt if extension format is invalid
-    IsExtension(extension);
+    isType(mimePair);
 
 }
 
 //check if the token has a valid type format : "type/subtype"
-bool MimeTypes::IsType(std::string &type) {
+bool MimeTypes::isType(MimePair &mimePair) {
   
-    std::size_t found = type.find("/");
+    std::size_t found = mimePair.second.find("/");
 
     // check if the character '/' exist once and is in the middle
-    if(type.empty() || found == std::string::npos || type.find("/" , found+1) != std::string::npos
-    || found == 0 || found == type.size() - 1 )
-        ThrowParsingExcpt("Mimetype", type);
+    if(mimePair.second.empty() || found == std::string::npos || mimePair.second.find("/" , found+1) != std::string::npos
+    || found == 0 || found == mimePair.second.size() - 1 )
+        throwParsingExcpt("type", mimePair);
 
     return true;
 }
 
-bool MimeTypes::IsSpecialCharacter(Extension &extension) {
+void MimeTypes::addExtension(Tokenizer &tokenizer, MimePair &mimePair) {
+
+    // read next token , empty if not found
+    tokenizer.nextToken(mimePair.first);
+
+    //throw excpt if extension format is invalid
+    isExtension(mimePair);
+
+}
+
+
+bool MimeTypes::isSpecialCharacter(Extension &extension) {
 
     //check if extension has a special char
     if(extension.find_first_of(" :\\/?*\"<>[]{}%") != std::string::npos)
@@ -103,25 +99,23 @@ bool MimeTypes::IsSpecialCharacter(Extension &extension) {
 }
 
 //check if the token has a valid extension format
-bool MimeTypes::IsExtension(Extension &extension) {
+bool MimeTypes::isExtension(MimePair &mimePair) {
 
-    if(extension.empty() || IsSpecialCharacter(extension))
-        ThrowParsingExcpt("Extension", extension);
+    if(mimePair.first.empty() || isSpecialCharacter(mimePair.first))
+        throwParsingExcpt("extension", mimePair);
     
     return (true);
 }
 
 //add entrey to our underlying map
-void MimeTypes::AddPair(Extension &extension, MimeType& type) {
-    mData.insert(std::make_pair(extension, type));
+void MimeTypes::addPair(MimePair &mimePair) {
+    mData.insert(mimePair);
 }
 
 
-void MimeTypes::ParseMimeData(std::ifstream& mimeFile) {
+void MimeTypes::parseMimeData(std::ifstream& mimeFile) {
 
     std::string line;
-    MimeType type;
-    Extension extension;
 
     //reading line by line
     while(std::getline(mimeFile, line)) {
@@ -132,22 +126,25 @@ void MimeTypes::ParseMimeData(std::ifstream& mimeFile) {
 
         //creates an object of type std::istringstream named streamLine
             //and initialize it with the string line
-        std::istringstream streamLine(line);
+        Tokenizer tokenizer(line);
+
+        //create pair<extension,type>
+        MimePair    mimePair;
 
         //parse the type and extension of the first entry of the line 
-        AddType(streamLine, type);
-        AddExtension(streamLine, extension);
+        addType(tokenizer, mimePair);
+        addExtension(tokenizer, mimePair);
 
-        AddPair(extension, type);
+        addPair(mimePair);
 
         //parse and add entries with additional extensions who has same mimetype
-        while(NextToken(streamLine,extension) && IsExtension(extension))
-            AddPair(extension, type);
+        while(tokenizer.nextToken(mimePair.first) && isExtension(mimePair))
+            addPair(mimePair);
     }
 }
 
 
-void MimeTypes::Print() {
+void MimeTypes::print() {
 
     for(MimeTypesContainer::iterator it = mData.begin() ; it != mData.end() ; it++)
     {
