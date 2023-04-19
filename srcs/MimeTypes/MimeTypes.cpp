@@ -4,21 +4,23 @@
 
 const std::string  MimeTypes::defaultType = "application/octet-stream";
 
+const std::string defaultMimeFile = "./mime_types_files/mime.types";
+
 MimeTypes::MimeTypes(const char* fileNamePath) {
 
     if (!fileNamePath)
-		throw std::invalid_argument("Mime filename is NULL");
+        fileNamePath = defaultMimeFile.c_str();
 
-	std::ifstream MimeFile(fileNamePath);
-	if (!MimeFile) {
-        std::string ErroMsg = "Failed to open Mime file : "; 
-        ErroMsg += fileNamePath;
-        throw std::runtime_error(ErroMsg);
+	std::ifstream mimeFile(fileNamePath);
+	if (!mimeFile) {
+        std::string erroMsg = "Failed to open Mime file : "; 
+        erroMsg += fileNamePath;
+        throw std::runtime_error(erroMsg);
     }
 
-    parseMimeData(MimeFile);
+    parseMimeData(mimeFile);
 
-    MimeFile.close();
+    mimeFile.close();
 
 }
 
@@ -33,6 +35,7 @@ const MimeTypes::MimeType& MimeTypes::getType(const Extension& extension) const 
     if(extension.empty() || it == mData.end())
         return defaultType;
     
+    //return the type associated to the given extension
     return it->second;
 
 }
@@ -46,7 +49,7 @@ void MimeTypes::throwInvalidType(const MimeType &type) {
     throw std::runtime_error(errorMsg);
 }
 
-void MimeTypes::throwInvalidExtention(const MimePair &mimePair) {
+void MimeTypes::throwInvalidExtension(const MimePair &mimePair) {
 
     std::string errorMsg ;
 
@@ -56,6 +59,7 @@ void MimeTypes::throwInvalidExtention(const MimePair &mimePair) {
     errorMsg += mimePair.second;
 
     throw std::runtime_error(errorMsg);
+
 }
 
 void MimeTypes::addType(Tokenizer &tokenizer, MimePair &mimePair) {
@@ -80,6 +84,7 @@ bool MimeTypes::isType(MimePair &mimePair) {
         throwInvalidType(mimePair.second);
 
     return true;
+
 }
 
 void MimeTypes::addExtension(Tokenizer &tokenizer, MimePair &mimePair) {
@@ -100,15 +105,17 @@ bool MimeTypes::isSpecialCharacter(Extension &extension) {
         return true;
 
     return (false);
+
 }
 
 //check if the token has a valid extension format
 bool MimeTypes::isExtension(MimePair &mimePair) {
 
     if(mimePair.first.empty() || isSpecialCharacter(mimePair.first))
-        throwInvalidExtention(mimePair);
+        throwInvalidExtension(mimePair);
     
     return (true);
+
 }
 
 //add entrey to our underlying map
@@ -144,16 +151,21 @@ void MimeTypes::parseMimeData(std::ifstream& mimeFile) {
         //parse and add entries with additional extensions who has same mimetype
         while(tokenizer.nextToken(mimePair.first) && isExtension(mimePair))
             addPair(mimePair);
+
     }
+
 }
 
 
 void MimeTypes::print() {
 
-    for(MimeTypesContainer::iterator it = mData.begin() ; it != mData.end() ; it++)
-    {
+    for (MimeTypesContainer::iterator it = mData.begin();
+        it != mData.end(); ++it) {
+
         std::cout << "Entry : < " <<  it->first << " , " << it->second << " >\n";
         std::cout << "      Extension : " << "\"" << it->first << "\";\n"; 
-        std::cout << "      Type : " << "\"" << it->second << "\";\n\n"; 
+        std::cout << "      Type : " << "\"" << it->second << "\";\n\n";
+
     }
+
 }

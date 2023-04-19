@@ -44,7 +44,10 @@ class MimeTypes {
 		MimeTypesContainer mData;
 
 		//default mime type returned if an extension isn't found
-		const static std::string defaultType ;
+		const static std::string defaultType;
+
+		// default mime type path if filename wasn't specified in constructor
+		const static std::string defaultMimeFile;
 
 		/******* private member functions *******/
 
@@ -73,6 +76,6 @@ class MimeTypes {
 		void throwInvalidType(const MimeType &type);
 
 		//throw a parsing excpt if the token has invalid extension format
-		void throwInvalidExtention(const MimePair &mimePair);
+		void throwInvalidExtension(const MimePair &mimePair);
 
 };
