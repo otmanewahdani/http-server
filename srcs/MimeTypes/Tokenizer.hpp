@@ -1,7 +1,6 @@
-/*
-	this type contain the definition the Tokenizer class , which is used by MimeTypes class
-	to tokeniz each line passed to it constructor
-*/
+/* this file contains the definition the Tokenizer class , which is used by MimeTypes class
+ * 	to tokenize each line passed to it constructor
+ */
 
 #pragma once
 
@@ -9,7 +8,8 @@
 #include <sstream>
 
 class Tokenizer {
-	public :
+
+	public:
 		/******* public member functions *******/
 
 		//initialize mstream with the string line given in parameter
@@ -19,9 +19,9 @@ class Tokenizer {
     		//and return false to indicate extraction failure
 		bool nextToken(std::string &token);
 
-	private :
-
+	private:
 		/******* private member objects *******/
 		//an object of type std::istringstream named streamLine
 		std::istringstream streamLine;
+
 };

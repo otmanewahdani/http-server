@@ -20,9 +20,23 @@ void ServerManager::start() {
 	manageClients();
 }
 
-void ServerManager::manageClients() {
+void ServerManager::manageClientHandlers() {
 
 	while (1) {
+
+		addServersForMultiplexing();
+		queryClientHandlers();
+		Multiplexer::checkFDsForEvents(mListenFDs, mReadFDs, mWriteFDs);
+
 	}
 
 }
+
+void ServerManager::queryClientHandlers();
+
+void ServerManager::addServersForMultiplexing();
+
+
+void ServerManager::removeClientHandler(Socket ID);
+
+void ServerManager::addClientHandler(Socket ID);

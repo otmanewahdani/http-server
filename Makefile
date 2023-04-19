@@ -15,7 +15,9 @@ CONFIG_SRC := Config.cpp ConfigParser.cpp ConfigLexer.cpp
 
 NET_SRC := Network.cpp
 
-SERVER_SRC := ServerManager.cpp
+CLIENT_SRC := ClientHandler.cpp
+
+SERVER_SRC := ServerManager.cpp Multiplexer.cpp
 
 GENERAL_SRC := utils.cpp MimeTypes.cpp main.cpp Tokenizer.cpp
 
