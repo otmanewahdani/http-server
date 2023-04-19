@@ -15,3 +15,14 @@ ServerManager::ServerManager(const char* configFileName)
 void ServerManager::printConfig() {
 	mConfig.print();
 }
+
+void ServerManager::start() {
+	manageClients();
+}
+
+void ServerManager::manageClients() {
+
+	while (1) {
+	}
+
+}

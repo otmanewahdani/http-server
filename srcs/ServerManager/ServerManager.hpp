@@ -12,12 +12,15 @@
 #include <Config.hpp>
 #include <Network.hpp>
 #include <MimeTypes.hpp>
+#include <Client.hpp>
 
 class ServerManager {
 
 	public:
 		/******* public alias types *******/
 		typedef Config::Servers Servers;
+		typedef Client::Socket Socket;
+		typedef std::map<Socket, ClientHandler> ClientHandlers;
 
 		/******* public member functions *******/
 		// takes a configuration file path
@@ -41,6 +44,12 @@ class ServerManager {
 		// associates extensions with their mime types
 		MimeTypes mMimeTypes;
 
+		// a collection of handlers for each client
+		Clients mClientsHandlers;
+
 		/******* private member functions *******/
+		// waits for new connections on the mServers's sockets
+			// and turn those connections into clients
+		void manageClients();
 
 };
