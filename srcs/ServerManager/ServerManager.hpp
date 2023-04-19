@@ -11,6 +11,7 @@
 
 #include <Config.hpp>
 #include <Network.hpp>
+#include <MimeTypes.hpp>
 
 class ServerManager {
 
@@ -33,6 +34,12 @@ class ServerManager {
 	private:
 		/******* private member objects *******/
 		Config mConfig;
+
+		// the managed servers in mConfig
+		const Servers& mServers;
+
+		// associates extensions with their mime types
+		MimeTypes mMimeTypes;
 
 		/******* private member functions *******/
 

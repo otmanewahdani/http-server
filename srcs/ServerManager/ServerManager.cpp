@@ -4,7 +4,9 @@
 #include <ServerManager.hpp>
 
 ServerManager::ServerManager(const char* configFileName)
-	: mConfig(configFileName) {
+	: mConfig(configFileName)
+	, mServers(mConfig.getServers())
+	, mMimeTypes(NULL) {
 
 		Network::initServersSockets(mConfig.getServers());
 
