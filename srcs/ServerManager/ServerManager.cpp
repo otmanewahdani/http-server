@@ -6,6 +6,10 @@
 ServerManager::ServerManager(const char* configFileName)
 	: mConfig(configFileName) {
 
-		initSockets();
+		Network::initServersSockets(mConfig.getServers());
 
+}
+
+void ServerManager::printConfig() {
+	mConfig.print();
 }

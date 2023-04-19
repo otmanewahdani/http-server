@@ -18,3 +18,11 @@ bool isDir(const std::string& path) {
 	return true;
 
 }
+
+void throwErrnoException(const std::string& context) {
+
+	std::string errorMsg = context + ": ";
+	errorMsg += strerror(errno);
+	throw std::runtime_error(errorMsg);
+
+}

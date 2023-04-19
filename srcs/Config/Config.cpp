@@ -3,7 +3,7 @@
 #include <Config.hpp>
 
 const std::string Config::ServerContext::defaultHostname = "0.0.0.0";
-const std::string Config::ServerContext::defaultPort = "80";
+const std::string Config::ServerContext::defaultPort = "8080";
 
 const std::string Config::defaultConfigFileName
 	= "./config_files/default_config";
