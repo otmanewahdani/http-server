@@ -53,7 +53,7 @@ void ServerManager::queryClientHandlers() {
 			|| handler.isWrite()) {
 
 			// saves FD query and the handler that
-				// made the request
+				// made the multiplexing request
 			FD queriedFD = handler.getFD();
 			mFDMultiPlexQueries[queriedFD] = &handler;
 
@@ -77,7 +77,22 @@ void ServerManager::queryClientHandlers() {
 
 }
 
-void ServerManager::addServersForMultiplexing();
+void ServerManager::addServersForMultiplexing() {
+
+	mListenFDs.clear();
+	
+	Servers::const_iterator server;
+	for (server = mServers.begin();
+		server != mServers.end(); ++server) {
+
+		// adds server's socket to the end
+			// of the FD collection
+		mListenFDs.insert(mListenFDs.end(),
+			server->socketID);
+
+	}
+
+}
 
 void ServerManager::manageNewConnections();
 
