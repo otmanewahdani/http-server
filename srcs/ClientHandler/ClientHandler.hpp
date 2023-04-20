@@ -29,11 +29,14 @@ class ClientHandler {
 		// returns true if it wants to write to an fd
 		bool isWrite() const ;
 
-		// returns true if it wants to close its connection
-		bool isClose() const ;
+		// returns true if it closed its client connection
+		bool isClosed() const ;
 
 		// returns FD that's ready for I/O
 		FD getFD();
+
+		// returns client handler's id
+		Socket getID();
 
 		// signals to the Client Handler that the current FD
 			// is ready for I/O

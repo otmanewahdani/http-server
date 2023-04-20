@@ -50,10 +50,10 @@ class ServerManager {
 		MimeTypes mMimeTypes;
 
 		// a collection of handlers for each client
-		ClientHandlers mClientsHandlers;
+		ClientHandlers mClientHandlers;
 
 		// contains ClientHandlers that need Multiplexing on their FDs.
-		std::map<FD, ClientHandler&> mFDMultiPlexQueries;
+		std::map<FD, ClientHandler*> mFDMultiPlexQueries;
 
 		// Collections of file descriptors that are retrieved from ClientHandlers
 			// and Servers so that they can be passed to the Multiplexer 
@@ -71,11 +71,11 @@ class ServerManager {
 			// handler is added by calling addClientHandler()
 		void manageClientHandlers();
 
-		// checks the state of the client handlers by asking if they have
+		// Checks the state of the client handlers by asking if they have
 			// any multiplexing needs and if so it adds their FD to appropriate
 			// collection (mReadFDs or mWriteFDs) and adds the handler to
 			// mFDMultPlexQueries. These 3 member objects are cleared before use
-		// ot if their connection was closed, it calls removeClientHandler()
+		// Or if their connection was closed, it calls removeClientHandler()
 		void queryClientHandlers();
 
 		// adds server's sockets to mListenFDs after it is cleared

@@ -34,7 +34,48 @@ void ServerManager::manageClientHandlers() {
 
 }
 
-void ServerManager::queryClientHandlers();
+void ServerManager::queryClientHandlers() {
+
+	mReadFDs.clear();
+	mWriteFDs.clear();
+	mFDMultiPlexQueries.clear();
+
+	ClientHandlers::iterator clientHandlerIt;
+	for (clientHandlerIt = mClientHandlers.begin();
+		clientHandlerIt != mClientHandlers.end();
+		++clientHandlerIt) {
+
+		ClientHandler& handler =
+			clientHandlerIt->second;
+
+		// checks if it needs I/O multiplexing
+		if (handler.isRead()
+			|| handler.isWrite()) {
+
+			// saves FD query and the handler that
+				// made the request
+			FD queriedFD = handler.getFD();
+			mFDMultiPlexQueries[queriedFD] = &handler;
+
+			// inserts queriedFD at the end of
+				// the collection that corresponds
+				// to the type of multiplexing query
+				// it made (read or write)
+			if (handler.isRead())
+				mReadFDs.insert(mReadFDs.end(), queriedFD);
+			else
+				mWriteFDs.insert(mWriteFDs.end(), queriedFD);
+
+		}
+
+		// checks if it already closed its connection
+			// so that it gets removed
+		else if (handler.isClosed())
+			removeClientHandler(handler.getID());
+
+	} // end of for loop
+
+}
 
 void ServerManager::addServersForMultiplexing();
 
