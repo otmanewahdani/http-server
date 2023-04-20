@@ -17,7 +17,7 @@ NET_SRC := Network.cpp
 
 CLIENT_SRC := ClientHandler.cpp
 
-SERVER_SRC := ServerManager.cpp Multiplexer.cpp
+SERVER_SRC := ServerManager.cpp Multiplexer.cpp Log.cpp
 
 GENERAL_SRC := utils.cpp MimeTypes.cpp main.cpp Tokenizer.cpp
 

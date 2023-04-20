@@ -1,7 +1,10 @@
 /* this file contains the defintion of the Network class
- * this class has static functions that mainly sets up
+ * this class contains functionality related to socket 
+ * programming and networking.
+ * this class has static functions that sets up
  * 	listening sockets for a Config::Servers collection.
- * It can also clean up those sockets
+ * It can also clean up those sockets.
+ * It can as well determine the hostname and port of a given socket
  */
 
 #pragma once
@@ -77,5 +80,9 @@ class Network {
 
 		// frees the structure passed by getServerAddrInfo
 		static void freeServerAddrInfo(AddrInfo* addr);
+
+		// determines the hostname and port of a socket and
+		// returns a string of this format 'hostname:port'
+		static std::string getSocketHostPort(Socket socket);
 
 };
