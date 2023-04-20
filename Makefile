@@ -21,7 +21,7 @@ SERVER_SRC := ServerManager.cpp Multiplexer.cpp Log.cpp
 
 GENERAL_SRC := utils.cpp MimeTypes.cpp main.cpp Tokenizer.cpp
 
-SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) $(SERVER_SRC)
+SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) $(SERVER_SRC) $(CLIENT_SRC)
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 

@@ -27,6 +27,12 @@ class Network {
 		// datatype that refers to a specific server
 		typedef Servers::iterator ServerRef;
 		typedef struct addrinfo AddrInfo;
+		// socket address
+		typedef struct sockaddr SockAddr;
+		// large enough to hold a socket address
+		typedef struct sockaddr_storage SockAddrStore;
+		// socket address length type
+		typedef socklen_t SockLen;
 
 		/******* public member functions *******/
 		// traverses the servers and creates listening
@@ -37,6 +43,16 @@ class Network {
 		static void initServersSockets(Servers& servers);
 
 		static void clearServersSockets(Servers& servers);
+
+		// determines the server's hostname and port of a socket and
+			// returns a string of this format 'hostname:port'
+		// throws std::exception in case of error
+		static std::string getSocketServerName(const Socket sock);
+
+		// determines the client's hostname and port of a socket and
+			// returns a string of this format 'hostname:port'
+		// throws std::exception in case of error
+		static std::string getSocketClientName(const Socket sock);
 	
 	private:
 		/******* private member objects *******/
@@ -81,12 +97,15 @@ class Network {
 		// frees the structure passed by getServerAddrInfo
 		static void freeServerAddrInfo(AddrInfo* addr);
 
-		// determines the server's hostname and port of a socket and
-			// returns a string of this format 'hostname:port'
-		static std::string getSocketServerName(Socket socket);
+		// converts socket address to hostname:port pair and
+			// returns it
+		// throws std::exception in case of error
+		static std::string sockAddrToName
+			(const SockAddr* addr, SockLen addrLen);
 
-		// determines the client's hostname and port of a socket and
-			// returns a string of this format 'hostname:port'
-		static std::string getSocketClientName(Socket socket);
+		// throws std::runtime with the exception string  errorMsg
+			// along with ": " preppended to gai_sterror(errorCode) output;
+		static void throwAddrInfoError
+			(int errorCode, const std::string &errorMsg);
 
 };

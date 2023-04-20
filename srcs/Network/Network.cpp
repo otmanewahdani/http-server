@@ -104,11 +104,10 @@ Network::AddrInfo* Network::getServerAddrInfo
 	
 	// failed
 	if (successCode) {
-		std::string error = "getServerAddrInfo failed for ";
-		error += server->hostname + ':' + server->port + ": ";
-		error += gai_strerror(successCode);
 		clearServersSockets(servers);
-		throw std::runtime_error(error);
+		std::string error = "getServerAddrInfo failed for ";
+		error += server->hostname + ':' + server->port;
+		throwAddrInfoError(successCode, error);
 	}
 	
 	// succeeded
@@ -129,5 +128,83 @@ void Network::clearServersSockets(Servers& servers) {
 		server->socketID = -1;
 
 	}
+
+}
+
+std::string Network::sockAddrToName
+	(const SockAddr* addr, SockLen addrLen) {
+	
+	// creates 2 buffers that are large enough
+		// to hold any hostname and port
+	// the hostname and port of the addr parameter
+		// are stored by getnameinfo in
+		// these 2 buffers
+	char hostname[NI_MAXHOST];
+	char port[NI_MAXSERV];
+
+	int successCode = getnameinfo(addr, addrLen, hostname,
+		sizeof(hostname), port, sizeof(port),
+		// gets hostname and port in numeric format
+		NI_NUMERICHOST | NI_NUMERICSERV);
+
+	if (successCode)
+		throwAddrInfoError(successCode,
+			"failed to convert socket to name");
+
+	return (std::string(hostname) + ':' + port);
+
+}
+
+std::string Network::getSocketServerName(const Socket sock) {
+
+	// server's socket address will be stored here
+		// by getsockname
+	SockAddrStore serverAddr;
+	SockLen serverAddrLen = sizeof(serverAddr);
+
+	if (getsockname(sock,
+		reinterpret_cast<SockAddr*>(&serverAddr),
+		&serverAddrLen) == -1) {
+
+		throwErrnoException("failed to get socket's server name");
+
+	}
+
+	std::string serverName = sockAddrToName
+		(reinterpret_cast<SockAddr*>(&serverAddr), serverAddrLen);
+	
+	return serverName;
+
+}
+
+std::string Network::getSocketClientName(const Socket sock) {
+
+	// client's socket address will be stored here
+		// by getpeername
+	SockAddrStore clientAddr;
+	SockLen clientAddrLen = sizeof(clientAddr);
+
+	if (getpeername(sock,
+		reinterpret_cast<SockAddr*>(&clientAddr),
+		&clientAddrLen) == -1) {
+
+		throwErrnoException("failed to get socket's client name");
+
+	}
+
+	std::string clientName = sockAddrToName
+		(reinterpret_cast<SockAddr*>(&clientAddr), clientAddrLen);
+	
+	return clientName;
+
+}
+
+void Network::throwAddrInfoError
+	(int errorCode, const std::string &errorMsg) {
+
+	std::string exceptionStr = errorMsg + ": ";
+	exceptionStr += gai_strerror(errorCode);
+	
+	throw std::runtime_error(exceptionStr);
 
 }

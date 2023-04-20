@@ -34,21 +34,14 @@ void ServerManager::manageClientHandlers() {
 
 }
 
-void ServerManager::queryClientHandlers() {
-}
+void ServerManager::queryClientHandlers();
 
-void ServerManager::addServersForMultiplexing() {
-}
+void ServerManager::addServersForMultiplexing();
 
-void ServerManager::manageNewConnections() {
-}
+void ServerManager::manageNewConnections();
 
-void ServerManager::informClientHandlers() {
+void ServerManager::informClientHandlers();
 
-}
+void ServerManager::removeClientHandler(Socket ID);
 
-void ServerManager::removeClientHandler(Socket ID) {
-}
-
-void ServerManager::addClientHandler(Socket ID) {
-}
+void ServerManager::addClientHandler(Socket ID);
