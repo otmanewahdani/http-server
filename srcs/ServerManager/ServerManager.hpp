@@ -74,12 +74,23 @@ class ServerManager {
 		// checks the state of the client handlers by asking if they have
 			// any multiplexing needs and if so it adds their FD to appropriate
 			// collection (mReadFDs or mWriteFDs) and adds the handler to
-			// mFDMultPlexQueries.
+			// mFDMultPlexQueries. These 3 member objects are cleared before use
 		// ot if their connection was closed, it calls removeClientHandler()
 		void queryClientHandlers();
 
 		// adds server's sockets to mListenFDs after it is cleared
 		void addServersForMultiplexing();
+
+		// adds new client handlers for new incoming connections
+			// on server's sockets that were marked as ready by
+			// the multiplexer (listed in mListenFDs)
+		void manageNewConnections();
+
+		// gives the client handlers, whose FDs were passed
+			// to the Multiplexer and they were marked as
+			// ready, the permission to use that FD for an
+			// I/O operation
+		void informClientHandlers();
 
 		// it removes a client handler from
 			// mClientHandlers by looking up their ID

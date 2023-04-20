@@ -17,7 +17,7 @@ void ServerManager::printConfig() {
 }
 
 void ServerManager::start() {
-	manageClients();
+	manageClientHandlers();
 }
 
 void ServerManager::manageClientHandlers() {
@@ -27,16 +27,28 @@ void ServerManager::manageClientHandlers() {
 		addServersForMultiplexing();
 		queryClientHandlers();
 		Multiplexer::checkFDsForEvents(mListenFDs, mReadFDs, mWriteFDs);
+		manageNewConnections();
+		informClientHandlers();
 
 	}
 
 }
 
-void ServerManager::queryClientHandlers();
+void ServerManager::queryClientHandlers() {
+}
 
-void ServerManager::addServersForMultiplexing();
+void ServerManager::addServersForMultiplexing() {
+}
 
+void ServerManager::manageNewConnections() {
+}
 
-void ServerManager::removeClientHandler(Socket ID);
+void ServerManager::informClientHandlers() {
 
-void ServerManager::addClientHandler(Socket ID);
+}
+
+void ServerManager::removeClientHandler(Socket ID) {
+}
+
+void ServerManager::addClientHandler(Socket ID) {
+}

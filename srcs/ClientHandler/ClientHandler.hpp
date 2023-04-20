@@ -21,7 +21,7 @@ class ClientHandler {
 		typedef int FD;
 
 		/******* public member functions *******/
-		Client(Socket ID);
+		ClientHandler(Socket ID);
 
 		// returns true if it wants to read from an fd
 		bool isRead() const ;
@@ -34,6 +34,10 @@ class ClientHandler {
 
 		// returns FD that's ready for I/O
 		FD getFD();
+
+		// signals to the Client Handler that the current FD
+			// is ready for I/O
+		void proceedWithFD();
 	
 	private:
 		/******* public member functions *******/
