@@ -7,7 +7,7 @@
  * + request receipt
  * + response sending
  * The log functions mostly take a socket only and the hostname
- * and port of the peer is determined from that socket
+ * and port of the peer or the server is determined from that socket
 */
 
 #pragma once
@@ -21,23 +21,21 @@ class Log {
 	public:
 		/******** alias types ********/
 		typedef int Socket;
-		typedef Config::ServerContext& ServerRef;
 
 		/******** public member functions ********/
-		// logs that socket was bound to server's hostname and port
-		static void socketBinding(Socket socket,
-			const ServerRef server);
+		// logs that socket was bound to a server's hostname and port
+		static void socketBinding(const Socket socket);
 
-		// logs that peerSocket is a new connection to server's hostname
-			// and port
-		static void connectionEstablished(const ServerRef server,
-			const Socket peerSocket);
+		// logs that socket's server established
+			// a new connection with socket's client
+		static void connectionEstablished(const Socket socket);
 
-		// logs request coming from peerSocket to server
-		static void request(const ServerRef server, Socket peerSocket);
+		// logs request coming from socket's client to socket's server
+		static void request(const Socket socket);
 
-		// logs response thqt was sent to a peerSocket from server
-		static void response(const ServerRef server, Socket peerSocket);
+		// logs request that was sent from socket's
+			// server to socket's client
+		static void response(const Socket socket);
 
 	private:
 		/******* private member objects *******/

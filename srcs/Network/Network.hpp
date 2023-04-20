@@ -81,8 +81,12 @@ class Network {
 		// frees the structure passed by getServerAddrInfo
 		static void freeServerAddrInfo(AddrInfo* addr);
 
-		// determines the hostname and port of a socket and
-		// returns a string of this format 'hostname:port'
-		static std::string getSocketHostPort(Socket socket);
+		// determines the server's hostname and port of a socket and
+			// returns a string of this format 'hostname:port'
+		static std::string getSocketServerName(Socket socket);
+
+		// determines the client's hostname and port of a socket and
+			// returns a string of this format 'hostname:port'
+		static std::string getSocketClientName(Socket socket);
 
 };
