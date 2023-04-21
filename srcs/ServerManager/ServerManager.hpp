@@ -93,6 +93,13 @@ class ServerManager {
 			// I/O operation
 		void informClientHandlers();
 
+		// returns a non-blocking socket for a new
+			// incoming connection on a listening
+			// socket that's been marked as ready
+			// by a multiplexer
+		// throws std::runtime_error on error
+		Socket getNewConnectionSock(Socket listenSock);
+
 		// it removes a client handler from
 			// mClientHandlers by looking up their ID
 		void removeClientHandler(Socket ID);

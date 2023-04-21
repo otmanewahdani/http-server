@@ -95,6 +95,28 @@ void ServerManager::addServersForMultiplexing() {
 }
 
 void ServerManager::manageNewConnections() {
+
+	FDCollection::const_iterator listenFD;
+	for (listenFD = mListenFDs.begin();
+		listenFD != mListenFDs.end(); ++listenFD) {
+	}
+
+}
+
+ServerManager::Socket
+	ServerManager::getNewConnectionSock
+	(Socket listenSock) {
+	
+	Socket newSock = accept(listenSock, NULL, NULL);
+	if (newSock == -1)
+		throwErrnoException
+			("getNewConnectionSock() failed"
+			 "to accept new connection");
+
+	makeFDNonBlock(newSock);
+
+	return newSock;
+
 }
 
 void ServerManager::informClientHandlers();
