@@ -26,6 +26,8 @@ class ServerManager {
 		typedef ClientHandler::FD FD;
 		typedef std::map<Socket, ClientHandler> ClientHandlers;
 		typedef Multiplexer::FDCollection FDCollection;
+		typedef Config::ServerRef ServerRef;
+		typedef Config::ConstServerRef ConstServerRef;
 
 		/******* public member functions *******/
 		// takes a configuration file path
@@ -104,7 +106,8 @@ class ServerManager {
 			// mClientHandlers by looking up their ID
 		void removeClientHandler(Socket ID);
 
-		// creates a new client handler with ID
-		void addClientHandler(Socket ID);
+		// creates a new client handler associated to a server that has
+			// the SocketID of serverID
+		void addClientHandler(Socket clientID, Socket serverID);
 
 };

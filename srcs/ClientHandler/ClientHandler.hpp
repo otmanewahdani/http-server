@@ -13,15 +13,22 @@
 
 #pragma once
 
+#include <Config.hpp>
+
 class ClientHandler {
 
 	public:
 		/******* alias types *******/
 		typedef int Socket;
 		typedef int FD;
+		typedef Config::ServerRef ServerRef;
+		typedef Config::ConstServerRef ConstServerRef;
 
 		/******* public member functions *******/
-		ClientHandler(Socket ID);
+		// ID : socket identifier of the new client
+		// server: a reference to the server to which
+			// the client is connected
+		ClientHandler(Socket ID, ConstServerRef server);
 
 		// returns true if it wants to read from an fd
 		bool isRead() const ;
@@ -46,5 +53,8 @@ class ClientHandler {
 		/******* public member functions *******/
 		// socket identifier of the client
 		Socket mID;
+
+		// server to which the client is connected
+		ConstServerRef mServer;
 
 };

@@ -63,6 +63,28 @@ bool Config::isCGIExtensionSupported
 
 }
 
+Config::ConstServerRef Config::getServerRef
+	(Socket socketID) const {
+
+	Servers::const_iterator server;
+	// iterates until a server with socketID is found
+	for (server = mServers.begin();
+		server != mServers.end(); ++server)
+		if (server->socketID == socketID)
+			break;
+
+	// not found
+	if (server == mServers.end()) {
+		std::string error = "couldn't find a server "
+			"that has this socket id: ";
+		error += std::to_string(socketID);
+		throw std::invalid_argument(error);
+	}
+
+	return *server;
+
+}
+
 void Config::print() {
 
 	int serverNum = 1;

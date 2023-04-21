@@ -99,6 +99,16 @@ void ServerManager::manageNewConnections() {
 	FDCollection::const_iterator listenFD;
 	for (listenFD = mListenFDs.begin();
 		listenFD != mListenFDs.end(); ++listenFD) {
+
+		try {
+			Socket newSock = 
+				getNewConnectionSock(*listenFD);
+
+			addClientHandler(newSock, *listenFD);
+		}
+		catch (const std::exception& error) {
+		}
+
 	}
 
 }
@@ -123,4 +133,4 @@ void ServerManager::informClientHandlers();
 
 void ServerManager::removeClientHandler(Socket ID);
 
-void ServerManager::addClientHandler(Socket ID);
+void ServerManager::addClientHandler(Socket clientID, Socket serverID);
