@@ -94,7 +94,8 @@ void ServerManager::addServersForMultiplexing() {
 
 }
 
-void ServerManager::manageNewConnections();
+void ServerManager::manageNewConnections() {
+}
 
 void ServerManager::informClientHandlers();
 

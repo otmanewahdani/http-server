@@ -26,3 +26,10 @@ void throwErrnoException(const std::string& context) {
 	throw std::runtime_error(errorMsg);
 
 }
+
+void makeFDNonBlock(int fd) {
+
+	if (fcntl(fd, F_SETFD, O_NONBLOCK) == -1)
+		throwErrnoException("failed to make FD non-blocking");
+
+}

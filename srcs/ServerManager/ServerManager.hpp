@@ -84,6 +84,7 @@ class ServerManager {
 		// adds new client handlers for new incoming connections
 			// on server's sockets that were marked as ready by
 			// the multiplexer (listed in mListenFDs)
+		// the new socket id is made non-blocking
 		void manageNewConnections();
 
 		// gives the client handlers, whose FDs were passed

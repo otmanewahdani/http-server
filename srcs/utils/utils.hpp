@@ -9,6 +9,7 @@
 #include <string>
 #include <sys/stat.h>
 #include <sys/errno.h>
+#include <fcntl.h>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
@@ -17,3 +18,7 @@ bool isDir(const std::string& path);
 	// that corresponds to errno
 // prepends context with a ": " to the error msg
 void throwErrnoException(const std::string& context);
+
+// turns fd into a non-blocking file descriptor
+// calls throwErrnoException() in case of error
+void makeFDNonBlock(int fd);

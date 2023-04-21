@@ -47,10 +47,13 @@ void Network::makeSocketReuseAddr(const Socket& socketID, Servers& servers) {
 
 void Network::makeSocketNonBlocking(const Socket& socketID, Servers& servers) {
 
-	if (fcntl(socketID, F_SETFD, O_NONBLOCK) == -1) {
+	try {
+		makeFDNonBlock(socketID);
+	}
+	catch (const std::exception& error) {
 
 		clearServersSockets(servers);
-		throwErrnoException("failed to make socket non-blocking");
+		throw error;
 
 	}
 
