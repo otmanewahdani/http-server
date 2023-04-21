@@ -131,25 +131,35 @@ ServerManager::Socket
 
 void ServerManager::informClientHandlers() {
 
-	ClientHandler* clientHandler = NULL;
-
 	// informs client handlers who made read
 		// operation multiplex queries
-	FDCollection::const_iterator readFDIt;
-	for (readFDIt = mReadFDs.begin();
-		readFDIt != mReadFDs.end(); ++readFDIt) {
+	informClientHandlers(mReadFDs);
+
+	// informs client handlers who made write
+		// operation multiplex queries
+	informClientHandlers(mWriteFDs);
+
+}
+
+void ServerManager::informClientHandlers
+	(FDCollection& FDs) {
+
+	ClientHandler* handler = NULL;
+	FDCollection::const_iterator FDIt;
+	for (FDIt = FDs.begin();
+		FDIt != FDs.end(); ++FDIt) {
 
 		try {
-			clientHandler =
-				getMultiplexQueryClientHandler(*readFDIt);
+			// finds client handler and informs it
+				// that it can use its FD
+			handler =
+				getMultiplexQueryClientHandler(*FDIt);
+			handler->proceedWithFD();
 		}
 		catch (const std::exception& error) {
 		}
 
 	}
-
-	// informs client handlers who made write
-		// operation multiplex queries
 
 }
 

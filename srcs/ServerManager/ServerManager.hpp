@@ -95,6 +95,13 @@ class ServerManager {
 			// I/O operation
 		void informClientHandlers();
 
+		// used by parameterless informClientHandlers() to
+			// inform client handlers about a specific type of
+			// FD collection. For example, it can be used to
+			// inform handlers who made a read multiplex
+			// query by passing it ReadFDs
+		void informClientHandlers(FDCollection& FDs);
+
 		// returns a non-blocking socket for a new
 			// incoming connection on a listening
 			// socket that's been marked as ready
