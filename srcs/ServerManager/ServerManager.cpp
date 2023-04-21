@@ -129,8 +129,71 @@ ServerManager::Socket
 
 }
 
-void ServerManager::informClientHandlers();
+void ServerManager::informClientHandlers() {
 
-void ServerManager::removeClientHandler(Socket ID);
+	ClientHandler* clientHandler = NULL;
 
-void ServerManager::addClientHandler(Socket clientID, Socket serverID);
+	// informs client handlers who made read
+		// operation multiplex queries
+	FDCollection::const_iterator readFDIt;
+	for (readFDIt = mReadFDs.begin();
+		readFDIt != mReadFDs.end(); ++readFDIt) {
+
+		try {
+			clientHandler =
+				getMultiplexQueryClientHandler(*readFDIt);
+		}
+		catch (const std::exception& error) {
+		}
+
+	}
+
+	// informs client handlers who made write
+		// operation multiplex queries
+
+}
+
+void ServerManager::removeClientHandler(Socket ID) {
+	mClientHandlers.erase(ID);
+}
+
+void ServerManager::addClientHandler(Socket clientID, Socket serverID) {
+	
+	ConstServerRef server = mConfig.getServerRef(serverID);
+
+	// creates a new client handler and associates with client ID
+	// and adds it to mClientHandlers
+	std::pair<Socket, ClientHandler> newHandler( clientID,
+		ClientHandler(clientID, server) );
+
+	// if new client handler didn't get added because a client
+		// handler with clientID exists already
+	if (mClientHandlers.insert(newHandler).second == false) {
+		std::string error = "couldn't create a new client handler"
+			" with clientID: ";
+		error += std::to_string(clientID);
+		error += " because it exists already";
+		throw std::invalid_argument(error);
+	}
+
+}
+
+ClientHandler*
+	ServerManager::getMultiplexQueryClientHandler
+	(FD queriedFD) {
+
+	std::map<FD, ClientHandler*>::iterator clientHandler;
+
+	clientHandler = mFDMultiPlexQueries.find(queriedFD);
+	// if client not found
+	if (clientHandler == mFDMultiPlexQueries.end()) {
+		std::string error = "couldn't find a client handler"
+			" who made a multiplex query for this FD: ";
+		error += std::to_string(queriedFD);
+		throw std::invalid_argument(error);
+	}
+
+	// returns clientHandler pointer
+	return clientHandler->second;
+
+}

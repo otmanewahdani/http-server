@@ -108,6 +108,13 @@ class ServerManager {
 
 		// creates a new client handler associated to a server that has
 			// the SocketID of serverID
+		// throws std::invalid_argument in case a client handler with
+			// clientID exists already
 		void addClientHandler(Socket clientID, Socket serverID);
+
+		// returns the client handler that made a
+			// multiplex query about some FD
+		// throws a std::invalid_argument if the client handler wasn't found
+		ClientHandler* getMultiplexQueryClientHandler(FD queriedFD);
 
 };
