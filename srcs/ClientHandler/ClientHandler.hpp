@@ -28,26 +28,26 @@ class ClientHandler {
 		// ID : socket identifier of the new client
 		// server: a reference to the server to which
 			// the client is connected
-		ClientHandler(Socket ID, ConstServerRef server) : mServer(server) { (void) ID;}
+		ClientHandler(Socket ID, ConstServerRef server);
 
 		// returns true if it wants to read from an fd
-		bool isRead() const {return true;}
+		bool isRead() const ;
 
 		// returns true if it wants to write to an fd
-		bool isWrite() const {return true;}
+		bool isWrite() const ;
 
 		// returns true if it closed its client connection
-		bool isClosed() const {return true;}
+		bool isClosed() const ;
 
 		// returns FD that's ready for I/O
-		FD getFD(){return mID;}
+		FD getFD();
 
 		// returns client handler's id
-		Socket getID(){return mServer.socketID;}
+		Socket getID();
 
 		// signals to the Client Handler that the current FD
 			// is ready for I/O
-		void proceedWithFD(){}
+		void proceedWithFD();
 	
 	private:
 		/******* public member functions *******/
