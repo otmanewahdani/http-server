@@ -13,15 +13,22 @@
 
 #pragma once
 
+#include <Config.hpp>
+
 class ClientHandler {
 
 	public:
 		/******* alias types *******/
 		typedef int Socket;
 		typedef int FD;
+		typedef Config::ServerRef ServerRef;
+		typedef Config::ConstServerRef ConstServerRef;
 
 		/******* public member functions *******/
-		ClientHandler(Socket ID);
+		// ID : socket identifier of the new client
+		// server: a reference to the server to which
+			// the client is connected
+		ClientHandler(Socket ID, ConstServerRef server);
 
 		// returns true if it wants to read from an fd
 		bool isRead() const ;
@@ -29,11 +36,14 @@ class ClientHandler {
 		// returns true if it wants to write to an fd
 		bool isWrite() const ;
 
-		// returns true if it wants to close its connection
-		bool isClose() const ;
+		// returns true if it closed its client connection
+		bool isClosed() const ;
 
 		// returns FD that's ready for I/O
 		FD getFD();
+
+		// returns client handler's id
+		Socket getID();
 
 		// signals to the Client Handler that the current FD
 			// is ready for I/O
@@ -43,5 +53,8 @@ class ClientHandler {
 		/******* public member functions *******/
 		// socket identifier of the client
 		Socket mID;
+
+		// server to which the client is connected
+		ConstServerRef mServer;
 
 };

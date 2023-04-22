@@ -71,6 +71,8 @@ class Config {
 
 		/******* alias types *******/
 		typedef std::list<ServerContext> Servers;
+		typedef ServerContext& ServerRef;
+		typedef const ServerContext& ConstServerRef;
 
 		/******* public member functions *******/
 		// sets up a configuration from a config file
@@ -85,6 +87,10 @@ class Config {
 
 		// prints all the servers' configuration
 		void print();
+
+		// returns a server reference that has same socketID
+		// if not found a std::invalid_argument is thrown
+		ConstServerRef getServerRef(Socket socketID) const ;
 	
 	private:
 		/******* private member objects *******/

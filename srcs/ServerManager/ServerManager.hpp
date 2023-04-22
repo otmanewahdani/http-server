@@ -12,6 +12,7 @@
 #pragma once
 
 #include <Config.hpp>
+#include <Log.hpp>
 #include <Multiplexer.hpp>
 #include <Network.hpp>
 #include <MimeTypes.hpp>
@@ -26,6 +27,8 @@ class ServerManager {
 		typedef ClientHandler::FD FD;
 		typedef std::map<Socket, ClientHandler> ClientHandlers;
 		typedef Multiplexer::FDCollection FDCollection;
+		typedef Config::ServerRef ServerRef;
+		typedef Config::ConstServerRef ConstServerRef;
 
 		/******* public member functions *******/
 		// takes a configuration file path
@@ -50,10 +53,10 @@ class ServerManager {
 		MimeTypes mMimeTypes;
 
 		// a collection of handlers for each client
-		ClientHandlers mClientsHandlers;
+		ClientHandlers mClientHandlers;
 
 		// contains ClientHandlers that need Multiplexing on their FDs.
-		std::map<FD, ClientHandler&> mFDMultiPlexQueries;
+		std::map<FD, ClientHandler*> mFDMultiPlexQueries;
 
 		// Collections of file descriptors that are retrieved from ClientHandlers
 			// and Servers so that they can be passed to the Multiplexer 
@@ -71,11 +74,11 @@ class ServerManager {
 			// handler is added by calling addClientHandler()
 		void manageClientHandlers();
 
-		// checks the state of the client handlers by asking if they have
+		// Checks the state of the client handlers by asking if they have
 			// any multiplexing needs and if so it adds their FD to appropriate
 			// collection (mReadFDs or mWriteFDs) and adds the handler to
 			// mFDMultPlexQueries. These 3 member objects are cleared before use
-		// ot if their connection was closed, it calls removeClientHandler()
+		// Or if their connection was closed, it calls removeClientHandler()
 		void queryClientHandlers();
 
 		// adds server's sockets to mListenFDs after it is cleared
@@ -84,6 +87,7 @@ class ServerManager {
 		// adds new client handlers for new incoming connections
 			// on server's sockets that were marked as ready by
 			// the multiplexer (listed in mListenFDs)
+		// the new socket id is made non-blocking
 		void manageNewConnections();
 
 		// gives the client handlers, whose FDs were passed
@@ -92,11 +96,33 @@ class ServerManager {
 			// I/O operation
 		void informClientHandlers();
 
+		// used by parameterless informClientHandlers() to
+			// inform client handlers about a specific type of
+			// FD collection. For example, it can be used to
+			// inform handlers who made a read multiplex
+			// query by passing it ReadFDs
+		void informClientHandlers(FDCollection& FDs);
+
+		// returns a non-blocking socket for a new
+			// incoming connection on a listening
+			// socket that's been marked as ready
+			// by a multiplexer
+		// throws std::runtime_error on error
+		Socket getNewConnectionSock(Socket listenSock);
+
 		// it removes a client handler from
 			// mClientHandlers by looking up their ID
 		void removeClientHandler(Socket ID);
 
-		// creates a new client handler with ID
-		void addClientHandler(Socket ID);
+		// creates a new client handler associated to a server that has
+			// the SocketID of serverID
+		// throws std::invalid_argument in case a client handler with
+			// clientID exists already
+		void addClientHandler(Socket clientID, Socket serverID);
+
+		// returns the client handler that made a
+			// multiplex query about some FD
+		// throws a std::invalid_argument if the client handler wasn't found
+		ClientHandler* getMultiplexQueryClientHandler(FD queriedFD);
 
 };

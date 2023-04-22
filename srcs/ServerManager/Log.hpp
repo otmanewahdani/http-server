@@ -6,6 +6,7 @@
  * + closed connections
  * + request receipt
  * + response sending
+ * + error messages when some operation fails
  * The log functions mostly take a socket only and the hostname
  * and port of the peer or the server is determined from that socket
 */
@@ -36,6 +37,9 @@ class Log {
 		// logs request that was sent from socket's
 			// server to socket's client
 		static void response(const Socket socket);
+
+		// logs error messages
+		static void error(const std::string& errorMsg);
 
 	private:
 		/******* private member objects *******/
