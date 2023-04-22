@@ -54,8 +54,8 @@ class Log {
 		// both objects used as the notices that
 			// come first at the beginning of all
 			// log messages
-		static const std::string errorNotice;
-		static const std::string infoNotice;
+		static const std::string mErrorNotice;
+		static const std::string mInfoNotice;
 
 		/******* private member functions *******/
 		// writes date and time to the log file 
@@ -63,20 +63,20 @@ class Log {
 		static void addTimeDate();
 
 		// this is a general utility used by other methods that
-		// log specific operations
+			// log specific operations
 		// it logs the operation (op) that happened between the
 			// socket's server and the socket's client
 		// the clientPrep and serverPrep are the prepositions
 			// used before the client and the server
 		// it handles all possible exceptions on behalf of the methods
-		// if everything goes well "[INFO] " is preppended to the
+		// if everything goes well mInfoNotice is preppended to the
 			// log message, otherwise error() is called
 		// example: when connectionEstablished calls this method and
 			// passes it its socket, op = "connection established",
 			// clientPrep = "from", serverPrep = "on", the output:
 			// "[INFO] connection established from
 			// client host:port on server host:port"
-		static void logClientServerOperation(const Soket socket,
+		static void logClientServerOperation(const Socket socket,
 			const std::string& op, const std::string& clientPrep,
 			const std::string& serverPrep);
 
