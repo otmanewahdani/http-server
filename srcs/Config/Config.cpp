@@ -13,7 +13,7 @@ Config::Config(const char *fileName) {
 	if (!fileName)
 		fileName = defaultConfigFileName.c_str();
 	
-	std::fstream configFile(fileName);
+	std::ifstream configFile(fileName);
 	if (!configFile) {
 		std::string error = "config file '";
 		error += fileName;
