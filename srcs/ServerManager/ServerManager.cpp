@@ -26,7 +26,15 @@ void ServerManager::manageClientHandlers() {
 
 		addServersForMultiplexing();
 		queryClientHandlers();
-		Multiplexer::checkFDsForEvents(mListenFDs, mReadFDs, mWriteFDs);
+
+		try {
+			Multiplexer::checkFDsForEvents
+				(mListenFDs, mReadFDs, mWriteFDs);
+		}
+		catch (const std::exception& error) {
+			Log::error(error.what());
+		}
+
 		manageNewConnections();
 		informClientHandlers();
 
@@ -107,6 +115,7 @@ void ServerManager::manageNewConnections() {
 			addClientHandler(newSock, *listenFD);
 		}
 		catch (const std::exception& error) {
+			Log::error(error.what());
 		}
 
 	}
@@ -122,6 +131,8 @@ ServerManager::Socket
 		throwErrnoException
 			("getNewConnectionSock() failed"
 			 "to accept new connection");
+
+	Log::connectionEstablished(newSock);
 
 	makeFDNonBlock(newSock);
 
@@ -157,6 +168,7 @@ void ServerManager::informClientHandlers
 			handler->proceedWithFD();
 		}
 		catch (const std::exception& error) {
+			Log::error(error.what());
 		}
 
 	}

@@ -12,6 +12,7 @@
 #pragma once
 
 #include <Config.hpp>
+#include <Log.hpp>
 #include <Multiplexer.hpp>
 #include <Network.hpp>
 #include <MimeTypes.hpp>
