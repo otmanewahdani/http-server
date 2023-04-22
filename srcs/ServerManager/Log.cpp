@@ -7,6 +7,9 @@
 
 #include <Log.hpp>
 
+const std::string errorNotice = "[ERROR] ";
+const std::string infoNotice = "[INFO] ";
+
 // log file creation
 std::ofstream Log::mLogfile("./log_files/basic_logfile",
 	std::ofstream::out | std::ofstream::trunc);
@@ -37,55 +40,58 @@ void Log::addTimeDate() {
 
 void Log::socketBinding(const Socket socket) {
 
-	// print the current time in format [YYYY-MM-DD HH:MM:SS]
+	// writes to stream the current time
+		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from the server socket
 		const std::string serverName 
-		= Network::getSocketServerName(socket);
+			= Network::getSocketServerName(socket);
 		
 		// log that the server is listening
 			// on the retrieved host:port 
 		mLogfile << "[INFO] Server listening on "
-		<< serverName << ", with socket id = " 
-		<< socket << "\n";
+			<< serverName << ", with socket id = " 
+			<< socket << "\n";
 	}
 	catch(const std::exception& e) {
-		// log that the server is listening on the 
-			// expected host:port if the retrieval fails
-		mLogfile << "[ERROR] server Listening on the expected host:port"
-		<< " with socket id = " << socket << ", " << e.what() << "\n";
+		// log that the server is listening on some
+			// unknown host:port if the retrieval fails
+		mLogfile << "[ERROR] server Listening on "
+			<< "some unknown host:port" << " with socket id = "
+			<< socket << ", " << e.what() << "\n";
 	}
 							
 }
 
-void Log::connectionEstablished(const Socket clientSocket, const Socket serverSocket) {
+void Log::connectionEstablished(const Socket socket) {
 
-	// print the current time in format [YYYY-MM-DD HH:MM:SS]
+	// writes to stream the current time
+		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
 	try {
-		// retrieve the host:port from client socket
+		// retrieve the host:port of client from socket
 		const std::string clientName 
-		= Network::getSocketClientName(clientSocket);
+			= Network::getSocketClientName(socket);
 
 		try {
 			// retrieve the host:port from the server socket
 			const std::string serverName 
-			= Network::getSocketServerName(serverSocket);
+			= Network::getSocketServerName(socket);
 
 			// log that the new connection identified 
 				// by the retrieved client host:port is 
-				// establishedon the retrieved server host:port
+				// established on the retrieved server host:port
 			mLogfile << "[INFO] " << "new connection established from "
-			<< clientName << " on server " << serverName << "\n";
+				<< clientName << " on server " << serverName << "\n";
 		}
 		catch(const std::exception& e) {
 			// if it fails to retrieve the server name
 				// log the new connetion with the client name only
 			mLogfile << "[ERROR] " << "new connection established from "
-			<< clientName << ", " << e.what() << "\n";
+				<< clientName << ", " << e.what() << "\n";
 		}
 	}
 	catch(const std::exception& f) {
@@ -109,17 +115,19 @@ void Log::connectionEstablished(const Socket clientSocket, const Socket serverSo
 
 }
 
-void Log::request(const Socket socket, const std::string& uri) {
+void Log::request(const Socket socket,
+	const std::string& uri) {
 
-	// print the current time in format [YYYY-MM-DD HH:MM:SS]
+	// writes to stream the current time
+		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from client socket
 		const std::string clientName 
-		= Network::getSocketClientName(socket);
+			= Network::getSocketClientName(socket);
 
-		// log that the server received a request from
+		// logs that the server received a request from
 			//the client identified by the retrieved name
 		mLogfile << "[INFO] " << "request ("<< uri 
 		<<") received from " << clientName << "\n";
@@ -136,7 +144,8 @@ void Log::request(const Socket socket, const std::string& uri) {
 
 void Log::response(const Socket socket) {
 
-	// print the current time in format [YYYY-MM-DD HH:MM:SS]
+	// writes to stream the current time
+		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
 	try {
@@ -161,7 +170,8 @@ void Log::response(const Socket socket) {
 
 void Log::connectionClosed(const Socket socket) {
 
-	// print the current time in format [YYYY-MM-DD HH:MM:SS]
+	// writes to stream the current time
+		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
 	try {
@@ -186,9 +196,67 @@ void Log::connectionClosed(const Socket socket) {
 
 void Log::error(const std::string& errorMsg) {
 
-	// print the current time in format [YYYY-MM-DD HH:MM:SS]
+	// writes to stream the current time
+		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
 	mLogfile << "[ERROR] " << errorMsg << "\n";
+
+}
+
+void Log::logClientServerOperation(const Soket socket,
+	const std::string& op, const std::string& clientPrep,
+	const std::string& serverPrep) {
+
+	const std::string socketLog =
+		"on socket " + std::to_string(socket)
+		+ "; ";
+
+	// tries to get both client and server names
+	try {
+		
+		const std::string clientName 
+			= Network::getSocketClientName(socket);
+
+		// after successfully getting client name
+			// it tries to get server name
+		try {
+			const std::string serverName 
+				= Network::getSocketServerName(socket);
+
+			addTimeDate();
+
+			mLogfile << "[INFO] " << "on socket " << socket << ", "
+				<< clientName << " on server " << serverName << "\n";
+		}
+		// if it fails to retrieve the server name logs the
+			// operation with the client name only
+		catch(const std::exception& e) {
+			mLogfile << "[ERROR] " << "new connection established from "
+				<< clientName << ", " << e.what() << "\n";
+		}
+
+	}
+	// couldn't get any names
+	catch(const std::exception& f) {
+
+		// so it tries to get only server name
+		try {
+
+			const std::string serverName 
+				= Network::getSocketServerName(serverSocket);
+
+			// identifies the new connection with server name only
+			mLogfile << "[ERROR] " << "new connection established on server " 
+			<< serverName << ", " << f.what() <<"\n";
+		}
+		// still couldn't get any names
+		catch(const std::exception& e) {
+			// logs the operation with no names
+			mLogfile << "[ERROR] " << "new connection established, "
+				<< f.what() << "and " << e.what() << "\n";
+		}
+
+	}
 
 }

@@ -29,10 +29,12 @@ class Log {
 
 		// logs that socket's server established
 			// a new connection with socket's client
-		static void connectionEstablished(const Socket clientSocket, const Socket serverSocket);
+		static void connectionEstablished(const Socket socket);
 
 		// logs request coming from socket's client to socket's server
-		static void request(const Socket socket, const std::string& uri);
+			// with the specified URI
+		static void request(const Socket socket,
+			const std::string& uri);
 
 		// logs request that was sent from socket's
 			// server to socket's client
@@ -49,9 +51,33 @@ class Log {
 		/******* private member objects *******/
 		static std::ofstream mLogfile;
 
+		// both objects used as the notices that
+			// come first at the beginning of all
+			// log messages
+		static const std::string errorNotice;
+		static const std::string infoNotice;
+
 		/******* private member functions *******/
 		// writes date and time to the log file 
 			// in format [YYYY-MM-DD HH:MM:SS]
 		static void addTimeDate();
+
+		// this is a general utility used by other methods that
+		// log specific operations
+		// it logs the operation (op) that happened between the
+			// socket's server and the socket's client
+		// the clientPrep and serverPrep are the prepositions
+			// used before the client and the server
+		// it handles all possible exceptions on behalf of the methods
+		// if everything goes well "[INFO] " is preppended to the
+			// log message, otherwise error() is called
+		// example: when connectionEstablished calls this method and
+			// passes it its socket, op = "connection established",
+			// clientPrep = "from", serverPrep = "on", the output:
+			// "[INFO] connection established from
+			// client host:port on server host:port"
+		static void logClientServerOperation(const Soket socket,
+			const std::string& op, const std::string& clientPrep,
+			const std::string& serverPrep);
 
 };
