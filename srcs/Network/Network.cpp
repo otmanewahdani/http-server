@@ -85,6 +85,8 @@ void Network::makeServerListen(const ServerRef& server, Servers& servers) {
 
 	}
 
+	Log::socketBinding(server->socketID);
+
 	freeServerAddrInfo(serverAddr);
 
 }
