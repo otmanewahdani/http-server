@@ -44,7 +44,7 @@ $(OBJ_DIR)main.o: $(SRCS_DIR)main.cpp
 	@$(CC) $(CPPFLAGS) $(INCS) $< -o $@
 
 $(NAME): $(OBJ)
-	@$(CC) $< -o $@
+	@$(CC) $^ -o $@
 	@echo -e "\e[1;35m\u2705 Web server was created successfully\e[0m"
 
 clean:

@@ -4,7 +4,7 @@
 
 const std::string  MimeTypes::defaultType = "application/octet-stream";
 
-const std::string defaultMimeFile = "./mime_types_files/mime.types";
+const std::string MimeTypes::defaultMimeFile = "./mime_types_files/mime.types";
 
 MimeTypes::MimeTypes(const char* fileNamePath) {
 

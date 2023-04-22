@@ -7,8 +7,8 @@
 
 #include <Log.hpp>
 
-const std::string mErrorNotice = "[ERROR] ";
-const std::string mInfoNotice = "[INFO] ";
+const std::string Log::mInfoNotice = "[INFO] ";
+const std::string Log::mErrorNotice = "[ERROR] ";
 
 // log file creation
 std::ofstream Log::mLogfile("./log_files/basic_logfile",
