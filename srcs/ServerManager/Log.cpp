@@ -48,13 +48,15 @@ void Log::socketBinding(const Socket socket) {
 		// log that the server is listening
 			// on the retrieved host:port 
 		mLogfile << "[INFO] Server listening on "
-		<< serverName << "\n";
+		<< serverName << ", with socket id = " 
+		<< socket << "\n";
 	}
 	catch(const std::exception& e) {
 		// log that the server is listening on the 
 			// expected host:port if the retrieval fails
 		mLogfile << "[ERROR] " << e.what() 
-		<< ", server Listening on the expected host:port\n";
+		<< ", server Listening on the expected host:port"
+		<< " with socket id = " << socket << "\n";
 	}
 							
 }
@@ -83,7 +85,7 @@ void Log::connectionEstablished(const Socket socket) {
 
 }
 
-void Log::request(const Socket socket) {
+void Log::request(const Socket socket, const std::string& uri) {
 
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
@@ -95,15 +97,15 @@ void Log::request(const Socket socket) {
 
 		// log that the server received a request from
 			//the client identified by the retrieved name
-		mLogfile << "[INFO] " << "request received from "
-		<< clientName << "\n";
+		mLogfile << "[INFO] " << "request ("<< uri 
+		<<") received from " << clientName << "\n";
 	}
 	catch(const std::exception& e) {
 		// in case of retrieval failure , log that
 			// the server received a request
 			// without specifying the client name
-		mLogfile << "[ERROR] " << "request received by server, "
-		<< e.what() << "\n";
+		mLogfile << "[ERROR] " << "request ("<< uri 
+		<<") received by server, " << e.what() << "\n";
 	}
 
 }
