@@ -15,13 +15,14 @@
 
 #include <fstream>
 #include <string>
-#include <Config.hpp>
+#include <Network.hpp>
 
 class Log {
 
 	public:
 		/******** alias types ********/
 		typedef int Socket;
+		typedef std::string Color;
 
 		/******** public member functions ********/
 		// logs that socket was bound to a server's hostname and port
@@ -38,6 +39,10 @@ class Log {
 			// server to socket's client
 		static void response(const Socket socket);
 
+		// logs that a connection the client specified
+			// with the given socket is closed
+		static void connectionClosed(const Socket socket);
+
 		// logs error messages
 		static void error(const std::string& errorMsg);
 
@@ -46,8 +51,8 @@ class Log {
 		static std::ofstream mLogfile;
 
 		/******* private member functions *******/
-		// writes date and time to the log file and aopends
-			// a ": " to it
+		// writes date and time to the log file 
+			// in format [YYYY-MM-DD HH:MM:SS]
 		static void addTimeDate();
 
 };
