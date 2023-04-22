@@ -71,6 +71,8 @@ void Log::socketBinding(const Socket socket) {
 			+ ", reason: " + e.what();
 		error(logMessage);
 	}
+
+	mLogfile << std::flush;
 				
 }
 
@@ -79,7 +81,7 @@ void Log::connectionEstablished(const Socket socket) {
 	// new connection established between
 		// client and server
 	logClientServerOperation(socket,
-		"new connectioned established",
+		"new connection established",
 		"between", "and");
 
 }
@@ -122,7 +124,8 @@ void Log::error(const std::string& errorMsg) {
 		// in [YYYY-MM-DD HH:MM:SS] format
 	addTimeDate();
 
-	mLogfile << mErrorNotice << errorMsg << "\n";
+	mLogfile << mErrorNotice << errorMsg
+		<< "\n" << std::flush;
 
 }
 
@@ -155,15 +158,15 @@ void Log::logClientServerOperation(const Socket socket,
 
 			mLogfile << mInfoNotice << socketLog << op << " "
 				<< clientPrep << " client " << clientName
-				<< serverPrep << " server " << serverName
-				<< "\n";
+				<< " " << serverPrep << " server " << serverName
+				<< "\n" << std::flush;
 		}
 		// if it fails to retrieve the server name, it
 			// logs the operation with the client name only
 		catch(const std::exception& e) {
 			
 			const std::string logMessage = socketLog + op + " "
-				+ clientPrep + clientName + serverPrep +
+				+ clientPrep + " " + clientName + " " + serverPrep +
 				" unknown server, " + "reason: " + e.what();
 			error(logMessage);
 
@@ -183,7 +186,7 @@ void Log::logClientServerOperation(const Socket socket,
 			// logs the operation with server name only
 			const std::string logMessage = socketLog + op + " "
 				+ clientPrep + " unknown client " + serverPrep +
-				serverName + ", reason: " + e1.what();
+				" " + serverName + ", reason: " + e1.what();
 			error(logMessage);
 
 		}
