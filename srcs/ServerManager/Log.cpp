@@ -37,14 +37,13 @@ void Log::addTimeDate() {
 
 void Log::socketBinding(const Socket socket) {
 
-	std::string serverName;
-
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from the server socket
-		serverName = Network::getSocketServerName(socket);
+		const std::string serverName 
+		= Network::getSocketServerName(socket);
 
 		// log that the server is listening
 			// on the retrieved host:port 
@@ -54,7 +53,7 @@ void Log::socketBinding(const Socket socket) {
 	catch(const std::exception& e) {
 		// log that the server is listening on the 
 			// expected host:port if the retrieval fails
-		mLogfile << "[INFO] " <<e.what() 
+		mLogfile << "[ERROR] " << e.what() 
 		<< ", server Listening on the expected host:port\n";
 	}
 							
@@ -62,99 +61,99 @@ void Log::socketBinding(const Socket socket) {
 
 void Log::connectionEstablished(const Socket socket) {
 
-	std::string clientName;
-
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from client socket
-		clientName = Network::getSocketClientName(socket);
+		const std::string clientName 
+		= Network::getSocketClientName(socket);
 
 		// log that the new connection identified 
 			//by the retrieved host:port is established
-		mLogfile << "[INFO] " << "New connection established from "
+		mLogfile << "[INFO] " << "new connection established from "
 		<< clientName << "\n";
 	}
 	catch(const std::exception& e) {
 		// in case of retrieval failure , log the new
 			// connection without providing the client name
-		mLogfile << "[INFO] " << "New connection established\n";
+		mLogfile << "[ERROR] " << "new connection established, " 
+		<< e.what() << "\n";
 	}
 
 }
 
 void Log::request(const Socket socket) {
 
-	std::string clientName;
-
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from client socket
-		clientName = Network::getSocketClientName(socket);
+		const std::string clientName 
+		= Network::getSocketClientName(socket);
 
 		// log that the server received a request from
 			//the client identified by the retrieved name
-		mLogfile << "[INFO] " << "Request received from  "
+		mLogfile << "[INFO] " << "request received from "
 		<< clientName << "\n";
 	}
 	catch(const std::exception& e) {
 		// in case of retrieval failure , log that
 			// the server received a request
 			// without specifying the client name
-		mLogfile << "[INFO] " << "Request received by server\n";
+		mLogfile << "[ERROR] " << "request received by server, "
+		<< e.what() << "\n";
 	}
 
 }
 
 void Log::response(const Socket socket) {
 
-	std::string clientName;
-
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from client socket
-		clientName = Network::getSocketClientName(socket);
+		const std::string clientName
+		= Network::getSocketClientName(socket);
 
 		// log that the server sent a reponse to
 			//the client identified by the retrieved name
-		mLogfile << "[INFO] " << "Response sent to  "
+		mLogfile << "[INFO] " << "response sent to  "
 		<< clientName << "\n";
 	}
 	catch(const std::exception& e) {
 		// in case of retrieval failure , log that
 			// the server sent a response
 			// without specifying The recipient
-		mLogfile << "[INFO] " << "Response sent by server\n";
+		mLogfile << "[ERROR] " << "response sent by server, "
+		<< e.what() << "\n";
 	}
 
 }
 
 void Log::connectionClosed(const Socket socket) {
 
-	std::string clientName;
-
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
 
 	try {
 		// retrieve the host:port from client socket
-		clientName = Network::getSocketClientName(socket);
+		const std::string clientName
+		= Network::getSocketClientName(socket);
 
 		// log that the connection with the client 
 			//identified by the retrieved name is closed
-		mLogfile << "[INFO] Connection closed for client "
+		mLogfile << "[INFO] connection closed for client "
 		<< clientName << "\n";
 	}
 	catch(const std::exception& e) {
 		// in case of retrieval failure , log that
 			// the server closed a connection
 			// without specifying The client
-		mLogfile << "[INFO] " << "Connection closed\n";
+		mLogfile << "[ERROR] " << "connection closed, "
+		<< e.what() << "\n";
 	}
 
 }

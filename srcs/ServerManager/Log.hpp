@@ -22,7 +22,6 @@ class Log {
 	public:
 		/******** alias types ********/
 		typedef int Socket;
-		typedef std::string Color;
 
 		/******** public member functions ********/
 		// logs that socket was bound to a server's hostname and port
