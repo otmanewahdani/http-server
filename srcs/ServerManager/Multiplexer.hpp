@@ -11,6 +11,7 @@
 #pragma once
 
 #include <sys/select.h>
+#include <utils.hpp>
 #include <vector>
 
 class Multiplexer {
@@ -31,7 +32,35 @@ class Multiplexer {
 
 	private:
 		/******* private member objects *******/
-		static fd_set mReadFDs;
-		static fd_set mWriteFDs;
+		// sets which are filled by FDs on each Multiplex operation
+		static fd_set mReadFDset;
+		static fd_set mWriteFDset;
 
- };
+		/******* private member functions *******/
+		// removes all FDs from the member sets
+		static void clearSets();
+
+		// adds fd collections to their corresponding member sets
+			// listenFDs and readFDs added to mReadFDset
+			// writeFDs added to mWriteFDset
+		// returns largest FD found in all collections
+		static FD addFDsToSets
+			(const FDCollection& listenFDs,
+			const FDCollection& readFDs,
+			const FDCollection& writeFDs);
+
+		// adds all FDs in collection to FDset
+		// returns largest FD found in collection
+		static FD addFDCollectionToSet(const FDCollection& collec,
+			fd_set& FDset);
+
+		// removes from these collections all FDs that weren't
+			// marked as ready by the multiplexer
+		static void removeUnreadyFDs(FDCollection& listenFDs,
+			FDCollection& readFDs, FDCollection& writeFDs);
+
+		// removes FDs from collection that are not in FDset
+		static void removeUnreadyFDs(FDCollection& collection,
+			const fd_set& FDset);
+
+};
