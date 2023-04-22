@@ -44,7 +44,7 @@ void Log::socketBinding(const Socket socket) {
 		// retrieve the host:port from the server socket
 		const std::string serverName 
 		= Network::getSocketServerName(socket);
-
+		
 		// log that the server is listening
 			// on the retrieved host:port 
 		mLogfile << "[INFO] Server listening on "
@@ -54,14 +54,13 @@ void Log::socketBinding(const Socket socket) {
 	catch(const std::exception& e) {
 		// log that the server is listening on the 
 			// expected host:port if the retrieval fails
-		mLogfile << "[ERROR] " << e.what() 
-		<< ", server Listening on the expected host:port"
-		<< " with socket id = " << socket << "\n";
+		mLogfile << "[ERROR] server Listening on the expected host:port"
+		<< " with socket id = " << socket << ", " << e.what() << "\n";
 	}
 							
 }
 
-void Log::connectionEstablished(const Socket socket) {
+void Log::connectionEstablished(const Socket clientSocket, const Socket serverSocket) {
 
 	// print the current time in format [YYYY-MM-DD HH:MM:SS]
 	addTimeDate();
@@ -69,18 +68,43 @@ void Log::connectionEstablished(const Socket socket) {
 	try {
 		// retrieve the host:port from client socket
 		const std::string clientName 
-		= Network::getSocketClientName(socket);
+		= Network::getSocketClientName(clientSocket);
 
-		// log that the new connection identified 
-			//by the retrieved host:port is established
-		mLogfile << "[INFO] " << "new connection established from "
-		<< clientName << "\n";
+		try {
+			// retrieve the host:port from the server socket
+			const std::string serverName 
+			= Network::getSocketServerName(serverSocket);
+
+			// log that the new connection identified 
+				// by the retrieved client host:port is 
+				// establishedon the retrieved server host:port
+			mLogfile << "[INFO] " << "new connection established from "
+			<< clientName << " on server " << serverName << "\n";
+		}
+		catch(const std::exception& e) {
+			// if it fails to retrieve the server name
+				// log the new connetion with the client name only
+			mLogfile << "[ERROR] " << "new connection established from "
+			<< clientName << ", " << e.what() << "\n";
+		}
 	}
-	catch(const std::exception& e) {
-		// in case of retrieval failure , log the new
-			// connection without providing the client name
-		mLogfile << "[ERROR] " << "new connection established, " 
-		<< e.what() << "\n";
+	catch(const std::exception& f) {
+		try {
+			// retrieve the host:port from the server socket
+			const std::string serverName 
+			= Network::getSocketServerName(serverSocket);
+
+			// if it fails to retrieve the client name
+				//identify the new connection with server name only
+			mLogfile << "[ERROR] " << "new connection established on server " 
+			<< serverName << ", " << f.what() <<"\n";
+		}
+		catch(const std::exception& e) {
+			// if it fails to retrieve the server name
+				// and client name
+			mLogfile << "[ERROR] " << "new connection established, "
+			<< f.what() << "and " << e.what() << "\n";
+		}	
 	}
 
 }
