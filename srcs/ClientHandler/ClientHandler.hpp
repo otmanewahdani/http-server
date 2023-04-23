@@ -19,6 +19,13 @@
 class ClientHandler {
 
 	public:
+		/******* nested types *******/
+		enum Stage {
+			REQUEST,
+			RESPONSE,
+			CLOSE
+		};
+
 		/******* alias types *******/
 		typedef int Socket;
 		typedef Config::ServerRef ServerRef;
@@ -30,10 +37,10 @@ class ClientHandler {
 			// the client is connected
 		ClientHandler(Socket ID, ConstServerRef server);
 
-		// returns true if it wants to read from an socket
+		// returns true if it wants to read from a socket
 		bool isRead() const ;
 
-		// returns true if it wants to write to an socket
+		// returns true if it wants to write to a socket
 		bool isWrite() const ;
 
 		// returns true if it closed its client connection
@@ -53,5 +60,9 @@ class ClientHandler {
 
 		// server to which the client is connected
 		ConstServerRef mServer;
+
+		// represents the stage at which
+			// client handler is at
+		Stage mStage;
 
 };
