@@ -6,9 +6,10 @@
  * after that request is fully parsed and finaly it terminates
  * the cycle by closing its connection. you can also think of this class
  * as a mediator between a request module and a response module.
- * the Client can be asked if it wants to read or write to some FD
- * through calling isRead or isWrite and the FD in question can be
- * retrieved by a next call to getFD()
+ * the Client can be asked if it wants to read or write to his socket
+ * through calling isRead or isWrite , to check if it wants to start an
+ * I/O operation on it's socket. then it will go through multiplexing 
+ * to check for its I/O readiness. 
  */
 
 #pragma once
