@@ -4,9 +4,6 @@
  *  	the ClientHandler module
  *  It listens for incoming connections
  *  It manages existing clients connections and creates new clients
- *  It forwards clients' requests to the modules that handle requests
- *  It also forwards responses coming from
- *  	other modules to the corresponding clients
  */
 
 #pragma once
@@ -24,7 +21,6 @@ class ServerManager {
 		/******* public alias types *******/
 		typedef Config::Servers Servers;
 		typedef ClientHandler::Socket Socket;
-		typedef ClientHandler::FD FD;
 		typedef std::map<Socket, ClientHandler> ClientHandlers;
 		typedef Multiplexer::FDCollection FDCollection;
 		typedef Config::ServerRef ServerRef;
@@ -55,10 +51,7 @@ class ServerManager {
 		// a collection of handlers for each client
 		ClientHandlers mClientHandlers;
 
-		// contains ClientHandlers that need Multiplexing on their FDs.
-		std::map<FD, ClientHandler*> mFDMultiPlexQueries;
-
-		// Collections of file descriptors that are retrieved from ClientHandlers
+		// Collections of sockets that are retrieved from ClientHandlers
 			// and Servers so that they can be passed to the Multiplexer 
 		FDCollection mReadFDs;
 		FDCollection mWriteFDs;
@@ -68,16 +61,16 @@ class ServerManager {
 		// queries client Handlers for their state (if they need
 			// multiplexing)
 		// it also adds the servers sockets for listening multiplexing
-		// and forwards the structures that contain their FDs to the Multiplexer
-		// and lets them know if any action should be taken on their FDs
+		// and forwards the structures that contain their sockets to the Multiplexer
+		// and lets them know if any action should be taken on their sockets
 		// for servers if there incoming connections on their sockets, a new client
 			// handler is added by calling addClientHandler()
 		void manageClientHandlers();
 
 		// Checks the state of the client handlers by asking if they have
-			// any multiplexing needs and if so it adds their FD to appropriate
-			// collection (mReadFDs or mWriteFDs) and adds the handler to
-			// mFDMultPlexQueries. These 3 member objects are cleared before use
+			// any multiplexing needs and if so it adds their socket to appropriate
+			// collection (mReadFDs or mWriteFDs) These 2 member objects are
+			// cleared before use
 		// Or if their connection was closed, it calls removeClientHandler()
 		void queryClientHandlers();
 
@@ -90,9 +83,9 @@ class ServerManager {
 		// the new socket id is made non-blocking
 		void manageNewConnections();
 
-		// gives the client handlers, whose FDs were passed
+		// gives the client handlers, whose sockets were passed
 			// to the Multiplexer and they were marked as
-			// ready, the permission to use that FD for an
+			// ready, the permission to use that socket for an
 			// I/O operation
 		void informClientHandlers();
 
@@ -120,9 +113,9 @@ class ServerManager {
 			// clientID exists already
 		void addClientHandler(Socket clientID, Socket serverID);
 
-		// returns the client handler that made a
-			// multiplex query about some FD
-		// throws a std::invalid_argument if the client handler wasn't found
-		ClientHandler* getMultiplexQueryClientHandler(FD queriedFD);
+		// finds client handler by looking up its ID
+			// throws std::invalid_argument in case a
+			// ClientHandler with that ID wasn't found
+		ClientHandler& getClientHandler(Socket ID);
 
 };

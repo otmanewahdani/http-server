@@ -46,7 +46,6 @@ void ServerManager::queryClientHandlers() {
 
 	mReadFDs.clear();
 	mWriteFDs.clear();
-	mFDMultiPlexQueries.clear();
 
 	ClientHandlers::iterator clientHandlerIt;
 	for (clientHandlerIt = mClientHandlers.begin();
@@ -56,30 +55,27 @@ void ServerManager::queryClientHandlers() {
 		ClientHandler& handler =
 			clientHandlerIt->second;
 
+		Socket handlerID = clientHandlerIt->first;
+
 		// checks if it needs I/O multiplexing
 		if (handler.isRead()
 			|| handler.isWrite()) {
 
-			// saves FD query and the handler that
-				// made the multiplexing request
-			FD queriedFD = handler.getFD();
-			mFDMultiPlexQueries[queriedFD] = &handler;
-
-			// inserts queriedFD at the end of
+			// inserts handlerID at the end of
 				// the collection that corresponds
 				// to the type of multiplexing query
 				// it made (read or write)
 			if (handler.isRead())
-				mReadFDs.insert(mReadFDs.end(), queriedFD);
+				mReadFDs.insert(mReadFDs.end(), handlerID);
 			else
-				mWriteFDs.insert(mWriteFDs.end(), queriedFD);
+				mWriteFDs.insert(mWriteFDs.end(), handlerID);
 
 		}
 
 		// checks if it already closed its connection
 			// so that it gets removed
 		else if (handler.isClosed())
-			removeClientHandler(handler.getID());
+			removeClientHandler(handlerID);
 
 	} // end of for loop
 
@@ -155,17 +151,17 @@ void ServerManager::informClientHandlers() {
 void ServerManager::informClientHandlers
 	(FDCollection& FDs) {
 
-	ClientHandler* handler = NULL;
 	FDCollection::const_iterator FDIt;
 	for (FDIt = FDs.begin();
 		FDIt != FDs.end(); ++FDIt) {
 
 		try {
-			// finds client handler and informs it
-				// that it can use its FD
-			handler =
-				getMultiplexQueryClientHandler(*FDIt);
-			handler->proceedWithFD();
+			// finds client handler by socket ID
+				// and informs it that it can use
+				// its socket for I/O
+			ClientHandler& handler =
+				getClientHandler(*FDIt);
+			handler.proceedWithSocket();
 		}
 		catch (const std::exception& error) {
 			Log::error(error.what());
@@ -200,22 +196,22 @@ void ServerManager::addClientHandler(Socket clientID, Socket serverID) {
 
 }
 
-ClientHandler*
-	ServerManager::getMultiplexQueryClientHandler
-	(FD queriedFD) {
+ClientHandler& ServerManager::getClientHandler
+	(Socket ID) {
+	
+	ClientHandlers::iterator handler
+		= mClientHandlers.find(ID);
 
-	std::map<FD, ClientHandler*>::iterator clientHandler;
-
-	clientHandler = mFDMultiPlexQueries.find(queriedFD);
-	// if client not found
-	if (clientHandler == mFDMultiPlexQueries.end()) {
-		std::string error = "couldn't find a client handler"
-			" who made a multiplex query for this FD: ";
-		error += std::to_string(queriedFD);
+	if (handler == mClientHandlers.end()) {
+		const std::string error = std::string
+			("couldn't find client handler"
+			" with socket id: ")
+			+ std::to_string(ID);
 		throw std::invalid_argument(error);
 	}
 
-	// returns clientHandler pointer
-	return clientHandler->second;
+	// returns the handler associated
+		// with ID
+	return handler->second;
 
 }

@@ -20,7 +20,6 @@ class ClientHandler {
 	public:
 		/******* alias types *******/
 		typedef int Socket;
-		typedef int FD;
 		typedef Config::ServerRef ServerRef;
 		typedef Config::ConstServerRef ConstServerRef;
 
@@ -30,24 +29,21 @@ class ClientHandler {
 			// the client is connected
 		ClientHandler(Socket ID, ConstServerRef server);
 
-		// returns true if it wants to read from an fd
+		// returns true if it wants to read from an socket
 		bool isRead() const ;
 
-		// returns true if it wants to write to an fd
+		// returns true if it wants to write to an socket
 		bool isWrite() const ;
 
 		// returns true if it closed its client connection
 		bool isClosed() const ;
 
-		// returns FD that's ready for I/O
-		FD getFD();
-
 		// returns client handler's id
 		Socket getID();
 
-		// signals to the Client Handler that the current FD
+		// signals to the Client Handler that the socket
 			// is ready for I/O
-		void proceedWithFD();
+		void proceedWithSocket();
 	
 	private:
 		/******* public member functions *******/
