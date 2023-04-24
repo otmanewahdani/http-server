@@ -11,6 +11,7 @@
 #include <set>
 #include <stdexcept>
 #include <fstream>
+#include <StatusCodeHandler.hpp>
 
 // there are more include directives at the end of class definitions
 
@@ -20,7 +21,7 @@ class Config {
 		/******* alias types *******/
 		typedef std::string Path;
 		typedef std::string Extension;
-		typedef unsigned short StatusCode;
+		typedef StatusCodeHandler::StatusCode StatusCode;
 		typedef unsigned long Size;
 		typedef std::map<Extension, Path> CGISystems;
 
