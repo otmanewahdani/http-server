@@ -29,6 +29,15 @@ class Request {
 			FINISH
 		};
 
+		// type of request to be executed
+		enum RequestType {
+			REDIRECT,
+			CGI,
+			UPLOAD,
+			AUTOINDEX,
+			CONTENT
+		};
+
 		/******* alias types *******/
 		typedef int Socket;
 		typedef Config::ConstServerRef ConstServerRef;

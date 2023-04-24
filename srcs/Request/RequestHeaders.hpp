@@ -12,6 +12,8 @@ class RequestHeaders {
 
 	public:
 		/******* public member functions *******/
+		// takes a string buffer from which
+			// the headers will be read
 		RequestHeaders(const std::string& buffer);
 
 		// parses the request headers and
