@@ -48,10 +48,12 @@ class Config {
 		/******* alias types *******/
 		typedef std::map<Path, LocationContext> LocationsCollection;
 		typedef int Socket;
+		typedef const LocationContext* ConstLocPtr;
 
 		/******* nested types *******/
 		// holds information about a given server
 		struct ServerContext {
+
 			std::string hostname;
 			std::string port;
 			std::string server_name;
@@ -65,9 +67,17 @@ class Config {
 			const static std::string defaultHostname;
 			const static std::string defaultPort;
 
+			/******* member functions *******/
 			// constructor
 			// initializes socketID to -1 and clientBodySizeMax to 0
 			ServerContext();
+
+			// returns a const ptr to a location context
+				// whose path == the parameter path
+			// returns NULL if not found
+			ConstLocPtr getLocation
+				(const std::string& path) const ;
+
 		};
 
 		/******* alias types *******/
