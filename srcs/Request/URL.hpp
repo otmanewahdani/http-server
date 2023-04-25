@@ -114,4 +114,8 @@ class URL {
 			// set bad request error if it's found
 			// and mValid to false
 		void checkBadCharacters(const std::string& url);
+
+		// sets the status code if an error occured
+			// and set mValid to false
+		void setStatusCode(StatusCode statusCode);
 };
