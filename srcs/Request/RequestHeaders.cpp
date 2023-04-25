@@ -12,8 +12,6 @@ RequestHeaders::RequestHeaders(const std::string& buffer)
 	, mBuffer(buffer)
 	, mHeadersSize() {
 
-	setHeaderNames();
-
 }
 
 void RequestHeaders::parse() {
