@@ -100,6 +100,6 @@ class Request {
 
 		void parseBody();
 
-		void getHeaders();
+		void parseHeaders();
 
 };
