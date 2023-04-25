@@ -96,7 +96,7 @@ class Request {
 			// the request
 		void parseRequest();
 
-		void parseStatusLine();
+		void parseRequestLine();
 
 		void parseBody();
 
