@@ -12,7 +12,7 @@ RequestHeaders::RequestHeaders(const std::string& buffer)
 	, mBuffer(buffer)
 	, mHeadersSize() {
 
-	// set header names
+	setHeaderNames();
 
 }
 
@@ -22,21 +22,23 @@ void RequestHeaders::parse() {
 	if (mDone)
 		return ;
 
-	// tracks current position in the buffer
-	std::string::size_type
-		pos = 0;
-
+	// pos: tracks current position in the buffer
+	// headerValPos: points at the position of a
+		// header value at a header field
+	StrSizeType pos = 0, headerValPos = 0,
 	// used to get the end position of
 		// the next line on each iteration
-	StrSizeType lineEndPos = Npos;
+		lineEndPos = std::string::npos;
+
+	std::string headerName;
 
 	while (pos < mBuffer.size()) {
 
-		lineEndPos = mBuffer.getLineEndPos(pos);
+		lineEndPos = getLineEndPos(pos);
 
 		// checks if the line found is
 			// the headers-body separator
-		// if the end of the the line is the same
+		// if the end of the line is the same
 			// as pos then it means it's a "\r\n"
 		if (lineEndPos == pos) {
 			// finished parsing the headers
@@ -47,26 +49,84 @@ void RequestHeaders::parse() {
 			break ;
 		}
 
+		// gets header name if found and stores
+			// the start position of the header value
+		headerName = getHeaderName
+			(pos, lineEndPos, headerValPos);
+
+		// if found, it is added to the headers
+			// along with the header value
+		if (headerName.empty() == false) {
+			
+			// adds headerName and header value 
+			mHeaders[headerName] = getHeaderValue
+				(headerValPos, lineEndPos);
+
+		}
+
+		// moves to position after
+			// end of line ("\r\n")
+		pos = lineEndPos + 2;
+
 	}
 
+	mDone = true;
+
+}
+
+size_t RequestHeaders::getHeadersSize() {
+	return mHeadersSize;
 }
 
 RequestHeaders::StrSizeType
 	RequestHeaders::getLineEndPos
 	(const StrSizeType begin) {
+	
+	StrSizeType lineEndPos =
+		mBuffer.find("\r\n", begin);
+	// not found
+	if (lineEndPos == std::string::npos) {
+
+		const std::string errorMsg = 
+			std::string("RequestHeaders: couldn't "
+				"find the end of line "
+				"starting from position: "
+				+ toString(begin));
+
+		throw std::runtime_error(errorMsg);
+
+	}
+
+	return lineEndPos;
+
+}
 
 void RequestHeaders::setHeaderNames() {
+
+	// if the header names are already set
+	if (mHeaderNamesSet)
+		return ;
+
+	mHeaderNames.insert("content-type");
+	mHeaderNames.insert("content-length");
+	mHeaderNames.insert("host");
+	mHeaderNames.insert("cookie");
+
+	mHeaderNamesSet = true;
+
+}
 
 std::string RequestHeaders::getHeaderName
 	(const StrSizeType begin, const StrSizeType endPos,
 	 StrSizeType& nextPos) {
 
-	StrSizeType colonPos = mBuffer.find(':');
-	// not found
-	if (colonPos == std::string::npos) {
-		nextPos = std::string::npos;
+	// searches for ':'
+	StrSizeType colonPos = mBuffer.find(':', begin);
+	// if not found
+	if (colonPos == std::string::npos
+		// or found after endPos
+		|| colonPos >= endPos)
 		return "";
-	}
 
 	// copies found header name
 	std::string headerName(mBuffer, begin, colonPos - begin);
@@ -74,12 +134,27 @@ std::string RequestHeaders::getHeaderName
 	for (StrSizeType i = 0; i < headerName.size(); ++i)
 		headerName[i] = std::tolower(headerName[i]);
 
-	// if found header name is supported
-	if (mHeaderNames.find(headerName) != mHeaderNames.end())
+	// if the found header name is supported
+	if (mHeaderNames.find(headerName) != mHeaderNames.end()) {
+		nextPos = colonPos + 1;
 		return headerName;
+	}
 
-	// found header name wasn't supported
-	nextPos = std::string::npos;
+	// the found header name isn't supported
 	return "";
+
+}
+
+std::string RequestHeaders::getHeaderValue
+	(const StrSizeType begin, const StrSizeType endPos) {
+
+	// skips white space
+	StrSizeType headerValPos =
+			mBuffer.find_first_not_of(" \t", begin);
+
+	if (headerValPos >= endPos)
+		return "";
+
+	return std::string(mBuffer, headerValPos, endPos);
 
 }

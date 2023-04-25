@@ -10,7 +10,9 @@
 
 #include <string>
 #include <cctype>
-#include <algorithm>
+#include <map>
+#include <set>
+#include <utils.hpp>
 
 class RequestHeaders {
 
@@ -46,7 +48,7 @@ class RequestHeaders {
 		const std::string& mBuffer;
 
 		// stores the number of bytes
-		// in the headers
+			// in the headers
 		size_t mHeadersSize;
 
 		// parsed headers are saved here
@@ -78,9 +80,15 @@ class RequestHeaders {
 			// and be one of the header names that are looked for (mHeaderNames),
 			// otherwise an empty str is returned.
 		// nextPos is set to the character right after ':' if found, otherwise
-			// it is set to string::pos
-		// the search for the header name  will not go futher than endPos
+			// it is unchanged
+		// the search for the header name  will stop at endPos
 		std::string getHeaderName(const StrSizeType begin,
 			const StrSizeType endPos, StrSizeType& nextPos);
+
+		// skips white space (SP/HT) starting from begin,
+			// the reads the whole header name value until endPos
+		// returns empty string if no value is found
+		std::string getHeaderValue(const StrSizeType begin,
+			const StrSizeType endPos);
 
 };
