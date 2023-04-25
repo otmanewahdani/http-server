@@ -26,4 +26,10 @@ void makeFDNonBlock(int fd);
 
 // converts arithmetic type to string
 template <class Num>
-std::string toString(Num num);
+std::string toString(Num num) {
+
+	std::ostringstream converter;
+	converter << num;
+	return (converter.str());
+
+}

@@ -33,12 +33,3 @@ void makeFDNonBlock(int fd) {
 		throwErrnoException("failed to make FD non-blocking");
 
 }
-
-template <class Num>
-std::string toString(Num num) {
-
-	std::ostringstream converter;
-	converter << num;
-	return (converter.str());
-
-}
