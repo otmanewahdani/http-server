@@ -6,6 +6,8 @@
  * The URL is organized then into a path, full path and
  * a query string . in case of ivalid url a statusCode 
  * is set to indicate the type of the error
+ * a bad character is a character that does't belong to
+ * the collection of allowed characters in a url
  */
 
 #pragma once
@@ -19,31 +21,36 @@ class URL {
 		/******* alias types *******/
 		typedef Config::ConstServerRef ConstServerRef;
 		typedef Config::ConstLocPtr ConstLocptr;
-		typedef std::sting  Path;
+		typedef std::string  Path;
 		typedef std::string FullPath;
 		typedef std::string QueryString;
+		typedef StatusCodeHandler::StatusCodeType StatusCode;
 
 		/******* public member functions *******/
 		// server containing location info about
 			// the requested resource
 		URL(ConstServerRef server);
 
+		// it takes a url and parse it to a 
+			//valid path , query string and full path
 		void parse(const std::string& url);
 
 		// returns true if the url path is a valid path
 			// means it matchs a valid location in 
 			// the mServer and doesn't contain 
 			// any bad characters
-		bool isValid();
+		bool isValid() const;
 
 		// returns the url path
-		const Path& getPath();
+		const Path& getPath() const;
 
 		// returns the full path of the requested resource
-		const FullPath& getFullPath();
+		const FullPath& getFullPath() const;
 
 		// returns the query string part from the url
-		const QueryString& getQueryString();
+		const QueryString& getQueryString() const;
+
+		const StatusCode& getStatusCode() const;
 		
 
 	private:
@@ -72,6 +79,11 @@ class URL {
 		// the most specific matched location with the url path
 		ConstLocptr mLocation;
 
+		// contains the allowed characters in a url
+		static const std::string mAllowedChars;
+
+		StatusCode mStatusCode;
+
 		/******* private member functions *******/
 		// checks if the url contains any bad character
 		// parses the url to a valid path 
@@ -93,13 +105,13 @@ class URL {
 			// and std::string::npos if not
 		size_t getQueryPos(const std::string& url);
 
-		// search in mServer for the most specific
+		// set mLocation to the most specific
 			// matched location with the url path
-		// returns NULL if no match is found
-		ConstLocPtr getMatchedLocation();
+		// NULL if didn't find any match 
+		void getMatchedLocation();
 
 		// checks if the url contains any bad characters 
 			// set bad request error if it's found
-			// and mvalid to false
+			// and mValid to false
 		void checkBadCharacters(const std::string& url);
 };
