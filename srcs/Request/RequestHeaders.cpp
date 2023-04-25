@@ -158,3 +158,7 @@ std::string RequestHeaders::getHeaderValue
 	return std::string(mBuffer, headerValPos, endPos);
 
 }
+
+void RequestHeaders::initializeStaticData() {
+	setHeaderNames();
+}

@@ -35,6 +35,8 @@ class RequestHeaders {
 
 		size_t getHeadersSize();
 
+		static void initializeStaticData();
+
 	private:
 		/******* private alias types  *******/
 		typedef std::string::size_type

@@ -9,6 +9,13 @@ ServerManager::ServerManager(const char* configFileName)
 	, mMimeTypes(NULL) {
 
 		Network::initServersSockets(mConfig.getServers());
+		initializeStaticData();
+
+}
+
+void ServerManager::initializeStaticData() {
+
+	RequestHeaders::initializeStaticData();
 
 }
 
