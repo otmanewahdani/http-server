@@ -79,6 +79,10 @@ class Request {
 			// yet, or parsed method is unsupported
 		Method mMethod;
 
+		// pointer to location that contains the
+			// configuration of the requested path
+		ConstLocPtr mLocation;
+
 		// contains the bytes read from socket
 			// that still need to be processed
 		std::string mBuffer;
