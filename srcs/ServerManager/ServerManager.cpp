@@ -17,6 +17,8 @@ void ServerManager::initializeStaticData() {
 
 	RequestHeaders::initializeStaticData();
 
+	StatusCodeHandler::initializeStaticData();
+
 }
 
 void ServerManager::printConfig() {

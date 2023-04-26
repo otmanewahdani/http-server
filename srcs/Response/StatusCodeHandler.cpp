@@ -1,0 +1,45 @@
+#include <StatusCodeHandler.hpp>
+
+// static member object declaration
+StatusCodeHandler::StatusCodeMap
+	StatusCodeHandler::mStatusCodesData;
+
+void StatusCodeHandler::initializeStaticData() {
+	
+	StatusCodePair statusCodePair("200", "OK");
+	mStatusCodesData[OK] = statusCodePair;
+	
+	statusCodePair = std::make_pair("400", "Bad Request");
+	mStatusCodesData[BAD_REQUEST] = statusCodePair;
+
+	statusCodePair = std::make_pair("404", "Not Found");
+	mStatusCodesData[NOT_FOUND] = statusCodePair;
+
+	statusCodePair = std::make_pair("405", "Method Not Allowed");
+	mStatusCodesData[METHOD_ALLOW] = statusCodePair;
+
+}
+
+const StatusCodeHandler::StatusCodePair&
+	StatusCodeHandler::getStatusCodeInfo
+	(StatusCodeType code) {
+
+	StatusCodeMap::const_iterator codeInfo
+		= mStatusCodesData.find(code);
+
+	// if code wasn't found
+	if (codeInfo == mStatusCodesData.end()) {
+
+		const std::string errorMsg =
+			std::string("getStatusCodeInfo(): "
+			"no such status code '")
+			+ toString(code) + '\'';
+
+		throw std::runtime_error(errorMsg);
+
+	}
+
+	// returns status code pair
+	return codeInfo->second;
+
+}

@@ -8,6 +8,7 @@
 
 #include <string>
 #include <map>
+#include <utils.hpp>
 
 class StatusCodeHandler {
 
@@ -15,8 +16,9 @@ class StatusCodeHandler {
 		/******* nested types *******/
 		enum StatusCodeType {
 			OK = 200,
-			NOT_FOUND = 404,
 			BAD_REQUEST = 400,
+			NOT_FOUND = 404,
+			METHOD_ALLOW = 405
 		};
 
 		/******* alias types *******/
@@ -27,16 +29,19 @@ class StatusCodeHandler {
 		typedef std::string ReasonPhrase;
 		typedef std::pair<StatusCodeStr, ReasonPhrase>
 			StatusCodePair;
-		typedef std::map<StatusCode, StatusCodePair>
+		typedef std::map<StatusCodeType, StatusCodePair>
 			StatusCodeMap;
 
 		/******* public member functions *******/
 		// returns pair containing status code in string
 			// format and its reason phrase
+		// throws std::runtime_error if not found
 		static const StatusCodePair& getStatusCodeInfo
 			(StatusCodeType code);
+
+		static void initializeStaticData();
 	
 	private:
-		static const StatusCodeMap statusCodesData;
+		static StatusCodeMap mStatusCodesData;
 
 };
