@@ -7,6 +7,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 
 class StatusCodeHandler {
 
