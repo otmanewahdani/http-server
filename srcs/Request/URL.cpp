@@ -9,16 +9,25 @@ const std::string URL::mAllowedChars =	"0123456789"
 										"-_.~:/?#[]@!$&'()*+,;=";
 
 URL::URL(ConstServerRef server)
-	:mServer(server),
+	 :mServer(server),
+	 mPath(""),
+	 mFullPath(""),
+	 mQuery(""),
 	 mValid(true),
 	 mParsed(false),
-	 mLocation(NULL) {}
-
+	 mLocation(NULL),
+	 mStatusCode(StatusCodeHandler::OK) {}
 
 void URL::parse(const std::string& url) {
 
+	// parse the string only if it's the first call of parse()
 	if (!mParsed) {
+		// to prevent multiple calls
+		mParsed = true;
+
+		// parse the url path and query string
 		parseUrl(url);
+
 		addFullPath();
 	}
 
@@ -28,6 +37,7 @@ void URL::parseUrl(const std::string& url) {
 
 	checkBadCharacters(url);
 
+	// parse if url has no bad chars
 	if (mValid) {
 		// get the position of the query string in the url
 		size_t pos;
@@ -36,7 +46,7 @@ void URL::parseUrl(const std::string& url) {
 		// add the query string starting from pos if it exists
 		addQueryString(url, pos);
 
-		// add the path if it matches a mSeerver location
+		// add the path if it matches a mServer location
 		addPath(url, pos);
 	}
 
@@ -51,13 +61,13 @@ void URL::addQueryString(const std::string& url, size_t pos) {
 	if (pos != std::string::npos) {
 		// construct the mQuery string starting 
 			//from pos to the end of the url
-		mQuery = url.substr(pos);
+		mQuery = url.substr(pos + 1);
 	}
 
 }
 
 void URL::addPath(const std::string& url, size_t len) {
-
+	
 	// construct the path string from the beginning 
 		// of the url until the position of query part
 	mPath = url.substr(0, len);
@@ -66,46 +76,71 @@ void URL::addPath(const std::string& url, size_t len) {
 	getMatchedLocation();
 
 	// if the url path doesn't match any location 
-		// in mServer set NotFound error
+		// in mServer set NotFound error and 
+		// url validity to false
 	if (!mLocation) {
-		mValid = false;
-		mStatusCode = StatusCodeHandler::NOT_FOUND;
+		setStatusCode(StatusCodeHandler::NOT_FOUND);
+		// clear the path and query string 
+			// to prevent getting wrong data
+		mPath.clear();
+		mQuery.clear();
 	}
 
 }
 
 void URL::checkBadCharacters(const std::string& url) {
 
-	// if a bad request 
-	if (url.find_first_not_of(mAllowedChars) != std::string::npos) {
-		mValid = false;
-		mStatusCode = StatusCodeHandler::BAD_REQUEST;
-	}
+	// if a bad character is found indicate 
+		//bad request error and invalid url 
+	if (url.empty() || url.front() != '/' ||
+		url.find_first_not_of(mAllowedChars) 
+		!= std::string::npos)
+		setStatusCode(StatusCodeHandler::BAD_REQUEST);
+
 }
 
 void URL::getMatchedLocation() {
 
-	Path TmpPath;
-	TmpPath = mPath + "/";
-	size_t pos;
+	// copy the mpath to a tmp string and append "/" 
+		// to it in case of location rout ending with "/"
+	Path subPath;
+	subPath = mPath;
+	// append "/" if it doesn't exists at the end
+	if(mPath.back() != '/')
+		subPath += "/";
 
-	while (!TmpPath.empty()) {
-		pos = TmpPath.rfind("/");
-		TmpPath.erase(pos+1);
-		mLocation = mServer.getLocation(TmpPath);
-		TmpPath.erase(pos);
-		mLocation = mServer.getLocation(TmpPath);
+	// check each sub path of the url path if it 
+		// matches a location in mServer starting 
+		// from the most specific one
+	size_t pos;
+	while (!subPath.empty()) {
+		// find the pos of the last "/"
+		pos = subPath.rfind("/");
+
+		// if no sub path is found
+		if(pos == std::string::npos)
+			break;
+		// search sub path with the / char
+		subPath.erase(pos + 1);
+		mLocation = mServer.getLocation(subPath);
+
+		// search sub path without the / char
+		subPath.erase(pos);
+		mLocation = mServer.getLocation(subPath);
 	}
 
 }
 
 void URL::addFullPath() {
 
-	// appends the mPath to the root of mLocation
-		// to get the full path of the requested resource
-		// if no error occurred
-	if (mValid)
-		mFullPath = mLocation->root + mPath;
+	// if no error occurred
+	if (mValid) {
+		// takes the current location as root
+		if (mLocation->root.empty())
+			mFullPath = "." + mPath;
+		else
+			mFullPath = mLocation->root + mPath;
+	}
 
 }
 
@@ -127,4 +162,11 @@ const URL::QueryString& URL::getQueryString() const {
 
 const URL::StatusCode& URL::getStatusCode() const {
 	return mStatusCode;
+}
+
+void URL::setStatusCode(StatusCode statusCode) {
+
+	mValid = false;
+	mStatusCode = statusCode;
+
 }
