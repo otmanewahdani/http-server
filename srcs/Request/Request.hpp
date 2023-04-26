@@ -47,6 +47,7 @@ class Request {
 		typedef int Socket;
 		typedef Config::ConstServerRef ConstServerRef;
 		typedef Config::ConstLocPtr ConstLocPtr;
+		typedef StatusCodeHandler::StatusCodeType StatusCodeType;
 
 		/******* public member functions *******/
 		// first parameter is the socket from which
@@ -68,7 +69,13 @@ class Request {
 		void proceedWithSocket();
 
 		// returns true if parsed request is valid
+			// if not finished parsing yet,
+			// throws std::runtime_error
 		bool isValid() const;
+
+		// returns true if no issue happened when
+			// reading from the socket
+		bool isSocketOk() const;
 
 		// returns pointer to location that contains the
 			// configuration of the requested path
@@ -109,6 +116,13 @@ class Request {
 			// after finding the corresponding location
 			// context of the path)
 		URL mURL;
+
+		// it is initialized at first to OK, but changed
+			// on error or redirection
+		StatusCodeType mStatusCode;
+
+		// changed to false if cannot read from socket
+		bool mSocketOk;
 
 		// amount by which to read from socket
 		static size_t readSize;

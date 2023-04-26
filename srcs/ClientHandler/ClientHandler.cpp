@@ -17,6 +17,12 @@ bool ClientHandler::isRead() {
 	if (mStage != REQUEST)
 		return false;
 
+	// checks the validity of the socket
+	if (mRequest.isSocketOk() == false) {
+		closeClientConnection();
+		return false;
+	}
+
 	if (mRequest.isRead() == false) {
 
 		// if request is done, moves to the
@@ -39,16 +45,11 @@ bool ClientHandler::isWrite() {
 	if (mStage != RESPONSE)
 		return false;
 
+	// if respone is done, moves to the
+		// closing stage
 	if (mResponse.isWrite() == false) {
-
-		// if respone is done, moves to the
-			// closing stage
-		mStage = CLOSE;
-		// closes the client connection
-		close(mID);
-		mID = -1;
+		closeClientConnection();
 		return false;
-
 	}
 
 	return true;
@@ -79,4 +80,14 @@ void ClientHandler::proceedWithSocket() {
 
 ClientHandler::Socket ClientHandler::getID() const {
 	return mID;
+}
+
+void ClientHandler::closeClientConnection() {
+
+	Log::connectionClosed(mID);
+	mStage = CLOSE;
+	// closes the client connection
+	close(mID);
+	mID = -1;
+
 }

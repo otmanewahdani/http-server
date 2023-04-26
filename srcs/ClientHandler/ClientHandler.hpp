@@ -18,6 +18,7 @@
 #include <Response.hpp>
 #include <Request.hpp>
 #include <unistd.h>
+#include <Log.hpp>
 
 class ClientHandler {
 
@@ -74,5 +75,8 @@ class ClientHandler {
 		// represents the stage at which
 			// client handler is at
 		Stage mStage;
+
+		/******* private member functions *******/
+		void closeClientConnection();
 
 };

@@ -30,7 +30,7 @@ class RequestHeaders {
 			// stores their size in mHeadersSize
 			// and marks the parsing as done
 		// if it is called again, it has no effect
-		// throws std::runtime_error.
+		// throws std::runtime_error on error
 		void parse();
 
 		size_t getHeadersSize();
