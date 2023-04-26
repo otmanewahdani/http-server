@@ -38,14 +38,8 @@ void RequestHeaders::parse() {
 			// the headers-body separator
 		// if the end of the line is the same
 			// as pos then it means it's a "\r\n"
-		if (lineEndPos == pos) {
-			// finished parsing the headers
-			mDone = true;
-			// the size of the parsed headers
-				// up to the body
-			mHeadersSize = lineEndPos + 2;
+		if (lineEndPos == pos)
 			break ;
-		}
 
 		// gets header name if found and stores
 			// the start position of the header value
@@ -68,7 +62,29 @@ void RequestHeaders::parse() {
 
 	}
 
+	// the size of the parsed headers
+		// up to the body
+	mHeadersSize = lineEndPos + 2;
+
+	// finished parsing the headers
 	mDone = true;
+
+}
+
+const RequestHeaders::HeaderValue*
+	RequestHeaders::getHeaderValue
+	(const HeaderName& headerName) {
+
+	// finds whole header field by its header name
+	std::map<HeaderName, HeaderValue>::const_iterator
+		header = mHeaders.find(headerName);
+
+	// not found
+	if (header == mHeaders.end())
+		return NULL;
+
+	// returns the header value part
+	return &header->second;
 
 }
 
@@ -119,7 +135,7 @@ std::string RequestHeaders::getHeaderName
 	 StrSizeType& nextPos) {
 
 	// searches for ':'
-	StrSizeType colonPos = mBuffer.find(':', begin);
+	const StrSizeType colonPos = mBuffer.find(':', begin);
 	// if not found
 	if (colonPos == std::string::npos
 		// or found after endPos
@@ -147,13 +163,15 @@ std::string RequestHeaders::getHeaderValue
 	(const StrSizeType begin, const StrSizeType endPos) {
 
 	// skips white space
-	StrSizeType headerValPos =
+	const StrSizeType headerValPos =
 			mBuffer.find_first_not_of(" \t", begin);
 
 	if (headerValPos >= endPos)
 		return "";
 
-	return std::string(mBuffer, headerValPos, endPos);
+	// copies a string of (endPos - headerValPos) characters
+	return std::string(mBuffer, headerValPos,
+		endPos - headerValPos);
 
 }
 

@@ -35,6 +35,12 @@ class RequestHeaders {
 
 		size_t getHeadersSize();
 
+		// gets pointer to header value
+			// associated with a header name
+		// if not found, return NULL
+		const HeaderValue* getHeaderValue
+			(const HeaderName& headerName);
+
 		static void initializeStaticData();
 
 	private:
