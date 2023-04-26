@@ -1,13 +1,14 @@
 /* this file contains the definition of the URL class.
  * This class is reponsible for parsing a url string
  * and checking the validity of the url. A url is invalid
- * if the path does not match with any location within
- * the server that is passed to the constructor
+ * if it conatins any bad characters or if the path does 
+ * not match with any location within the server that is
+ *  passed to the constructor .
  * The URL is organized then into a path, full path and
  * a query string . in case of ivalid url a statusCode 
  * is set to indicate the type of the error
- * a bad character is a character that does't belong to
- * the collection of allowed characters in a url
+ * a bad charachter means that it's either unprintable
+ * or belongs to mForbiddenChars collection
  */
 
 #pragma once
@@ -24,7 +25,7 @@ class URL {
 		typedef std::string  Path;
 		typedef std::string FullPath;
 		typedef std::string QueryString;
-		typedef StatusCodeHandler::StatusCodeType StatusCode;
+		typedef StatusCodeHandler::StatusCodeType StatusCodeType;
 
 		/******* public member functions *******/
 		// server containing location info about
@@ -35,10 +36,10 @@ class URL {
 			//valid path , query string and full path
 		void parse(const std::string& url);
 
-		// returns true if the url path is a valid path
-			// means it matchs a valid location in 
-			// the mServer and doesn't contain 
-			// any bad characters
+		// returns true if the url is valid 
+			// means it doesn't contain any bad characters
+			// and it matches a valid location in 
+			// the mServer 
 		bool isValid() const;
 
 		// returns the url path
@@ -50,7 +51,8 @@ class URL {
 		// returns the query string part from the url
 		const QueryString& getQueryString() const;
 
-		const StatusCode& getStatusCode() const;
+		// returns a status code that indicate the url validity
+		const StatusCodeType& getStatusCode() const;
 		
 
 	private:
@@ -59,11 +61,13 @@ class URL {
 			// of the requested resource
 		ConstServerRef mServer;
 
+		// url path
 		Path mPath;
 
 		// stores the full path of the requested resource
 		FullPath mFullPath;
 
+		// url query string
 		QueryString mQuery;
 
 		// indicate if the url path is valid 
@@ -79,43 +83,40 @@ class URL {
 		// the most specific matched location with the url path
 		ConstLocptr mLocation;
 
-		// contains the allowed characters in a url
-		static const std::string mAllowedChars;
+		// contains the unallowed characters in a url
+		static const std::string mForbiddenChars;
 
-		StatusCode mStatusCode;
+		// state the validitiy of the url
+		StatusCodeType mStatusCode;
 
 		/******* private member functions *******/
-		// checks if the url contains any bad character
-		// parses the url to a valid path 
-			// and query string if it exists
+		// parse the url to a valid path and 
+			// a valid query string if it exists
 		void parseUrl(const std::string& url);
 
+		// parse the url path and check if it has any bad char
+			// or didn't match a location within mServer
+		// it returns the position of the query 
+			// string in the url if it exists
+		size_t addPath(const std::string& url);
+
 		// add the query string if it exists in the url
-		void addQueryString(const std::string& url, size_t pos);
-
-		// takes the lenght of the url path
-			// add the url path if it matches with a location in mServer
-		void addPath(const std::string& url, size_t len);
-
-		// construct the full path of the requested resource 
-			// from the url path and the matched location root
-		void addFullPath();
-
-		// returns the query string pos in the url if it exists
-			// and std::string::npos if not
-		size_t getQueryPos(const std::string& url);
-
+		void addQueryString(const std::string& url, size_t queryPos);
+		
 		// set mLocation to the most specific
 			// matched location with the url path
 		// NULL if didn't find any match 
 		void getMatchedLocation();
 
-		// checks if the url contains any bad characters 
-			// set bad request error if it's found
-			// and mValid to false
-		void checkBadCharacters(const std::string& url);
+		// construct the full path of the requested resource 
+			// from the url path and the matched location root
+		void addFullPath();
 
 		// sets the status code if an error occured
-			// and set mValid to false
-		void setStatusCode(StatusCode statusCode);
+			// and set mValid to false and clear the 
+			// mvariables to prevent getting wrong data
+		void setStatusCodeError(StatusCodeType statusCode);
+
+		// checks if a char is a bad character
+		bool isForbiddenChar(const char c);
 };
