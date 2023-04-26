@@ -16,7 +16,7 @@ URL::URL(ConstServerRef server)
 	 mValid(true),
 	 mParsed(false),
 	 mLocation(NULL),
-	 mStatusCode(StatusCodeHandler::OK) {}
+	 mStatusCode(StatusCodeHandler::OK) {} 
 
 void URL::parse(const std::string& url) {
 
