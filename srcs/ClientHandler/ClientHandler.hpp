@@ -6,7 +6,7 @@
  * after that request is fully parsed and finaly it terminates
  * the cycle by closing its connection. you can also think of this class
  * as a mediator between a request module and a response module.
- * the Client can be asked if it wants to read or write to his socket
+ * the Client can be asked if it wants to read or write to its socket
  * through calling isRead or isWrite , to check if it wants to start an
  * I/O operation on it's socket. then it will go through multiplexing 
  * to check for its I/O readiness. 
@@ -15,6 +15,9 @@
 #pragma once
 
 #include <Config.hpp>
+#include <Response.hpp>
+#include <Request.hpp>
+#include <unistd.h>
 
 class ClientHandler {
 
@@ -38,23 +41,26 @@ class ClientHandler {
 		ClientHandler(Socket ID, ConstServerRef server);
 
 		// returns true if it wants to read from a socket
-		bool isRead() const ;
+		bool isRead() ;
 
 		// returns true if it wants to write to a socket
-		bool isWrite() const ;
+		bool isWrite() ;
 
 		// returns true if it closed its client connection
 		bool isClosed() const ;
 
 		// returns client handler's id
-		Socket getID();
+		Socket getID() const;
 
 		// signals to the Client Handler that the socket
 			// is ready for I/O
+		// throws std:runtime_error if no multiplexing
+			// request was made (by returning true through
+			// isRead() or isWrite())
 		void proceedWithSocket();
 	
 	private:
-		/******* private member functions *******/
+		/******* private member objects *******/
 		// socket identifier of the client
 		Socket mID;
 

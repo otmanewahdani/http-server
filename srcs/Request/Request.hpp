@@ -10,6 +10,7 @@
 #pragma once
 
 #include <Config.hpp>
+#include <RequestHeaders.hpp>
 #include <URL.hpp>
 
 class Request {

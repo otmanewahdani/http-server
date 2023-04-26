@@ -3,14 +3,14 @@
 #include <ClientHandler.hpp>
 
 ClientHandler::ClientHandler(Socket ID, ConstServerRef server)
-	: mID(ID),
+	: mID(ID)
 	, mServer(server)
 	, mRequest(ID, server)
 	, mResponse(ID, mRequest, mServer)
 	, mStage(REQUEST) // starts at the request stage
 	{}
 
-bool ClientHandler::isRead() const {
+bool ClientHandler::isRead() {
 
 	// doesn't need reading when
 		// the request stage is over
@@ -24,9 +24,59 @@ bool ClientHandler::isRead() const {
 			// response generation
 		mStage = RESPONSE;
 		mResponse.start(mRequest.getLocation());
+		return false;
 
 	}
 	
 	return true;
 
+}
+
+bool ClientHandler::isWrite() {
+
+	// doesn't need writing if not in
+		// the respone stage
+	if (mStage != RESPONSE)
+		return false;
+
+	if (mResponse.isWrite() == false) {
+
+		// if respone is done, moves to the
+			// closing stage
+		mStage = CLOSE;
+		// closes the client connection
+		close(mID);
+		mID = -1;
+		return false;
+
+	}
+
+	return true;
+
+}
+
+bool ClientHandler::isClosed() const {
+	return (mStage == CLOSE);
+}
+
+void ClientHandler::proceedWithSocket() {
+
+	switch (mStage) {
+
+		case REQUEST:
+			return (mRequest.proceedWithSocket());
+		case RESPONSE:
+			return (mResponse.proceedWithSocket());
+		default:
+			const std::string errorMsg = "ClientHandler::"
+				"proceedWithSocket(): no multiplexing "
+				"query was made before";
+			throw std::runtime_error(errorMsg);
+
+	}
+
+}
+
+ClientHandler::Socket ClientHandler::getID() const {
+	return mID;
 }

@@ -32,6 +32,10 @@ class Response {
 			// the response
 		bool isWrite() const ;
 
+		// signals that the socket is ready for writing
+			// attempts to send response bytes over socket
+		void proceedWithSocket();
+
 		// starts the reponse generating process
 		// sets mLocation to location
 		// should only be called once, otherwise
@@ -67,5 +71,9 @@ class Response {
 		// contains the main logic that generates
 			// the reponse
 		void generateReponse();
+
+		// sends the generated response over the
+			// socket
+		void sendRespone();
 
 };
