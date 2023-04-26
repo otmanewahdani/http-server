@@ -2,11 +2,15 @@
  * 	This class is reponsible for receiving and parsing an
  * 	http request into a well-organized object that can be
  * 	used easily by a response module.
+ * 	If the read request is invalid, the request parsing stops
+ * 		and response status code is set appropriately
+ * 		(the validity can be checked with isValid())
  */
 
 #pragma once
 
 #include <Config.hpp>
+#include <URL.hpp>
 
 class Request {
 
@@ -81,6 +85,8 @@ class Request {
 
 		// pointer to location that contains the
 			// configuration of the requested path
+		// it will be set when the request uri
+			// path is known (if ever)
 		ConstLocPtr mLocation;
 
 		// contains the bytes read from socket
@@ -88,6 +94,12 @@ class Request {
 		std::string mBuffer;
 
 		RequestHeaders mHeaders;
+
+		// contains information about the request url
+			// (path, query string, and the full path
+			// after finding the corresponding location
+			// context of the path)
+		URL mURL;
 
 		// amount by which to read from socket
 		static size_t readSize;
@@ -97,10 +109,16 @@ class Request {
 			// the request
 		void parseRequest();
 
-		void parseStatusLine();
+		// checks if the whole request line has been read and that the request
+			// uri doesn't exceed the request line size limit, and then parses
+			// the method and uri
+		void parseRequestLine();
 
 		void parseBody();
 
-		void getHeaders();
+		// checks if the whole headers (including the body separator)
+			// are read and that they are not more the headers size
+			// limit and then parses them
+		void processHeaders();
 
 };
