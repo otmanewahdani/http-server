@@ -14,6 +14,7 @@
 #include <Network.hpp>
 #include <MimeTypes.hpp>
 #include <ClientHandler.hpp>
+#include <RequestHeaders.hpp>
 
 class ServerManager {
 
@@ -29,7 +30,8 @@ class ServerManager {
 		/******* public member functions *******/
 		// takes a configuration file path
 			// and passes it to Config
-		// and calls Network::initServersSockets()
+		// calls Network::initServersSockets()
+			// and initializeStaticData()
 		ServerManager(const char* configFileName);
 
 		// starts the operations of the server
@@ -117,5 +119,9 @@ class ServerManager {
 			// throws std::invalid_argument in case a
 			// ClientHandler with that ID wasn't found
 		ClientHandler& getClientHandler(Socket ID);
+
+		// functions in different modules that initialize
+			// static structures will be called here
+		static void initializeStaticData();
 
 };

@@ -15,17 +15,25 @@ CONFIG_SRC := Config.cpp ConfigParser.cpp ConfigLexer.cpp
 
 NET_SRC := Network.cpp
 
+RESPONSE_SRC := Response.cpp StatusCodeHandler.cpp
+
+REQUEST_SRC := Request.cpp RequestHeaders.cpp
+
 CLIENT_SRC := ClientHandler.cpp
 
-SERVER_SRC := ServerManager.cpp Multiplexer.cpp Log.cpp
+SERVER_SRC :=  Multiplexer.cpp Log.cpp ServerManager.cpp
 
 GENERAL_SRC := utils.cpp MimeTypes.cpp main.cpp Tokenizer.cpp
 
-SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) $(SERVER_SRC) $(CLIENT_SRC)
+TEST_SRC := test.cpp
+
+SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) \
+	$(SERVER_SRC) $(CLIENT_SRC) $(RESPONSE_SRC) \
+	$(REQUEST_SRC) $(TEST_SRC)
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 
-VPATH := $(addprefix $(SRCS_DIR),$(VPATH) )
+VPATH := $(addprefix $(SRCS_DIR),$(VPATH) ) srcs/ServerManager
 
 INCS = $(addprefix -I,$(VPATH))
 
@@ -44,7 +52,7 @@ $(OBJ_DIR)main.o: $(SRCS_DIR)main.cpp
 	@$(CC) $(CPPFLAGS) $(INCS) $< -o $@
 
 $(NAME): $(OBJ)
-	@$(CC) $^ -o $@
+	@$(CC) $(DEBUG) $^ -o $@
 	@echo -e "\e[1;35m\u2705 Web server was created successfully\e[0m"
 
 clean:

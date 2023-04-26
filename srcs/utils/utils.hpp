@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/errno.h>
 #include <fcntl.h>
+#include <sstream>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
@@ -22,3 +23,13 @@ void throwErrnoException(const std::string& context);
 // turns fd into a non-blocking file descriptor
 // calls throwErrnoException() in case of error
 void makeFDNonBlock(int fd);
+
+// converts arithmetic type to string
+template <class Num>
+std::string toString(Num num) {
+
+	std::ostringstream converter;
+	converter << num;
+	return (converter.str());
+
+}

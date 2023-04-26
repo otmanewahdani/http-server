@@ -40,6 +40,25 @@ Config::ServerContext::ServerContext()
 	: socketID(-1)
 	, clientBodySizeMax() {}
 
+Config::ConstLocPtr
+	Config::ServerContext::getLocation
+	(const std::string& path) const {
+
+	for (LocationsCollection::const_iterator loc =
+		locations.begin(); loc != locations.end();
+		++loc) {
+		
+		// if path found, returns address
+			// of locaction context
+		if (loc->first == path)
+			return &loc->second;
+
+	}
+
+	return NULL;
+
+}
+
 void Config::initSupportedCGIExtensions() {
 	
 	// defines the supported cgi extensions

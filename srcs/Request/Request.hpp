@@ -65,6 +65,9 @@ class Request {
 			// and parse request bytes
 		void proceedWithSocket();
 
+		// returns true if parsed request is valid
+		bool isValid();
+
 	private:
 		/******* private member objects *******/
 		// socket from which the
