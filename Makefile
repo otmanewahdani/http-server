@@ -17,7 +17,7 @@ NET_SRC := Network.cpp
 
 RESPONSE_SRC := Response.cpp StatusCodeHandler.cpp
 
-REQUEST_SRC := Request.cpp RequestHeaders.cpp
+REQUEST_SRC := Request.cpp RequestHeaders.cpp URL.cpp
 
 CLIENT_SRC := ClientHandler.cpp
 

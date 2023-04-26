@@ -54,12 +54,16 @@ class ClientHandler {
 		void proceedWithSocket();
 	
 	private:
-		/******* public member functions *******/
+		/******* private member functions *******/
 		// socket identifier of the client
 		Socket mID;
 
 		// server to which the client is connected
 		ConstServerRef mServer;
+
+		Request mRequest;
+
+		Response mResponse;
 
 		// represents the stage at which
 			// client handler is at

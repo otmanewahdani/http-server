@@ -45,6 +45,7 @@ class Request {
 		/******* alias types *******/
 		typedef int Socket;
 		typedef Config::ConstServerRef ConstServerRef;
+		typedef Config::ConstLocPtr ConstLocPtr;
 
 		/******* public member functions *******/
 		// first parameter is the socket from which
@@ -66,7 +67,11 @@ class Request {
 		void proceedWithSocket();
 
 		// returns true if parsed request is valid
-		bool isValid();
+		bool isValid() const;
+
+		// returns pointer to location that contains the
+			// configuration of the requested path
+		ConstLocPtr getLocation() const ;
 
 	private:
 		/******* private member objects *******/
@@ -81,6 +86,9 @@ class Request {
 
 		// request parsing stage
 		Stage mStage;
+
+		// is request done
+		bool mDone;
 
 		// UNSPECIFIED in case method is not parsed
 			// yet, or parsed method is unsupported
