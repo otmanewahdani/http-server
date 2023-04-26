@@ -53,6 +53,10 @@ class URL {
 
 		// returns a status code that indicate the url validity
 		const StatusCodeType& getStatusCode() const;
+
+		// returns the most specific matched 
+			// location with the url path
+		ConstLocptr getLocation() const;
 		
 
 	private:
@@ -115,7 +119,7 @@ class URL {
 		// sets the status code if an error occured
 			// and set mValid to false and clear the 
 			// mvariables to prevent getting wrong data
-		void setStatusCodeError(StatusCodeType statusCode);
+		void setErrorStatusCode(StatusCodeType statusCode);
 
 		// checks if a char is a bad character
 		bool isForbiddenChar(const char c);

@@ -35,7 +35,7 @@ void URL::parseUrl(const std::string& url) {
 
 	// if the url is empty or doesn't starts with the root
 	if (url.empty() || url.front() != '/') {
-		setStatusCodeError(StatusCodeHandler::BAD_REQUEST);
+		setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 		return ;
 	}
 	
@@ -60,7 +60,7 @@ size_t URL::addPath(const std::string& url) {
 	while(url[i] && url[i] != '?') {
 
 		if (isForbiddenChar(url[i])) {
-			setStatusCodeError(StatusCodeHandler::BAD_REQUEST);
+			setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 			return i;
 		}
 
@@ -74,7 +74,7 @@ size_t URL::addPath(const std::string& url) {
 	// if the url path doesn't match any location 
 		// in mServer set NotFound error
 	if (!mLocation)
-		setStatusCodeError(StatusCodeHandler::NOT_FOUND);
+		setErrorStatusCode(StatusCodeHandler::NOT_FOUND);
 
 	// returns pos of query string
 	return i;
@@ -99,7 +99,7 @@ void URL::addQueryString(const std::string& url, size_t queryPos) {
 		while(url[++queryPos]) {
 			// if char is forbidden set error and stop
 			if (isForbiddenChar(url[queryPos])) {
-				setStatusCodeError(StatusCodeHandler::BAD_REQUEST);
+				setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 				return ;
 			}
 
@@ -174,7 +174,11 @@ const URL::StatusCodeType& URL::getStatusCode() const {
 	return mStatusCode;
 }
 
-void URL::setStatusCodeError(StatusCodeType statusCode) {
+URL::ConstLocptr URL::getLocation() const {
+	return mLocation;
+}
+
+void URL::setErrorStatusCode(StatusCodeType statusCode) {
 
 	mValid = false;
 	mStatusCode = statusCode;
