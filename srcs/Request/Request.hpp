@@ -28,7 +28,7 @@ class Request {
 		// represents the stages that
 			// request parsing goes through
 		enum Stage {
-			STATUS_LINE,
+			REQUEST_LINE,
 			HEADERS,
 			BODY,
 			FINISH
@@ -88,9 +88,6 @@ class Request {
 		// request parsing stage
 		Stage mStage;
 
-		// is request done
-		bool mDone;
-
 		// UNSPECIFIED in case method is not parsed
 			// yet, or parsed method is unsupported
 		Method mMethod;
@@ -115,6 +112,10 @@ class Request {
 
 		// amount by which to read from socket
 		static size_t readSize;
+		// maximum size a request line can be
+		static size_t requestLineSizeLimit;
+		// mazimum size of the headers
+		static size_t headersSizeLimit;
 
 		/******* private member functions *******/
 		// contains the whole logic that parses
