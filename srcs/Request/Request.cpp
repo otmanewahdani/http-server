@@ -55,6 +55,18 @@ const std::string& Request::getQueryString() const {
 	return mURL.getQueryString();
 }
 
+const Request::RequestType& Request::getRequestType() {
+	return mRequestType;
+}
+
+void Request::setStatusCode(const StatusCodeType& code) {
+	mStatusCode = code;
+}
+
+void Request::setRequestType(const RequestType& requestType) {
+	mRequestType = requestType;
+}
+
 void Request::proceedWithSocket() {
 
 	// throws an error if the 
