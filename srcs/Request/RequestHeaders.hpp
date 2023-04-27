@@ -33,7 +33,9 @@ class RequestHeaders {
 		// throws std::runtime_error on error
 		void parse();
 
-		size_t getHeadersSize();
+		// returns the number of bytes of the headers
+			// including the headers-body separator
+		size_t getSize();
 
 		// gets pointer to header value
 			// associated with a header name

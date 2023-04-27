@@ -88,7 +88,7 @@ const RequestHeaders::HeaderValue*
 
 }
 
-size_t RequestHeaders::getHeadersSize() {
+size_t RequestHeaders::getSize() {
 	return mHeadersSize;
 }
 

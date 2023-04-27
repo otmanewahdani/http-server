@@ -19,6 +19,7 @@ Request::Request(Socket socket, ConstServerRef server)
 	, mHeaders(mBuffer)
 	, mURL(server)
 	, mStatusCode(StatusCodeHandler::OK)
+	, mRequestType(UNDETERMINED)
 	, mSocketOk(true) {}
 
 void Request::initializeStaticData() {
@@ -167,7 +168,7 @@ void Request::parseHeaders() {
 		// the request header fields 
 	const std::string::size_type 
 		endOfHeadersPos = mBuffer.find
-		("\r\n\r\n",mLastBuffSize);
+		("\r\n\r\n", mLastBuffSize);
 
 	// end of header fields not found
 	if (endOfHeadersPos == std::string::npos) {
@@ -187,7 +188,20 @@ void Request::parseHeaders() {
 		return moveFinStage
 			(StatusCodeHandler::ENTITY_LARGE);
 
+	mHeaders.parse();
+
+	// removes the headers bytes
+		// after they were parsed
+	mBuffer.erase(0, mHeaders.getSize());
+
+	// resets to 0 so that the next
+		// parsing function reads the
+		// remaining charcaters
+	mLastBuffSize = 0;
 	
+}
+
+void Request::determineRequestType() {
 }
 
 bool Request::parseMethod

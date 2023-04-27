@@ -43,6 +43,7 @@ class Request {
 
 		// type of request to be executed
 		enum RequestType {
+			UNDETERMINED,
 			REDIRECT,
 			CGI,
 			UPLOAD,
@@ -88,6 +89,7 @@ class Request {
 			// reading from the socket
 		bool isSocketOk() const;
 
+		/******* getters *******/
 		// returns pointer to location that contains the
 			// configuration of the requested path
 		ConstLocPtr getLocation() const ;
@@ -97,6 +99,25 @@ class Request {
 
 		// returns the query string part of the parsed uri
 		const std::string& getQueryString() const;
+
+		// gets pointer to header value
+			// associated with a header name
+		// if not found, return NULL
+		const HeaderValue* getHeaderValue
+			(const HeaderName& headerName);
+
+		const Method& getMethod();
+
+		const std::string& getFullPath();
+
+		const StatusCodeType& getStatusCode();
+
+		const RequestType& getRequestType();
+
+		/******* setters *******/
+		void setStatusCode(const StatusCodeType& code);
+
+		void setRequestType(const RequestType& requestType);
 
 	private:
 		/******* private member objects *******/
@@ -142,6 +163,9 @@ class Request {
 		// it is initialized at first to OK, but changed
 			// on error or redirection
 		StatusCodeType mStatusCode;
+
+		// type of parsed request
+		RequestType mRequestType;
 
 		// changed to false if cannot read from socket
 		bool mSocketOk;
@@ -206,6 +230,11 @@ class Request {
 		// returns true if the url is valid 
 		// moves the buffer to the beginning of the headers
 		bool parseURL(const std::string::size_type endOfLinePos);
+
+		// determines the type of request made and either moves to
+			// the finish stage if no request body is needed or to
+			// the body stage and calls parseBody()
+		void determineRequestType();
 
 		// moves to the finish stage and
 			// sets the status code
