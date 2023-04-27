@@ -140,7 +140,7 @@ void Request::parseRequestLine() {
 
 	bool parseError = 
 		(parseMethod(endOfLinePos) == false
-		|| parseURL() == false);
+		|| parseURL(endOfLinePos) == false);
 
 	logRequest();
 
@@ -153,6 +153,15 @@ void Request::parseRequestLine() {
 	// moves to the headers stage
 	mStage = HEADERS;
 
+	// resets to 0 so that parseHeaders()
+		// reads the remaining charcaters
+	mLastBuffSize = 0;
+
+	parseHeaders();
+
+}
+
+void Request::parseHeaders() {
 }
 
 bool Request::parseMethod
@@ -190,7 +199,7 @@ bool Request::parseMethod
 	// sets method to the found method
 	mMethod = method->second;
 
-	// deletes the parsed request from the buffer
+	// deletes the parsed method from the buffer
 	mBuffer.erase(0, endOfMethodPos);
 
 	return true;

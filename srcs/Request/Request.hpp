@@ -171,11 +171,17 @@ class Request {
 		// checks if the whole request line has been read and that the request
 			// uri doesn't exceed the request line size limit, and then parses
 			// the method and uri
+		// sets mLastBuffSize to 0 so that the next parsing function starts by
+			// searching from the start of the buffer so no characters are
+			// left behind
 		void parseRequestLine();
 
 		// checks if the whole headers (including the body separator)
 			// are read and that they are not more the headers size
 			// limit and then parses them
+		// sets mLastBuffSize to 0 so that the next parsing function starts by
+			// searching from the start of the buffer so no characters are
+			// left behind
 		void parseHeaders();
 
 		// parses the body if needed, and keeps checking that the
