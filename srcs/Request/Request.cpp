@@ -133,7 +133,7 @@ void Request::parseRequestLine() {
 		// the url and if either is invalid,
 		// it stops here
 	if (parseMethod() == false
-		|| parseURL() == false)
+		|| parseURL(endOfLinePos) == false)
 		return;
 
 	// moves to the headers stage
@@ -145,8 +145,45 @@ bool Request::parseMethod() {
 	return true;
 }
 
-bool Request::parseURL() {
+bool Request::parseURL(const std::string::size_type endOfLinePos) {
+
+	// skips all the white spaces and 
+		// returns the the start pos of the url
+	const std::string::size_type urlStartPos 
+		= mBuffer.find_first_not_of(" ");
+
+	// search for the first space after the url in mBuffer
+	const std::string::size_type foundSpacePos 
+		= mBuffer.find(" ", urlStartPos);
+
+	// set the end pos of the url to the space pos 
+		// if it exists else set it to end of request line pos
+	const std::string::size_type urlEndPos 
+		= (foundSpacePos != std::string::npos && 
+		foundSpacePos < endOfLinePos) ? foundSpacePos : endOfLinePos;
+
+	// get the url substring from mBuffer
+	const std::string url = mBuffer.substr
+		(urlStartPos, urlEndPos - urlStartPos);
+	mURL.parse(url);
+
+
+	// if url is invalid move to finish stage
+		// with the appropriate error status code
+	if (mURL.isValid() == false) {
+		moveFinStage(mURL.getStatusCode());
+		return false;
+	}
+
+	// set the matched location
+	mLocation = mURL.getLocation();
+	
+	// erase the request line from 
+		// mBuffer ,including "\r\n"
+	mBuffer.erase(0, endOfLinePos + 2);
+
 	return true;
+
 }
 
 void Request::moveFinStage

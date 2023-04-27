@@ -185,15 +185,18 @@ class Request {
 		// moves the buffer to next token
 		bool parseMethod();
 
-		// parses the url and sets the matched location
-			// returns true if the url is valid
+		// takes the end position of the request line 
+			// then extract the url path and parses it
+		// sets the matched location
+		// returns true if the url is valid 
 		// moves the buffer to the beginning of the headers
-		bool parseURL();
+		bool parseURL(const std::string::size_type endOfLinePos);
 
 		// moves to the finish stage and
 			// sets the status code
 		void moveFinStage(const StatusCodeType code);
 
 		static void setSupportedMethods();
+
 
 };
