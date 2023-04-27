@@ -39,7 +39,7 @@ class RequestHeaders {
 
 		// gets pointer to header value
 			// associated with a header name
-		// if not found, return NULL
+		// if not found, returns NULL
 		const HeaderValue* getHeaderValue
 			(const HeaderName& headerName);
 

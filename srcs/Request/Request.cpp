@@ -55,6 +55,30 @@ const std::string& Request::getQueryString() const {
 	return mURL.getQueryString();
 }
 
+const Request::HeaderValue*
+	Request::getHeaderValue
+	(const HeaderName& headerName) {
+
+	return mHeaders.getHeaderValue
+		(headerName);
+
+}
+
+const Request::Method& Request::getMethod() {
+	return mMethod;
+}
+
+const std::string& Request::getFullPath() {
+	return mURL.getFullPath();
+}
+
+const Request::StatusCodeType&
+	Request::getStatusCode() {
+
+	return mStatusCode;
+
+}
+
 void Request::proceedWithSocket() {
 
 	// throws an error if the 
@@ -198,6 +222,10 @@ void Request::parseHeaders() {
 		// parsing function reads the
 		// remaining charcaters
 	mLastBuffSize = 0;
+
+	// after finishing parsing the headers, it's time
+		// to determine the request type
+	determineRequestType();
 	
 }
 

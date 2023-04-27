@@ -56,6 +56,8 @@ class Request {
 		typedef Config::ConstServerRef ConstServerRef;
 		typedef Config::ConstLocPtr ConstLocPtr;
 		typedef StatusCodeHandler::StatusCodeType StatusCodeType;
+		typedef RequestHeaders::HeaderName HeaderName;
+		typedef RequestHeaders::HeaderValue HeaderValue;
 
 		/******* public member functions *******/
 		// first parameter is the socket from which
@@ -106,8 +108,10 @@ class Request {
 		const HeaderValue* getHeaderValue
 			(const HeaderName& headerName);
 
+		// returns the requested method
 		const Method& getMethod();
 
+		// returns full path of the requested path
 		const std::string& getFullPath();
 
 		const StatusCodeType& getStatusCode();
