@@ -162,6 +162,32 @@ void Request::parseRequestLine() {
 }
 
 void Request::parseHeaders() {
+
+	// searches for the new line that ends
+		// the request header fields 
+	const std::string::size_type 
+		endOfHeadersPos = mBuffer.find
+		("\r\n\r\n",mLastBuffSize);
+
+	// end of header fields not found
+	if (endOfHeadersPos == std::string::npos) {
+
+		if (mBuffer.size() > mHeadersSizeLimit)
+			// header fields entity Too Large
+			return moveFinStage
+				(StatusCodeHandler::ENTITY_LARGE);
+		// retries in the next call
+		return;
+
+	}
+
+	// found but exceeds limit
+	if (endOfHeadersPos > mHeadersSizeLimit)
+		//header fields entity Too Large
+		return moveFinStage
+			(StatusCodeHandler::ENTITY_LARGE);
+
+	
 }
 
 bool Request::parseMethod

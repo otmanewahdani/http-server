@@ -19,6 +19,7 @@ class StatusCodeHandler {
 			BAD_REQUEST = 400,
 			NOT_FOUND = 404,
 			METHOD_ALLOW = 405,
+			ENTITY_LARGE = 413,
 			URI_LONG = 414
 		};
 

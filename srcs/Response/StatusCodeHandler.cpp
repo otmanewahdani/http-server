@@ -21,6 +21,9 @@ void StatusCodeHandler::initializeStaticData() {
 	statusCodePair = std::make_pair("414", "Request-URI Too Long");
 	mStatusCodesData[URI_LONG] = statusCodePair;
 
+	statusCodePair = std::make_pair("413", "Request Entity Too Large");
+	mStatusCodesData[ENTITY_LARGE] = statusCodePair;
+
 }
 
 const StatusCodeHandler::StatusCodePair&
