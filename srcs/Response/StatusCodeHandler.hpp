@@ -1,6 +1,6 @@
 /* this file contains the definition of the StatusCodeHandler class
  * It is responsible for storing and serving different http status
- * codes through an interface thta depends on a set of defined
+ * codes through an interface that depends on a set of defined
  * enum values from the StatusCodeType enum
  */
 
@@ -18,7 +18,8 @@ class StatusCodeHandler {
 			OK = 200,
 			BAD_REQUEST = 400,
 			NOT_FOUND = 404,
-			METHOD_ALLOW = 405
+			METHOD_ALLOW = 405,
+			URI_LONG = 414
 		};
 
 		/******* alias types *******/

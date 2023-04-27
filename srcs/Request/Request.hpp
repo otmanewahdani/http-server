@@ -12,6 +12,12 @@
 #include <Config.hpp>
 #include <RequestHeaders.hpp>
 #include <URL.hpp>
+#include <StatusCodeHandler.hpp>
+#include <sys/types.h>
+#include <sys/uio.h>
+#include <unistd.h>
+#include <stdexcept>
+#include <map>
 
 class Request {
 
@@ -57,6 +63,8 @@ class Request {
 			// contains the needed configuration info
 		Request(Socket socket, ConstServerRef server);
 
+		static void initializeStaticData();
+
 		// returns true if it still wants to read
 			// request bytes from a socket
 		// returns false if done reading and request
@@ -66,6 +74,8 @@ class Request {
 		// signals that the socket is ready for reading
 			// attempts to read from socket
 			// and parse request bytes
+		// if it's called and Request is done reading,
+			// throws std:runtime_error
 		void proceedWithSocket();
 
 		// returns true if parsed request is valid
@@ -109,6 +119,11 @@ class Request {
 			// that still need to be processed
 		std::string mBuffer;
 
+		// tracks the previous size of the buffer
+			// before new characters are
+			// appended to it
+		std::string::size_type mLastBuffSize;
+
 		RequestHeaders mHeaders;
 
 		// contains information about the request url
@@ -125,13 +140,23 @@ class Request {
 		bool mSocketOk;
 
 		// amount by which to read from socket
-		static size_t readSize;
+		static size_t mReadSize;
 		// maximum size a request line can be
-		static size_t requestLineSizeLimit;
+		static size_t mRequestLineSizeLimit;
 		// mazimum size of the headers
-		static size_t headersSizeLimit;
+		static size_t mHeadersSizeLimit;
+
+		// supported http methods are stored as a
+			// key of a stringifyied Method and
+			// value of its enum
+		static std::map<std::string, Method> mSupportedMethods;
 
 		/******* private member functions *******/
+
+		/* all the parse functions move prematurely to the
+		 * 	finish stage and set the status code to an error
+		 * 	class code in case of error
+		 */
 		// contains the whole logic that parses
 			// the request
 		void parseRequest();
@@ -141,11 +166,34 @@ class Request {
 			// the method and uri
 		void parseRequestLine();
 
-		void parseBody();
-
 		// checks if the whole headers (including the body separator)
 			// are read and that they are not more the headers size
 			// limit and then parses them
-		void processHeaders();
+		void parseHeaders();
+
+		// parses the body if needed, and keeps checking that the
+			// read body doesn't exceed the maximum size limit
+		// The body will be read only in these cases:
+			// + no error is encountered
+			// + post request if it's a cgi or upload
+		// the body is unchunked if the 'transfer-encoding:
+			// chunked' header is encountered
+		void parseBody();
+
+		// returns true and sets the request method if found,
+			// otherwise it's left unchanged
+		// moves the buffer to next token
+		bool parseMethod();
+
+		// parses the url and sets the matched location
+			// returns true if the url is valid
+		// moves the buffer to the beginning of the headers
+		bool parseURL();
+
+		// moves to the finish stage and
+			// sets the status code
+		void moveFinStage(const StatusCodeType code);
+
+		static void setSupportedMethods();
 
 };

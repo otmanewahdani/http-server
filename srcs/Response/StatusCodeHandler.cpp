@@ -18,6 +18,9 @@ void StatusCodeHandler::initializeStaticData() {
 	statusCodePair = std::make_pair("405", "Method Not Allowed");
 	mStatusCodesData[METHOD_ALLOW] = statusCodePair;
 
+	statusCodePair = std::make_pair("414", "Request-URI Too Long");
+	mStatusCodesData[URI_LONG] = statusCodePair;
+
 }
 
 const StatusCodeHandler::StatusCodePair&
