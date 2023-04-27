@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <stdexcept>
 #include <map>
+#include <Log.hpp>
 
 class Request {
 
@@ -90,6 +91,12 @@ class Request {
 		// returns pointer to location that contains the
 			// configuration of the requested path
 		ConstLocPtr getLocation() const ;
+
+		// returns the path part of the parsed uri
+		const std::string& getPath() const;
+
+		// returns the query string part of the parsed uri
+		const std::string& getQueryString() const;
 
 	private:
 		/******* private member objects *******/
@@ -182,8 +189,10 @@ class Request {
 
 		// returns true and sets the request method if found,
 			// otherwise it's left unchanged
+		// the search for the method doesn't go further
+			// than endOfLinePos
 		// moves the buffer to next token
-		bool parseMethod();
+		bool parseMethod(const std::string::size_type endOfLinePos);
 
 		// parses the url and sets the matched location
 			// returns true if the url is valid
@@ -195,5 +204,8 @@ class Request {
 		void moveFinStage(const StatusCodeType code);
 
 		static void setSupportedMethods();
+
+		// logs the received request
+		void logRequest();
 
 };

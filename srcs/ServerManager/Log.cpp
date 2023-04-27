@@ -88,13 +88,13 @@ void Log::connectionEstablished(const Socket socket) {
 
 void Log::request(const Socket socket,
 	const std::string& method, 
-	const std::string& uri,
+	const std::string& path,
 	const std::string& queryString) {
 
 	// operation description
 	const std::string op =
 		method + " request for path: "
-		+ '\'' + uri + '\''
+		+ '\'' + path + '\''
 		+ " with query string: "
 		+ '\'' + queryString + '\''
 		+ " received";
