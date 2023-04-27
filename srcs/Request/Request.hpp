@@ -116,11 +116,14 @@ class Request {
 
 		const StatusCodeType& getStatusCode();
 
+		// returns the type of the parsed Request
 		const RequestType& getRequestType();
 
 		/******* setters *******/
+		// sets the mStatusCode
 		void setStatusCode(const StatusCodeType& code);
 
+		// sets the RequestType
 		void setRequestType(const RequestType& requestType);
 
 	private:
