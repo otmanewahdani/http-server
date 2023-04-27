@@ -77,6 +77,8 @@ const Request::StatusCodeType&
 
 	return mStatusCode;
 
+}
+
 const Request::RequestType&
 	Request::getRequestType() {
 
