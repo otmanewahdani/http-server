@@ -32,9 +32,11 @@ class Log {
 		static void connectionEstablished(const Socket socket);
 
 		// logs request coming from socket's client to socket's server
-			// with the specified URI
+			// with the specified Method, URI and query string
 		static void request(const Socket socket,
-			const std::string& uri);
+			const std::string& method, 
+			const std::string& uri,
+			const std::string& queryString);
 
 		// logs request that was sent from socket's
 			// server to socket's client
