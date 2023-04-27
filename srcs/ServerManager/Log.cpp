@@ -87,12 +87,16 @@ void Log::connectionEstablished(const Socket socket) {
 }
 
 void Log::request(const Socket socket,
-	const std::string& uri) {
+	const std::string& method, 
+	const std::string& path,
+	const std::string& queryString) {
 
 	// operation description
 	const std::string op =
-		std::string("request for ")
-		+ '\'' + uri + '\''
+		method + " request for path: "
+		+ '\'' + path + '\''
+		+ " with query string: "
+		+ '\'' + queryString + '\''
 		+ " received";
 
 	// request for 'uri' received

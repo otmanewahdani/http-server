@@ -22,6 +22,7 @@ Request::Request(Socket socket, ConstServerRef server)
 	, mSocketOk(true) {}
 
 void Request::initializeStaticData() {
+	setSupportedMethods();
 }
 
 bool Request::isRead() const {
@@ -43,6 +44,14 @@ bool Request::isValid() const {
 
 bool Request::isSocketOk() const {
 	return mSocketOk;
+}
+
+const std::string& Request::getPath() const {
+	return mURL.getPath();
+}
+
+const std::string& Request::getQueryString() const {
+	return mURL.getQueryString();
 }
 
 void Request::proceedWithSocket() {
@@ -111,7 +120,7 @@ void Request::parseRequestLine() {
 		endOfLinePos = mBuffer.find
 			("\r\n", mLastBuffSize);
 
-	// not found
+	// end of line not found
 	if (endOfLinePos == std::string::npos) {
 
 		if (mBuffer.size() > mRequestLineSizeLimit)
@@ -129,11 +138,16 @@ void Request::parseRequestLine() {
 		return moveFinStage
 			(StatusCodeHandler::URI_LONG);
 
+	bool parseError = 
+		(parseMethod(endOfLinePos) == false
+		|| parseURL() == false);
+
+	logRequest();
+
 	// tries to parse the method and
 		// the url and if either is invalid,
 		// it stops here
-	if (parseMethod() == false
-		|| parseURL(endOfLinePos) == false)
+	if (parseError)
 		return;
 
 	// moves to the headers stage
@@ -141,8 +155,46 @@ void Request::parseRequestLine() {
 
 }
 
-bool Request::parseMethod() {
+bool Request::parseMethod
+	(const std::string::size_type endOfLinePos) {
+	
+	// searches for the space that
+		// ends the method token
+	const std::string::size_type
+		endOfMethodPos = mBuffer.find(' ');
+	
+	// if not found or it exceeds endOfLinePos
+	if (endOfMethodPos == std::string::npos
+		|| endOfMethodPos > endOfLinePos) {
+
+		moveFinStage(StatusCodeHandler::BAD_REQUEST);
+		return false;
+
+	}
+
+	// parses the method up to the terminating space
+	const std::string parsedMethod =
+		mBuffer.substr(0, endOfMethodPos);
+
+	// searches for the parsed method
+		// among the supported methods
+	std::map<std::string, Method>::const_iterator
+		method = mSupportedMethods.find(parsedMethod);
+
+	// not a supported method
+	if (method == mSupportedMethods.end()) {
+		moveFinStage(StatusCodeHandler::BAD_REQUEST);
+		return false;
+	}
+
+	// sets method to the found method
+	mMethod = method->second;
+
+	// deletes the parsed request from the buffer
+	mBuffer.erase(0, endOfMethodPos);
+
 	return true;
+
 }
 
 bool Request::parseURL(const std::string::size_type endOfLinePos) {
@@ -194,5 +246,32 @@ void Request::moveFinStage
 
 }
 
+void Request::logRequest() {
+
+	// searches for the parsed method's
+		// string format
+	std::map<std::string, Method>::const_iterator
+		method = mSupportedMethods.begin();
+	for (; method != mSupportedMethods.end(); ++method) {
+		if (method->second == mMethod)
+			break;
+	}
+
+	// the method is invalid if isn't
+		// set in the supported methods
+	const std::string& methodStr =
+		method == mSupportedMethods.end()
+		? "INVALID METHOD" : method->first;
+
+	Log::request(mSocket, methodStr,
+		getPath(), getQueryString());
+
+}
+
 void Request::setSupportedMethods() {
+
+	mSupportedMethods["GET"] = GET;
+	mSupportedMethods["POST"] = POST;
+	mSupportedMethods["DELETE"] = DELETE;
+
 }
