@@ -30,6 +30,12 @@ class RequestChecker {
 			// is allowed for the requested path
 		bool isMethodAllowed();
 
+		/******* checkers *******/
+		/* all these checkers check the type of request
+		 * and set request type of the request object
+		 * to that type if it's true and its associated
+		 * status code
+		 */
 		// checks if the path is a redirection
 		bool isRedirect();
 

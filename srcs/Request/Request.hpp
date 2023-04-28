@@ -44,10 +44,11 @@ class Request {
 		// type of request to be executed
 		enum RequestType {
 			UNDETERMINED,
+			AUTOINDEX,
 			REDIRECT,
 			CGI,
 			UPLOAD,
-			AUTOINDEX,
+			DEFAULT,
 			CONTENT
 		};
 

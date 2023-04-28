@@ -20,14 +20,18 @@ bool RequestChecker::isValid() {
 	mIsPath = isPath(mRequest.getFullPath);
 	mIsDir = isDir(mRequest.getFullPath);
 	
-	if (isMethodAllowed() == false) {
-		return false;
+	if ( isMethodAllowed() 
+		|| isRedirect()
+		|| isAutoIndex()
+		|| isCGI()
+		|| isUpload()
+		|| isDefault()
+		|| isContent() ) {
+
+		return true;
+	
 	}
 
-	if (isRedirect())
-
-	// path not found
-	mRequest.setStatusCode();
 	return false;
 
 }
