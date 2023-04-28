@@ -34,6 +34,8 @@ bool RequestChecker::isValid() {
 	
 	}
 
+	// request doesn't match anything
+	mRequest.setStatusCode(RequestChecker::NOT_FOUND);
 	return false;
 
 }
