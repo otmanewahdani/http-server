@@ -102,18 +102,19 @@ class URL {
 			// or didn't match a location within mServer
 		// it returns the position of the query 
 			// string in the url if it exists
-		size_t addPath(const std::string& url);
+		// sets BAD_REQUEST error and invalid url if a 
+			// bad character was found
+		// sets NOT_FOUND error and invalid url
+			// if it didn't match any location
+		size_t parsePath(const std::string& url);
 
-		// add the query string if it exists in the url
-		void addQueryString(const std::string& url, size_t queryPos);
+		// parse the query string if it exists in the url
+		// sets BAD_REQUEST error and invalid url if a 
+			// bad character was found
+		void parseQueryString(const std::string& url, size_t queryPos);
 		
-		// set mLocation to the most specific
-			// matched location with the url path
-		// NULL if didn't find any match 
-		void getMatchedLocation();
 
 		// construct the full path of the requested resource 
-			// from the url path and the matched location root
 		void addFullPath();
 
 		// sets the status code if an error occured

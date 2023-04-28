@@ -42,42 +42,49 @@ void URL::parseUrl(const std::string& url) {
 	// parse the path and get the position 
 		// of the query string in the url
 	size_t queryPos;
-	queryPos = addPath(url);
+	queryPos = parsePath(url);
 
 	// parse the query string if the url state still valid
-	addQueryString(url, queryPos);
+	parseQueryString(url, queryPos);
 
 }
 
-size_t URL::addPath(const std::string& url) {
+size_t URL::parsePath(const std::string& url) {
 	
 	// to avoid string realloacation
 	mPath.reserve(url.size() + 1);
 
-	// read from the url till the end or 
-		// start of query string
+	// parses the url path by reading and checking 
+		// each character of the url and add it to
+		//  mPath if it's valid until 
+		// the end of the url or the beginning 
+		// of the query string
 	size_t i = 0;
 	while(url[i] && url[i] != '?') {
 
+		// sets error and invalid url if it's a bad char
 		if (isForbiddenChar(url[i])) {
 			setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 			return i;
 		}
 
+		// add the valid character
 		mPath.insert(mPath.end(), url[i]);
 		++i;
 	}
 
-	// get the mServer location that matches the mPath
-	getMatchedLocation();
+	// sets the most specific location 
+		// that matches the url path within mServer
+	mLocation = mServer.matchLocation(mPath);
 
 	// if the url path doesn't match any location 
-		// in mServer set NotFound error
+		// in mServer set NotFound error and invalid url
 	if (!mLocation)
 		setErrorStatusCode(StatusCodeHandler::NOT_FOUND);
 
-	// returns pos of query string
+	// returns pos of the query string
 	return i;
+
 }
 
 bool URL::isForbiddenChar(const char c) {
@@ -88,16 +95,16 @@ bool URL::isForbiddenChar(const char c) {
 
 }
 
-void URL::addQueryString(const std::string& url, size_t queryPos) {
+void URL::parseQueryString(const std::string& url, size_t queryPos) {
 
 	if (mValid && queryPos != std::string::npos) {
 		// to avoid string reallocation
 		mQuery.reserve(url.size() - mPath.size() + 1);
 
-		// check each character withing the url 
-			// and add it if it's not forbidden
+		// reads each character in the url starting 
+			// from the start position of the query string
 		while(url[++queryPos]) {
-			// if char is forbidden set error and stop
+			// sets error and invalid url if it's a bad char
 			if (isForbiddenChar(url[queryPos])) {
 				setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 				return ;
@@ -110,46 +117,16 @@ void URL::addQueryString(const std::string& url, size_t queryPos) {
 	
 }
 
-void URL::getMatchedLocation() {
-
-	// copy the mpath to a tmp string and append "/" 
-		// to it in case of location rout ending with "/"
-	Path subPath;
-	subPath = mPath + "/";
-
-	// check each sub path of the url path if it 
-		// matches a location in mServer starting 
-		// from the most specific one
-	size_t pos;
-	while (!subPath.empty()) {
-		// find the pos of the last "/"
-		pos = subPath.rfind("/");
-
-		// search sub path with the / char
-		subPath.erase(pos + 1);
-		mLocation = mServer.getLocation(subPath);
-		if(mLocation)
-			break;
-
-		// search sub path without the / char
-		subPath.erase(pos);
-		mLocation = mServer.getLocation(subPath);
-		if(mLocation)
-			break;
-	}
-
-}
-
 void URL::addFullPath() {
 
-	// if no error occurred
-	if (mValid) {
-		// if the matched loacation has no root
-			// take the current path as root
-		if (mLocation->root.empty())
-			mFullPath = "." + mPath;
-		else
-			mFullPath = mLocation->root + mPath;
+	// if the url was parsed successfully and the 
+		// matched location was found. construct the
+		// full path of the requested resource by replacing 
+		// the prefix subpath withing the url path
+		// with the location root if it exists
+		// or the current directory if not
+	if (mLocation && mValid) {
+		mLocation->replaceByRoot(mPath);
 	}
 
 }
