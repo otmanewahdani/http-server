@@ -59,6 +59,49 @@ Config::ConstLocPtr
 
 }
 
+Config::ConstLocPtr Config::ServerContext::matchLocation
+	(const std::string& path) const {
+			
+	ConstLocPtr matchedLocation = NULL;
+
+	// The search for the matched location will follow this logic:
+	// it will start by matching the whole path against all the
+		// locations, and if no match is found, the trailing slash will
+		// be deleted and the new subpath is stored in subPath and will
+		// be matched again, and if not match is found then the chars
+		// that precede the next slash are deleted, and new subpath is 
+		// tested again. This process will be repeated until a match is
+		// found, or no more chars are left in path 
+	Path subPath = path;
+
+	// append "/" to check the case of location route ending with "/"
+	subPath += "/";
+
+	// checks each prefix subpath within path if it 
+		// matches with a location of the server starting 
+		// from the most specific one
+	size_t pos;
+	while (!subPath.empty()) {
+		// find the pos of the last "/"
+		pos = subPath.rfind("/");
+
+		// search sub path with the / char
+		subPath.erase(pos + 1);
+		matchedLocation = getLocation(subPath);
+		if (matchedLocation)
+			break;
+
+		// search sub path without the / char
+		subPath.erase(pos);
+		matchedLocation = getLocation(subPath);
+		if (matchedLocation)
+			break;
+	}
+
+	return matchedLocation;
+
+}
+
 void Config::initSupportedCGIExtensions() {
 	
 	// defines the supported cgi extensions
