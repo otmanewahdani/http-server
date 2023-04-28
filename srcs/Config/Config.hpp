@@ -46,11 +46,9 @@ class Config {
 			// constructor
 			LocationContext();
 
-			// returns a new string by prepending
-				// the route to path
-			std::string prepend(const std::string& path);
-
 			// replaces the location part by the root
+				// if no root was set, it's replaced by
+				// the current directory
 			std::string replaceByRoot(const std::string& path);
 
 		};

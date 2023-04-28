@@ -59,6 +59,26 @@ Config::ConstLocPtr
 
 }
 
+std::string Config::LocationContext::replaceByRoot
+	(const std::string& path) {
+	
+	// if no root was set, makes the path starts
+		// at the current directory
+	const std::string& replacement = root.empty()
+		? "./" : root;
+
+	// takes the end position of the location
+		// prefix in the path
+	const std::string::size_type
+		endOfLocPrefixPos = route.size();
+
+	// removes the location prefix and prepends
+		// the replacement to it
+	return (replacement +
+		std::string(path, endOfLocPrefixPos));
+
+}
+
 Config::ConstLocPtr Config::ServerContext::matchLocation
 	(const std::string& path) const {
 			
