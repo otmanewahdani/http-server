@@ -49,7 +49,8 @@ class Config {
 			// replaces the location part by the root
 				// if no root was set, it's replaced by
 				// the current directory
-			std::string replaceByRoot(const std::string& path);
+			std::string replaceByRoot
+				(const std::string& path) const ;
 
 		};
 

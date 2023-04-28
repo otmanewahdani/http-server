@@ -60,7 +60,7 @@ Config::ConstLocPtr
 }
 
 std::string Config::LocationContext::replaceByRoot
-	(const std::string& path) {
+	(const std::string& path) const {
 	
 	// if no root was set, makes the path starts
 		// at the current directory
