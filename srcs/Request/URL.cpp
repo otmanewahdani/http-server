@@ -126,7 +126,7 @@ void URL::addFullPath() {
 		// with the location root if it exists
 		// or the current directory if not
 	if (mLocation && mValid) {
-		mLocation->replaceByRoot(mPath);
+		mFullPath = mLocation->replaceByRoot(mPath);
 	}
 
 }
