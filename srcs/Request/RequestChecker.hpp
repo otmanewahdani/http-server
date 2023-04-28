@@ -11,6 +11,7 @@
 #include <Request.hpp>
 #include <Config.hpp>
 #include <utils.hpp>
+#include <StatusCodeHandler.hpp>
 
 class RequestChecker {
 
@@ -19,6 +20,9 @@ class RequestChecker {
 		typedef Request::Method Method;
 		typedef Config::StatusCode StatusCode;
 		typedef Config::Path Path;
+		typedef Config::ConstLocPtr ConstLocPtr;
+		typedef StatusCodeHandler::StatusCodeType
+			StatusCodeType;
 
 		/******* public member functions *******/
 		// takes the request to be checked

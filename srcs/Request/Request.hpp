@@ -254,3 +254,9 @@ class Request {
 		void logRequest();
 
 };
+
+
+// this include directive was brought down here because the included file
+// includes this file (Request.hpp) as well and relies on the full definition
+// of the Request class
+#include <RequestChecker.hpp>

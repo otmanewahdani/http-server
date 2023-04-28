@@ -4,7 +4,7 @@
 #include <RequestChecker.hpp>
 
 RequestChecker::RequestChecker(Request& request)
-	: mRequest(Request)
+	: mRequest(request)
 	, mLocation()
 	, mIsPath()
 	, mIsDir() {}
@@ -17,8 +17,8 @@ bool RequestChecker::isValid() {
 
 	// saves if the file exists so that it's used
 		// by the checking functions that are called next
-	mIsPath = isPath(mRequest.getFullPath);
-	mIsDir = isDir(mRequest.getFullPath);
+	mIsPath = isPath(mRequest.getFullPath());
+	mIsDir = isDir(mRequest.getFullPath());
 	
 	if ( isMethodAllowed() == false)
 		return false;
@@ -35,7 +35,7 @@ bool RequestChecker::isValid() {
 	}
 
 	// request doesn't match anything
-	mRequest.setStatusCode(RequestChecker::NOT_FOUND);
+	mRequest.setStatusCode(StatusCodeHandler::NOT_FOUND);
 	return false;
 
 }
@@ -69,9 +69,11 @@ bool RequestChecker::isRedirect() {
 	if (mLocation->redirection.first == 0)
 		return false;
 
-	mRequest.setStatusCode(mLocation->redirection.first);
+	mRequest.setStatusCode
+		(static_cast<StatusCodeType>
+		 (mLocation->redirection.first));
 
-	mRequest.setRequestType(REDIRECT);
+	mRequest.setRequestType(Request::REDIRECT);
 
 	return true;
 
@@ -112,7 +114,66 @@ bool RequestChecker::isCGI() {
 		== mLocation->supportedCGIs.end())
 		return false;
 
-	mRequest.setRequestType(CGI);
+	mRequest.setRequestType(Request::CGI);
+	return true;
+
+}
+
+bool RequestChecker::isAutoIndex() {
+
+	// if the the requested resource 
+		// is a directory and the location
+		// enables autoindexing
+	if (mIsDir == false || 
+		mLocation->autoindex == false) {
+		return false;
+	}
+
+	mRequest.setRequestType(Request::AUTOINDEX);
+	return true;
+	
+}
+
+bool RequestChecker::isUpload() {
+
+	// checks if the full path of the requested 
+		// resource is a directory and the 
+		// location enables uploading 
+	if (mIsDir == false || 
+		mLocation->uploadRoute.empty()) {
+		return false;
+	}
+
+	mRequest.setRequestType(Request::UPLOAD);
+	return true;
+
+}
+
+bool RequestChecker::isDefault() {
+
+	// checks if the location specifies a default 
+		// file to serve in case of get method 
+		// and the path of the request is
+		// a directory otherwise returns false 
+	if (mIsDir == false || 
+		mRequest.getMethod() != Request::GET || 
+		mLocation->defaultFile.empty()) {
+		return false;
+	}
+	
+	mRequest.setRequestType(Request::DEFAULT);
+	return true;
+
+}
+
+bool RequestChecker::isContent() {
+
+	// checks if the path exists and is not a directory
+		// in case of requesting a static file
+	if (mIsPath == false || mIsDir)
+		return false;
+
+	mRequest.setRequestType(Request::CONTENT);
 	return true;
 
 }
