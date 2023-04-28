@@ -71,7 +71,7 @@ bool RequestChecker::isRedirect() {
 
 	mRequest.setStatusCode(mLocation->redirection.first);
 
-	mRequest.setRequestType = REDIRECT;
+	mRequest.setRequestType(REDIRECT);
 
 	return true;
 
@@ -112,6 +112,7 @@ bool RequestChecker::isCGI() {
 		== mLocation->supportedCGIs.end())
 		return false;
 
+	mRequest.setRequestType(CGI);
 	return true;
 
 }
