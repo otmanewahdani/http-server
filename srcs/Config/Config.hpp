@@ -35,7 +35,7 @@ class Config {
 			bool post;
 			bool del;
 			// end of http methods
-			std::map<Path, StatusCode> redirections;
+			std::pair<StatusCode, Path> redirection;
 			Path root;
 			bool autoindex;
 			Path defaultFile;

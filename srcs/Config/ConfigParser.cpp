@@ -250,7 +250,8 @@ void ConfigParser::parseRedirection() {
 	parsePath(redirectPath);
 
 	// saves redirectPath:code pair in current location context
-	mLocationRef->redirections[redirectPath] = code;
+	mLocationRef->redirection.first = code;
+	mLocationRef->redirection.second = redirectPath;
 
 }
 

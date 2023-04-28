@@ -1,5 +1,5 @@
 /* this file contains the definition of RequestChecker class
- *  this class is responsible for checking the validity of a
+ *  this helper class is responsible for checking the validity of a
  *  Request object after it has parsed its request headers, and
  *  determining the type of request 
  *  After determining the request type, it is set in the request object
@@ -9,11 +9,17 @@
 #pragma once
 
 #include <Request.hpp>
+#include <Config.hpp>
 #include <utils.hpp>
 
 class RequestChecker {
 
 	public:
+		/******* alias types *******/
+		typedef Request::Method Method;
+		typedef Config::StatusCode StatusCode;
+		typedef Config::Path Path;
+
 		/******* public member functions *******/
 		// takes the request to be checked
 		RequestChecker(Request& request);
@@ -28,6 +34,8 @@ class RequestChecker {
 		/******* private member functions *******/
 		// checks if the requested method
 			// is allowed for the requested path
+		// sets request's status code appropriately if the
+			// requested method isn't allowed
 		bool isMethodAllowed();
 
 		/******* checkers *******/
@@ -36,7 +44,8 @@ class RequestChecker {
 		 * to that type if it's true and its associated
 		 * status code
 		 */
-		// checks if the path is a redirection
+		// checks if there is redirection associated
+			// with the path
 		bool isRedirect();
 
 		// checks if it's a cgi request

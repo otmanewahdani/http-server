@@ -227,8 +227,9 @@ void Config::printLocation(const LocationContext& location, int indent) {
 	if (location.del)
 		std::cout << indentStr + '\t' << "DELETE\n";
 
-	std::cout << indentStr << "REDIRECTIONS\n";
-	printMap(location.redirections, indent + 1);
+	std::cout << indentStr << "REDIRECTION\n";
+	std::cout << indentStr + '\t' << location.redirection.first
+		<< " -> " << location.redirection.second << '\n';
 
 	std::cout << indentStr << "ROOT: '" << location.root << "'\n";
 
