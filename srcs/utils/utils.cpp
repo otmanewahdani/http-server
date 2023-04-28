@@ -19,6 +19,36 @@ bool isDir(const std::string& path) {
 
 }
 
+bool isPath(const std::string& path) {
+
+	// if file doesn't exist
+	if (access(path.c_str(), F_OK))
+		return false;
+
+	return true;
+
+}
+
+bool isPathRead(const std::string& path) {
+
+	// if file isn't readble
+	if (access(path.c_str(), R_OK))
+		return false;
+
+	return true;
+
+}
+
+bool isPathExec(const std::string& path) {
+
+	// if file isn't executable
+	if (access(path.c_str(), X_OK))
+		return false;
+
+	return true;
+
+}
+
 void throwErrnoException(const std::string& context) {
 
 	std::string errorMsg = context + ": ";

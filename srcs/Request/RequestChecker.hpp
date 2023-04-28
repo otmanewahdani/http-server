@@ -9,6 +9,7 @@
 #pragma once
 
 #include <Request.hpp>
+#include <utils.hpp>
 
 class RequestChecker {
 
@@ -52,6 +53,14 @@ class RequestChecker {
 		/******* private member objects *******/
 		Request& mRequest;
 
+		// stores the location containing the
+			// config data of the requested path
 		ConstLocPtr mLocation;
+
+		// stores if the requested path exists
+		bool mIsPath;
+
+		// stores if the requested path is a directory
+		bool mIsDir;
 
 };

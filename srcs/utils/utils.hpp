@@ -11,9 +11,19 @@
 #include <sys/errno.h>
 #include <fcntl.h>
 #include <sstream>
+#include <unistd.h>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
+
+// returns true if path exists
+bool isPath(const std::string& path);
+
+// returns true if path readable
+bool isPathRead(const std::string& path);
+
+// returns true if path executable
+bool isPathExec(const std::string& path);
 
 // throws a std::runtime_error an error message
 	// that corresponds to errno

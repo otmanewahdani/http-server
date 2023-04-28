@@ -28,6 +28,7 @@ class Config {
 		/******* nested types *******/
 		// holds info about a given location
 		struct LocationContext {
+
 			Path route;
 			// http methods
 			bool get;
@@ -41,8 +42,17 @@ class Config {
 			CGISystems supportedCGIs;
 			Path uploadRoute;
 
+			/******* member functions *******/
 			// constructor
 			LocationContext();
+
+			// returns a new string by prepending
+				// the route to path
+			std::string prepend(const std::string& path);
+
+			// replaces the location part by the root
+			std::string replaceByRoot(const std::string& path);
+
 		};
 
 		/******* alias types *******/
@@ -76,6 +86,12 @@ class Config {
 				// whose path == the parameter path
 			// returns NULL if not found
 			ConstLocPtr getLocation
+				(const std::string& path) const ;
+
+			// finds the most specific location that matches
+				// a prefix subpath within path
+			// if not foud, returns NULL
+			ConstLocPtr matchLocation
 				(const std::string& path) const ;
 
 		};

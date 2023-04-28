@@ -297,6 +297,18 @@ void ConfigParser::parseCGI() {
 	Path CGIExecutableLocation;
 	parsePath(CGIExecutableLocation);
 
+	// checks if the provided cgi executable
+		// is readable and executable
+	if (isPathRead(CGIExecutableLocation) == false
+		|| isPathExec(CGIExecutableLocation) == false) {
+
+		std::cerr << "parseCGI(): executable path '"
+			<< CGIExecutableLocation << "' should "
+			<< "exist and be readable and executable\n";
+		handleParsingError(token);
+
+	}
+
 	// finally stores the parsed data
 	mLocationRef->supportedCGIs[extension] = CGIExecutableLocation;
 
