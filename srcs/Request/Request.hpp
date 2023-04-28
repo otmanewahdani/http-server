@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <map>
 #include <Log.hpp>
+#include <RequestChecker.hpp>
 
 class Request {
 
@@ -175,6 +176,8 @@ class Request {
 		// type of parsed request
 		RequestType mRequestType;
 
+		RequestChecker mRequestChecker;
+
 		// changed to false if cannot read from socket
 		bool mSocketOk;
 
@@ -254,9 +257,3 @@ class Request {
 		void logRequest();
 
 };
-
-
-// this include directive was brought down here because the included file
-// includes this file (Request.hpp) as well and relies on the full definition
-// of the Request class
-#include <RequestChecker.hpp>

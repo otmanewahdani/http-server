@@ -20,6 +20,7 @@ Request::Request(Socket socket, ConstServerRef server)
 	, mURL(server)
 	, mStatusCode(StatusCodeHandler::OK)
 	, mRequestType(UNDETERMINED)
+	, mRequestChecker(*this)
 	, mSocketOk(true) {}
 
 void Request::initializeStaticData() {
@@ -251,6 +252,18 @@ void Request::parseHeaders() {
 }
 
 void Request::determineRequestType() {
+
+	// checks if the request is valid
+	if (mRequestChecker.isValid() == false) {
+		mStage = FINISH;
+		return ;
+	}
+
+	// checks if the body needs to be read
+
+}
+
+void Request::parseBody() {
 }
 
 bool Request::parseMethod

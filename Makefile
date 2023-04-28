@@ -17,7 +17,7 @@ NET_SRC := Network.cpp
 
 RESPONSE_SRC := Response.cpp StatusCodeHandler.cpp
 
-REQUEST_SRC := Request.cpp RequestHeaders.cpp URL.cpp
+REQUEST_SRC := Request.cpp RequestHeaders.cpp RequestChecker.cpp URL.cpp
 
 CLIENT_SRC := ClientHandler.cpp
 
@@ -33,7 +33,7 @@ SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) \
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 
-VPATH := $(addprefix $(SRCS_DIR),$(VPATH) ) srcs/ServerManager
+VPATH := $(addprefix $(SRCS_DIR),$(VPATH) )
 
 INCS = $(addprefix -I,$(VPATH))
 

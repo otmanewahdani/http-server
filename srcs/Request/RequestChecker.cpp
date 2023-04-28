@@ -42,7 +42,8 @@ bool RequestChecker::isValid() {
 
 bool RequestChecker::isMethodAllowed() {
 
-	const Method& method = mRequest.getMethod();
+	const Request::Method& method
+		= mRequest.getMethod();
 
 	if (method == Request::GET)
 		if (mLocation->get)
@@ -81,7 +82,8 @@ bool RequestChecker::isRedirect() {
 
 bool RequestChecker::isCGI() {
 
-	Method method = mRequest.getMethod();
+	const Request::Method& method =
+		mRequest.getMethod();
 
 	// no CGI set for the location
 		// or method incompatible with cgi
@@ -121,11 +123,12 @@ bool RequestChecker::isCGI() {
 
 bool RequestChecker::isAutoIndex() {
 
-	// if the the requested resource 
+	// if the method is get, the requested resource 
 		// is a directory and the location
 		// enables autoindexing
 	if (mIsDir == false || 
-		mLocation->autoindex == false) {
+		mRequest.getMethod() != Request::GET
+		|| mLocation->autoindex == false) {
 		return false;
 	}
 
@@ -136,11 +139,13 @@ bool RequestChecker::isAutoIndex() {
 
 bool RequestChecker::isUpload() {
 
-	// checks if the full path of the requested 
+	// checks if the method is post,
+		// full path of the requested 
 		// resource is a directory and the 
 		// location enables uploading 
 	if (mIsDir == false || 
-		mLocation->uploadRoute.empty()) {
+		mRequest.getMethod() != Request::POST
+		|| mLocation->uploadRoute.empty()) {
 		return false;
 	}
 
@@ -168,9 +173,11 @@ bool RequestChecker::isDefault() {
 
 bool RequestChecker::isContent() {
 
-	// checks if the path exists and is not a directory
-		// in case of requesting a static file
-	if (mIsPath == false || mIsDir)
+	// checks if the method is get, the path exists
+		// and is not a directory in case of requesting
+		// a static file
+	if (mIsPath == false || mIsDir ||
+		mRequest.getMethod() != Request::GET)
 		return false;
 
 	mRequest.setRequestType(Request::CONTENT);

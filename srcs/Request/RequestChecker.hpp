@@ -8,7 +8,10 @@
 
 #pragma once
 
-#include <Request.hpp>
+// the include of this class is at the bottom
+	// of this file with the explanation
+class Request;
+
 #include <Config.hpp>
 #include <utils.hpp>
 #include <StatusCodeHandler.hpp>
@@ -17,7 +20,6 @@ class RequestChecker {
 
 	public:
 		/******* alias types *******/
-		typedef Request::Method Method;
 		typedef Config::StatusCode StatusCode;
 		typedef Config::Path Path;
 		typedef Config::ConstLocPtr ConstLocPtr;
@@ -83,3 +85,8 @@ class RequestChecker {
 		bool mIsDir;
 
 };
+
+// this include directive was brought down here because the included file
+// includes this file (RequestChecker.hpp) as well and relies on the full definition
+// of the RequestChecker class
+#include <Request.hpp>
