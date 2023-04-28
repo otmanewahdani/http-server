@@ -17,7 +17,7 @@ Request::Request(Socket socket, ConstServerRef server)
 	, mLocation()
 	, mLastBuffSize()
 	, mHeaders(mBuffer)
-	, mURL(server)
+	, mURL(mServer)
 	, mStatusCode(StatusCodeHandler::OK)
 	, mRequestType(UNDETERMINED)
 	, mRequestChecker(*this)
@@ -46,6 +46,13 @@ bool Request::isValid() const {
 
 bool Request::isSocketOk() const {
 	return mSocketOk;
+}
+
+Request::ConstLocPtr
+	Request::getLocation() const {
+
+	return mLocation;
+
 }
 
 const std::string& Request::getPath() const {
