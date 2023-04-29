@@ -25,7 +25,7 @@ SERVER_SRC :=  Multiplexer.cpp Log.cpp ServerManager.cpp
 
 GENERAL_SRC := utils.cpp MimeTypes.cpp main.cpp Tokenizer.cpp
 
-TEST_SRC := test.cpp
+#TEST_SRC := test.cpp
 
 SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) \
 	$(SERVER_SRC) $(CLIENT_SRC) $(RESPONSE_SRC) \
@@ -52,7 +52,7 @@ $(OBJ_DIR)main.o: $(SRCS_DIR)main.cpp
 	@$(CC) $(CPPFLAGS) $(INCS) $< -o $@
 
 $(NAME): $(OBJ)
-	@$(CC) $(DEBUG) $^ -o $@
+	@$(CC) $^ -o $@
 	@echo -e "\e[1;35m\u2705 Web server was created successfully\e[0m"
 
 clean:
