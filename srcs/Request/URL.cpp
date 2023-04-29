@@ -41,15 +41,16 @@ void URL::parseUrl(const std::string& url) {
 	
 	// parse the path and get the position 
 		// of the query string in the url
-	size_t queryPos;
-	queryPos = parsePath(url);
+	const std::string::size_type
+		queryPos = parsePath(url);
 
 	// parse the query string if the url state still valid
 	parseQueryString(url, queryPos);
 
 }
 
-size_t URL::parsePath(const std::string& url) {
+std::string::size_type
+	URL::parsePath(const std::string& url) {
 	
 	// to avoid string realloacation
 	mPath.reserve(url.size() + 1);
@@ -59,18 +60,19 @@ size_t URL::parsePath(const std::string& url) {
 		//  mPath if it's valid until 
 		// the end of the url or the beginning 
 		// of the query string
-	size_t i = 0;
-	while(url[i] && url[i] != '?') {
+	std::string::size_type i = 0;
+	while( i < url.size() && url[i] != '?') {
 
 		// sets error and invalid url if it's a bad char
 		if (isForbiddenChar(url[i])) {
 			setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
-			return i;
+			return std::string::npos;
 		}
 
 		// add the valid character
 		mPath.insert(mPath.end(), url[i]);
 		++i;
+
 	}
 
 	// sets the most specific location 
@@ -95,23 +97,26 @@ bool URL::isForbiddenChar(const char c) {
 
 }
 
-void URL::parseQueryString(const std::string& url, size_t queryPos) {
+void URL::parseQueryString(const std::string& url, const size_t queryPos) {
 
-	if (mValid && queryPos != std::string::npos) {
+	// checks if there is a query string to be parsed
+	if (mValid && queryPos != std::string::npos
+		&& queryPos < url.size()) {
 		// to avoid string reallocation
 		mQuery.reserve(url.size() - mPath.size() + 1);
 
 		// reads each character in the url starting 
 			// from the start position of the query string
-		while(url[++queryPos]) {
+		for (std::string::size_type i = queryPos + 1;
+				i != url.size(); ++i) {
 			// sets error and invalid url if it's a bad char
-			if (isForbiddenChar(url[queryPos])) {
+			if (isForbiddenChar(url[i])) {
 				setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 				return ;
 			}
 
 			// insert char in mQuery if it's valid
-			mQuery.insert(mQuery.end(), url[queryPos]);
+			mQuery.insert(mQuery.end(), url[i]);
 		}
 	}
 	

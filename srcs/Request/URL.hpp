@@ -106,12 +106,15 @@ class URL {
 			// bad character was found
 		// sets NOT_FOUND error and invalid url
 			// if it didn't match any location
-		size_t parsePath(const std::string& url);
+		// on error, std::string::npos is returned
+		std::string::size_type
+			parsePath(const std::string& url);
 
 		// parse the query string if it exists in the url
 		// sets BAD_REQUEST error and invalid url if a 
 			// bad character was found
-		void parseQueryString(const std::string& url, size_t queryPos);
+		void parseQueryString(const std::string& url,
+			const size_t queryPos);
 		
 
 		// construct the full path of the requested resource 
