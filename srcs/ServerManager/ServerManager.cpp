@@ -61,7 +61,7 @@ void ServerManager::queryClientHandlers() {
 	ClientHandlers::iterator clientHandlerIt;
 	for (clientHandlerIt = mClientHandlers.begin();
 		clientHandlerIt != mClientHandlers.end();
-		++clientHandlerIt) {
+		) {
 
 		ClientHandler& handler =
 			clientHandlerIt->second;
@@ -85,8 +85,16 @@ void ServerManager::queryClientHandlers() {
 
 		// checks if it already closed its connection
 			// so that it gets removed
-		else if (handler.isClosed())
+		else if (handler.isClosed()) {
+			// moves to next clientHandler before
+				// removing the current one so we
+				// don't lose the next pointer
+			++clientHandlerIt;
 			removeClientHandler(handlerID);
+			continue ;
+		}
+
+		++clientHandlerIt;
 
 	} // end of for loop
 
