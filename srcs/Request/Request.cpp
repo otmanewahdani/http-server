@@ -149,6 +149,7 @@ void Request::proceedWithSocket() {
 	if (readAmount < 1) {
 		mSocket = false;
 		mStage = FINISH;
+		Log::error("Request: socket failure");
 		return ;
 	}
 
@@ -195,20 +196,24 @@ void Request::parseRequestLine() {
 	// end of line not found
 	if (endOfLinePos == std::string::npos) {
 
-		if (mBuffer.size() > mRequestLineSizeLimit)
+		if (mBuffer.size() > mRequestLineSizeLimit) {
 			// Request-URI Too Long
+			Log::error("Request: URI too long");
 			return moveFinStage
 				(StatusCodeHandler::URI_LONG);
+		}
 		// retries in the next call
 		return;
 
 	}
 
 	// found but exceeds limit
-	if (endOfLinePos > mRequestLineSizeLimit)
+	if (endOfLinePos > mRequestLineSizeLimit) {
 		// Request-URI Too Long
+		Log::error("Request: URI too long");
 		return moveFinStage
 			(StatusCodeHandler::URI_LONG);
+	}
 
 	bool parseError = 
 		(parseMethod(endOfLinePos) == false
@@ -244,20 +249,24 @@ void Request::parseHeaders() {
 	// end of header fields not found
 	if (endOfHeadersPos == std::string::npos) {
 
-		if (mBuffer.size() > mHeadersSizeLimit)
+		if (mBuffer.size() > mHeadersSizeLimit) {
 			// header fields entity Too Large
+			Log::error("Request: headers too large");
 			return moveFinStage
 				(StatusCodeHandler::ENTITY_LARGE);
+		}
 		// retries in the next call
 		return;
 
 	}
 
 	// found but exceeds limit
-	if (endOfHeadersPos > mHeadersSizeLimit)
+	if (endOfHeadersPos > mHeadersSizeLimit) {
 		//header fields entity Too Large
+		Log::error("Request: headers too large");
 		return moveFinStage
 			(StatusCodeHandler::ENTITY_LARGE);
+	}
 
 	mHeaders.parse();
 
@@ -273,7 +282,6 @@ void Request::parseHeaders() {
 	// after finishing parsing the headers, it's time
 		// to determine the request type
 	determineRequestType();
-	print();
 	
 }
 
@@ -281,6 +289,7 @@ void Request::determineRequestType() {
 
 	// checks if the request is valid
 	if (mRequestChecker.isValid() == false) {
+		Log::error("RequestChecker: invalid request");
 		mStage = FINISH;
 		return ;
 	}
@@ -365,6 +374,7 @@ bool Request::parseURL() {
 	// if url is invalid move to finish stage
 		// with the appropriate error status code
 	if (mURL.isValid() == false) {
+		Log::error("Request URL: Invalid URL");
 		moveFinStage(mURL.getStatusCode());
 		return false;
 	}
@@ -425,48 +435,50 @@ void Request::print() const {
 
 	std::cout << "Method: ";
 	switch (mMethod) {
-	case GET:
-		std::cout << "GET" <<'\n'; break;
-	case POST:
-		std::cout << "POST" << '\n'; break;
-	case DELETE:
-		std::cout << "DELETE" << '\n'; break;
-	default: 
-		std::cout << "UNSPECIFIED" << '\n';
+		case GET:
+			std::cout << "GET" <<'\n'; break;
+		case POST:
+			std::cout << "POST" << '\n'; break;
+		case DELETE:
+			std::cout << "DELETE" << '\n'; break;
+		default: 
+			std::cout << "UNSPECIFIED" << '\n';
 	}
 
 	mURL.print();
 
 	mHeaders.print();
 
-	std::cout << "        Secondary information       " << '\n';
+	std::cout << "\n        Secondary information       " << '\n';
 
 	std::cout << "Socket: " << mSocket << '\n';
 
 	std::cout << "Request type: ";
 	switch (mRequestType) {
-	case AUTOINDEX:
-		std::cout << "autoindex" << '\n'; break;
-	case REDIRECT:
-		std::cout << "redirection" << '\n'; break;
-	case CGI:
-		std::cout << "cgi" << '\n'; break;
-	case UPLOAD:
-		std::cout << "file upload" << '\n'; break;
-	case DEFAULT:
-		std::cout << "default file" << '\n'; break;
-	case CONTENT :
-		std::cout << "static file" << '\n'; break;
-	default: 
-		std::cout << "undetermined" << '\n';
+		case AUTOINDEX:
+			std::cout << "autoindex" << '\n'; break;
+		case REDIRECT:
+			std::cout << "redirection" << '\n'; break;
+		case CGI:
+			std::cout << "cgi" << '\n'; break;
+		case UPLOAD:
+			std::cout << "file upload" << '\n'; break;
+		case DEFAULT:
+			std::cout << "default file" << '\n'; break;
+		case CONTENT:
+			std::cout << "static file" << '\n'; break;
+		default: 
+			std::cout << "undetermined" << '\n';
 	}
 
-	StatusCodeHandler::StatusCodePair 
-		statusCode;
-	std::cout << "Status code: " << statusCode.first
-		 << " ," << statusCode.second << '\n';
+	const StatusCodeHandler::StatusCodePair statusCode =
+		StatusCodeHandler::getStatusCodeInfo(mStatusCode);
 
-	std::cout << "Server: " << mServer.hostname << '\n';
+	std::cout << "Status code: " << statusCode.first
+		 << " " << statusCode.second << '\n';
+
+	std::cout << "Server: " << mServer.hostname
+		<< ':' << mServer.port << '\n';
 
 	std::cout << "Location route: " << mLocation->route << '\n';
 

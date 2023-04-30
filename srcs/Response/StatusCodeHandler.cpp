@@ -9,6 +9,9 @@ void StatusCodeHandler::initializeStaticData() {
 	StatusCodePair statusCodePair("200", "OK");
 	mStatusCodesData[OK] = statusCodePair;
 	
+	statusCodePair = std::make_pair("301", "Moved Permanently");
+	mStatusCodesData[REDIRECT_MOVE] = statusCodePair;
+	
 	statusCodePair = std::make_pair("400", "Bad Request");
 	mStatusCodesData[BAD_REQUEST] = statusCodePair;
 

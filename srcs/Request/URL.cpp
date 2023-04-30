@@ -182,10 +182,10 @@ void URL::print() const {
 
 	std::cout << "URL info :" << '\n';
 
-	std::cout << "\t" << mUrl << '\n';
-	std::cout << "\t" << mPath << '\n';
-	std::cout << "\t" << mQuery << '\n';
-	std::cout << "\t" << mFullPath << '\n';
+	std::cout << "\tFull URL: " << mUrl << '\n';
+	std::cout << "\tPath: " << mPath << '\n';
+	std::cout << "\tQuery string: " << mQuery << '\n';
+	std::cout << "\tFull Path: " << mFullPath << '\n';
 
 	std::cout.flush();
 

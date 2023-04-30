@@ -95,6 +95,9 @@ class Request {
 			// reading from the socket
 		bool isSocketOk() const;
 
+		// prints the request info
+		void print() const;
+
 		/******* getters *******/
 		// returns pointer to location that contains the
 			// configuration of the requested path
@@ -261,8 +264,5 @@ class Request {
 
 		// logs the received request
 		void logRequest();
-
-		// prints the request info
-		void print() const;
 
 };

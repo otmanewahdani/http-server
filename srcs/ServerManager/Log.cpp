@@ -126,7 +126,7 @@ void Log::error(const std::string& errorMsg) {
 	addTimeDate();
 
 	mLogfile << mErrorNotice << errorMsg
-		<< "\n" << std::flush;
+		<< std::endl;
 
 }
 

@@ -16,6 +16,7 @@ class StatusCodeHandler {
 		/******* nested types *******/
 		enum StatusCodeType {
 			OK = 200,
+			REDIRECT_MOVE = 301,
 			BAD_REQUEST = 400,
 			NOT_FOUND = 404,
 			METHOD_ALLOW = 405,
