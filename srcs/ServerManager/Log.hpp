@@ -45,6 +45,12 @@ class Log {
 			// with the given socket is closed
 		static void connectionClosed(const Socket socket);
 
+		// logs that a socket failed in a IO operation
+		// IOType = IO operation (read or write)
+		// error  = error code return of the IO operation
+		static void socketFailed(const Socket socket,
+			const std::string& IOop, const int error);
+
 		// logs error messages
 		static void error(const std::string& errorMsg);
 
@@ -70,14 +76,15 @@ class Log {
 		// the clientPrep and serverPrep are the prepositions
 			// used before the client and the server
 		// it handles all possible exceptions on behalf of the methods
-		// if everything goes well mInfoNotice is preppended to the
+		// if everything goes well notice is preppended to the
 			// log message, otherwise error() is called
 		// example: when connectionEstablished calls this method and
 			// passes it its socket, op = "connection established",
 			// clientPrep = "from", serverPrep = "on", the output:
 			// "[INFO] connection established from
 			// client host:port on server host:port"
-		static void logClientServerOperation(const Socket socket,
+		static void logClientServerOperation(
+			const Socket socket, const std::string& notice,
 			const std::string& op, const std::string& clientPrep,
 			const std::string& serverPrep);
 

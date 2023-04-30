@@ -80,7 +80,7 @@ void Log::connectionEstablished(const Socket socket) {
 
 	// new connection established between
 		// client and server
-	logClientServerOperation(socket,
+	logClientServerOperation(socket, mInfoNotice,
 		"new connection established",
 		"between", "and");
 
@@ -99,14 +99,14 @@ void Log::request(const Socket socket,
 	// request for 'uri' received
 		// from client by server
 	logClientServerOperation(socket,
-		op, "from", "by");
+		 mInfoNotice, op, "from", "by");
 
 }
 
 void Log::response(const Socket socket) {
 
 	// response sent to client by server
-	logClientServerOperation(socket,
+	logClientServerOperation(socket, mInfoNotice,
 		"response sent", "to", "by");
 
 }
@@ -114,8 +114,25 @@ void Log::response(const Socket socket) {
 void Log::connectionClosed(const Socket socket) {
 
 	// connection closed between client and server
-	logClientServerOperation(socket,
+	logClientServerOperation(socket, mInfoNotice,
 		"connection closed", "between", "and");
+
+}
+
+void Log::socketFailed(const Socket socket,
+	const std::string& IOop, const int error) {
+
+	// operation description
+	// socket faild in IOop operation with
+		// error code: error
+	const std::string op =
+		std::string("socket failed in ")
+		+ IOop + " operation with error code: "
+		+ toString(error);
+
+	logClientServerOperation(socket,
+		mErrorNotice, op,
+		"between", "and");
 
 }
 
@@ -130,7 +147,8 @@ void Log::error(const std::string& errorMsg) {
 
 }
 
-void Log::logClientServerOperation(const Socket socket,
+void Log::logClientServerOperation(
+	const Socket socket, const std::string& notice,
 	const std::string& op, const std::string& clientPrep,
 	const std::string& serverPrep) {
 
@@ -157,7 +175,7 @@ void Log::logClientServerOperation(const Socket socket,
 
 			addTimeDate();
 
-			mLogfile << mInfoNotice << socketLog << op << " "
+			mLogfile << notice << socketLog << op << " "
 				<< clientPrep << " client " << clientName
 				<< " " << serverPrep << " server " << serverName
 				<< "\n" << std::flush;

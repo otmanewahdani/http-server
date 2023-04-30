@@ -147,9 +147,9 @@ void Request::proceedWithSocket() {
 
 	// failed to read from socket
 	if (readAmount < 1) {
-		mSocket = false;
+		mSocketOk = false;
 		mStage = FINISH;
-		Log::error("Request: socket failure");
+		Log::socketFailed(mSocket, "read", readAmount);
 		return ;
 	}
 
