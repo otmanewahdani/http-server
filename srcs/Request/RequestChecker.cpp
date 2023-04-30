@@ -175,12 +175,19 @@ bool RequestChecker::isDefault() {
 
 bool RequestChecker::isContent() {
 
+	const Request::Method method
+		= mRequest.getMethod();
+
 	// checks if the method is get, the path exists
 		// and is not a directory in case of requesting
 		// a static file
 	if (mIsPath == false || mIsDir ||
-		mRequest.getMethod() != Request::GET)
+		method != Request::GET ||
+		method != Request::DELETE) {
+		
 		return false;
+		
+	}
 
 	mRequest.setRequestType(Request::CONTENT);
 	return true;
