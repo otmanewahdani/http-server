@@ -23,6 +23,20 @@ Request::Request(Socket socket, ConstServerRef server)
 	, mRequestChecker(*this)
 	, mSocketOk(true) {}
 
+Request::Request(const Request& request)
+	: mSocket(request.mSocket)
+	, mServer(request.mServer)
+	, mStage(REQUEST_LINE)
+	, mMethod(UNSPECIFIED)
+	, mLocation()
+	, mLastBuffSize()
+	, mHeaders(mBuffer)
+	, mURL(mServer)
+	, mStatusCode(StatusCodeHandler::OK)
+	, mRequestType(UNDETERMINED)
+	, mRequestChecker(*this)
+	, mSocketOk(true) {}
+
 void Request::initializeStaticData() {
 	setSupportedMethods();
 }
@@ -61,6 +75,10 @@ const std::string& Request::getPath() const {
 
 const std::string& Request::getQueryString() const {
 	return mURL.getQueryString();
+}
+
+const std::string& Request::getURLStr() const {
+	return mURL.getURLStr();
 }
 
 const Request::HeaderValue*
@@ -169,7 +187,7 @@ void Request::parseRequest() {
 void Request::parseRequestLine() {
 
 	// starts searching from the last
-		// data that was appened
+		// data that was appended
 	const std::string::size_type
 		endOfLinePos = mBuffer.find
 			("\r\n", mLastBuffSize);
@@ -194,7 +212,7 @@ void Request::parseRequestLine() {
 
 	bool parseError = 
 		(parseMethod(endOfLinePos) == false
-		|| parseURL(endOfLinePos) == false);
+		|| parseURL() == false);
 
 	logRequest();
 
@@ -317,7 +335,11 @@ bool Request::parseMethod
 
 }
 
-bool Request::parseURL(const std::string::size_type endOfLinePos) {
+bool Request::parseURL() {
+
+	// searches for the end of line position
+	const std::string::size_type
+		endOfLinePos = mBuffer.find("\r\n");
 
 	// skips all the white spaces and 
 		// returns the the start pos of the url
@@ -383,8 +405,7 @@ void Request::logRequest() {
 		method == mSupportedMethods.end()
 		? "INVALID METHOD" : method->first;
 
-	Log::request(mSocket, methodStr,
-		getPath(), getQueryString());
+	Log::request(mSocket, methodStr, getURLStr());
 
 }
 

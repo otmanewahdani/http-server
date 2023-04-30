@@ -199,7 +199,7 @@ void ServerManager::addClientHandler(Socket clientID, Socket serverID) {
 	ConstServerRef server = mConfig.getServerRef(serverID);
 
 	// creates a new client handler and associates with client ID
-	// and adds it to mClientHandlers
+		// and adds it to mClientHandlers
 	std::pair<Socket, ClientHandler> newHandler( clientID,
 		ClientHandler(clientID, server) );
 

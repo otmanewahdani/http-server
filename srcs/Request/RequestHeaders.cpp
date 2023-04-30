@@ -41,6 +41,8 @@ void RequestHeaders::parse() {
 		if (lineEndPos == pos)
 			break ;
 
+		//file << mBuffer.substr(pos, lineEndPos - 10) << std::flush;
+
 		// gets header name if found and stores
 			// the start position of the header value
 		headerName = getHeaderName

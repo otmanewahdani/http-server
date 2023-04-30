@@ -69,6 +69,8 @@ class Request {
 			// contains the needed configuration info
 		Request(Socket socket, ConstServerRef server);
 
+		Request(const Request& request);
+
 		static void initializeStaticData();
 
 		// returns true if it still wants to read
@@ -103,6 +105,9 @@ class Request {
 
 		// returns the query string part of the parsed uri
 		const std::string& getQueryString() const;
+
+		// returns the full request url string
+		const std::string& getURLStr() const;
 
 		// gets pointer to header value
 			// associated with a header name
@@ -235,12 +240,13 @@ class Request {
 		// moves the buffer to next token
 		bool parseMethod(const std::string::size_type endOfLinePos);
 
-		// takes the end position of the request line 
-			// then extract the url path and parses it
+		// extracts the url, parses the path and query string
+			// and matches the path with a location to get the
+			// full pathl
 		// sets the matched location
 		// returns true if the url is valid 
 		// moves the buffer to the beginning of the headers
-		bool parseURL(const std::string::size_type endOfLinePos);
+		bool parseURL();
 
 		// determines the type of request made and either moves to
 			// the finish stage if no request body is needed or to
