@@ -35,8 +35,7 @@ class Log {
 			// with the specified Method, URI and query string
 		static void request(const Socket socket,
 			const std::string& method, 
-			const std::string& path,
-			const std::string& queryString);
+			const std::string& url);
 
 		// logs request that was sent from socket's
 			// server to socket's client
