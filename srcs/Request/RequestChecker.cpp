@@ -87,9 +87,11 @@ bool RequestChecker::isCGI() {
 
 	// no CGI set for the location
 		// or method incompatible with cgi
+		// or CGI file doesn't exist
 	if (mLocation->supportedCGIs.empty()
 		|| (method != Request::GET
-			&& method != Request::POST))
+			&& method != Request::POST)
+		|| mIsPath == false)
 		return false;
 
 	const std::string& path = mRequest.getPath();

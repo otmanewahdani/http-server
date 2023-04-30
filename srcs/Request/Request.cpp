@@ -460,7 +460,7 @@ void Request::print() const {
 		case REDIRECT:
 			std::cout << "redirection" << '\n'; break;
 		case CGI:
-			std::cout << "cgi" << '\n'; break;
+			std::cout << "CGI" << '\n'; break;
 		case UPLOAD:
 			std::cout << "file upload" << '\n'; break;
 		case DEFAULT:
