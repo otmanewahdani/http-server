@@ -178,12 +178,12 @@ bool RequestChecker::isContent() {
 	const Request::Method method
 		= mRequest.getMethod();
 
-	// checks if the method is get, the path exists
+	// checks if the method is get or delete, the path exists
 		// and is not a directory in case of requesting
 		// a static file
 	if (mIsPath == false || mIsDir ||
-		method != Request::GET ||
-		method != Request::DELETE) {
+		(method != Request::GET &&
+		method != Request::DELETE)) {
 		
 		return false;
 		
