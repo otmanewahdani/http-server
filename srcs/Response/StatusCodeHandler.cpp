@@ -27,6 +27,9 @@ void StatusCodeHandler::initializeStaticData() {
 	statusCodePair = std::make_pair("413", "Request Entity Too Large");
 	mStatusCodesData[ENTITY_LARGE] = statusCodePair;
 
+	statusCodePair = std::make_pair("501", "Not Implemented");
+	mStatusCodesData[NOT_IMPLEMENTED] = statusCodePair;
+
 }
 
 const StatusCodeHandler::StatusCodePair&

@@ -21,7 +21,8 @@ class StatusCodeHandler {
 			NOT_FOUND = 404,
 			METHOD_ALLOW = 405,
 			ENTITY_LARGE = 413,
-			URI_LONG = 414
+			URI_LONG = 414,
+			NOT_IMPLEMENTED = 501
 		};
 
 		/******* alias types *******/

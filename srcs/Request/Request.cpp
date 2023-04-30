@@ -330,7 +330,7 @@ bool Request::parseMethod
 
 	// not a supported method
 	if (method == mSupportedMethods.end()) {
-		moveFinStage(StatusCodeHandler::BAD_REQUEST);
+		moveFinStage(StatusCodeHandler::NOT_IMPLEMENTED);
 		return false;
 	}
 
