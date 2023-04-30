@@ -480,7 +480,11 @@ void Request::print() const {
 	std::cout << "Server: " << mServer.hostname
 		<< ':' << mServer.port << '\n';
 
-	std::cout << "Location route: " << mLocation->route << '\n';
+	std::cout << "Location route: ";
+	if (mLocation)
+		std::cout << mLocation->route << '\n';
+	else
+		std::cout << "no location match\n";
 
 	std::cout << "-------------- END --------------\n" << '\n';
 
