@@ -57,14 +57,23 @@ class URL {
 		// returns the most specific matched 
 			// location with the url path
 		ConstLocptr getLocation() const;
-		
 
+		// returns the url in it initial state before
+			// parsing it
+		const std::string& getURLStr() const;
+		
+		// prints the url info
+		void print() const;
+	
 	private:
 		/******* private member objects *******/
 		// server from where will get the matching location 
 			// of the requested resource
 		ConstServerRef mServer;
 
+		// stores the full url
+		std::string mUrl;
+	
 		// url path
 		Path mPath;
 

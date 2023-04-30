@@ -256,4 +256,7 @@ class Request {
 		// logs the received request
 		void logRequest();
 
+		// prints the request info
+		void print() const;
+
 };

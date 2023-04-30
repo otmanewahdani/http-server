@@ -178,3 +178,21 @@ std::string RequestHeaders::getHeaderValue
 void RequestHeaders::initializeStaticData() {
 	setHeaderNames();
 }
+
+void RequestHeaders::print() const {
+
+	std::cout << "HEADERS: \n";
+
+	std::map<HeaderName, HeaderValue>::
+		const_iterator it;
+	
+	for( it = mHeaders.begin(); 
+		it != mHeaders.end(); ++it) {
+	
+		std::cout << "\t" << it->first 
+			<< " : " << it->second << '\n';
+	
+	}
+	std::cout.flush();
+
+}

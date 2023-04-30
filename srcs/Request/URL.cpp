@@ -17,8 +17,12 @@ URL::URL(ConstServerRef server)
 
 void URL::parse(const std::string& url) {
 
-	// parse the string only if it's the first call of parse()
+	// parses the string only if it's the 
+		// first call of parse()
 	if (!mParsed) {
+
+		mUrl = url;
+	
 		// to prevent multiple calls
 		mParsed = true;
 
@@ -155,6 +159,10 @@ URL::ConstLocptr URL::getLocation() const {
 	return mLocation;
 }
 
+const std::string& URL::getURLStr() const {
+	return mUrl;
+}
+
 void URL::setErrorStatusCode(StatusCodeType statusCode) {
 
 	mValid = false;
@@ -162,5 +170,18 @@ void URL::setErrorStatusCode(StatusCodeType statusCode) {
 	mPath.clear();
 	mQuery.clear();
 	mFullPath.clear();
+
+}
+
+void URL::print() const {
+
+	std::cout << "URL info :" << '\n';
+
+	std::cout << "\t" << mUrl << '\n';
+	std::cout << "\t" << mPath << '\n';
+	std::cout << "\t" << mQuery << '\n';
+	std::cout << "\t" << mFullPath << '\n';
+
+	std::cout.flush();
 
 }

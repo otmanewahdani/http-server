@@ -144,7 +144,7 @@ void Request::proceedWithSocket() {
 	// adds the read data to the
 		// whole request buffer
 	mBuffer.append(readBuffer, readAmount);
- 
+
 	parseRequest();
 
 }
@@ -255,6 +255,7 @@ void Request::parseHeaders() {
 	// after finishing parsing the headers, it's time
 		// to determine the request type
 	determineRequestType();
+	print();
 	
 }
 
@@ -392,5 +393,64 @@ void Request::setSupportedMethods() {
 	mSupportedMethods["GET"] = GET;
 	mSupportedMethods["POST"] = POST;
 	mSupportedMethods["DELETE"] = DELETE;
+
+}
+
+void Request::print() const {
+
+	std::cout << "---------- Request info ----------" << '\n';
+
+	std::cout << "         Primary information        " << '\n';
+
+	std::cout << "Method: ";
+	switch (mMethod) {
+	case GET:
+		std::cout << "GET" <<'\n'; break;
+	case POST:
+		std::cout << "POST" << '\n'; break;
+	case DELETE:
+		std::cout << "DELETE" << '\n'; break;
+	default: 
+		std::cout << "UNSPECIFIED" << '\n';
+	}
+
+	mURL.print();
+
+	mHeaders.print();
+
+	std::cout << "        Secondary information       " << '\n';
+
+	std::cout << "Socket: " << mSocket << '\n';
+
+	std::cout << "Request type: ";
+	switch (mRequestType) {
+	case AUTOINDEX:
+		std::cout << "autoindex" << '\n'; break;
+	case REDIRECT:
+		std::cout << "redirection" << '\n'; break;
+	case CGI:
+		std::cout << "cgi" << '\n'; break;
+	case UPLOAD:
+		std::cout << "file upload" << '\n'; break;
+	case DEFAULT:
+		std::cout << "default file" << '\n'; break;
+	case CONTENT :
+		std::cout << "static file" << '\n'; break;
+	default: 
+		std::cout << "undetermined" << '\n';
+	}
+
+	StatusCodeHandler::StatusCodePair 
+		statusCode;
+	std::cout << "Status code: " << statusCode.first
+		 << " ," << statusCode.second << '\n';
+
+	std::cout << "Server: " << mServer.hostname << '\n';
+
+	std::cout << "Location route: " << mLocation->route << '\n';
+
+	std::cout << "-------------- END --------------\n" << '\n';
+
+	std::cout.flush();
 
 }

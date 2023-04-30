@@ -13,6 +13,7 @@
 #include <map>
 #include <set>
 #include <utils.hpp>
+#include <iostream>
 
 class RequestHeaders {
 
@@ -44,6 +45,9 @@ class RequestHeaders {
 			(const HeaderName& headerName);
 
 		static void initializeStaticData();
+
+		// print the parsed headers field
+		void print() const;
 
 	private:
 		/******* private alias types  *******/
