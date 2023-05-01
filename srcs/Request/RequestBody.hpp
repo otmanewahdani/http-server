@@ -18,6 +18,8 @@
 #include <string>
 #include <Config.hpp>
 #include <StatusCodeHandler.hpp>
+#include <stdexcept>
+#include <utils.hpp>
 
 class RequestBody {
 
@@ -56,7 +58,8 @@ class RequestBody {
 		void setBodyType(const BodyType type);
 
 		// opens file to be used for body storage
-		// if it couldn't be open, the status code is set
+		// if it couldn't be opened, the status code is set
+		// throws std::runtime_error on error
 		void setBodyStore(const std::string& filePath);
 
 		// converts contentLength to integral type and
@@ -69,20 +72,19 @@ class RequestBody {
 		/******* getters *******/
 		// returns OK if everything goes well otherwise
 			// an error status code is returned
-		 StatusCodeType getStatusCode();
+		StatusCodeType getStatusCode();
 
 	private:
 		/******* private member objects *******/
 		const std::string& mBuffer;
 
 		// the read body shouldn't exceed this size
+		// a value of 0 means there is no size limit
 		const Size mMaxBodySize;
 
 		// file where parsed body will be stored
 			// It's necessary to use setBodyStore()
 			// before starting the parsing process
-		// the file is closed when parsing is done
-			// (in case of error too)
 		std::ofstream mBodyStore;
 
 		BodyType mBodyType;
@@ -111,6 +113,7 @@ class RequestBody {
 
 		// sets the status and code and marks
 			// the parsing as done
+		// also closes body store file
 		void setError(StatusCodeType code);	
 
 };

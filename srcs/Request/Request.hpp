@@ -20,6 +20,7 @@
 #include <map>
 #include <Log.hpp>
 #include <RequestChecker.hpp>
+#include <RequestBody.hpp>
 
 class Request {
 
@@ -192,6 +193,9 @@ class Request {
 
 		// changed to false if cannot read from socket
 		bool mSocketOk;
+
+		// used to parse the request body
+		RequestBody mRequestBody;
 
 		// the path to the parsed request
 			// body if there is one

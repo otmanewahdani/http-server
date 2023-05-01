@@ -21,7 +21,8 @@ Request::Request(Socket socket, ConstServerRef server)
 	, mStatusCode(StatusCodeHandler::OK)
 	, mRequestType(UNDETERMINED)
 	, mRequestChecker(*this)
-	, mSocketOk(true) {}
+	, mSocketOk(true)
+	, mRequestBody(mBuffer, mServer.clientBodySizeMax) {}
 
 Request::Request(const Request& request)
 	: mSocket(request.mSocket)
@@ -35,7 +36,8 @@ Request::Request(const Request& request)
 	, mStatusCode(StatusCodeHandler::OK)
 	, mRequestType(UNDETERMINED)
 	, mRequestChecker(*this)
-	, mSocketOk(true) {}
+	, mSocketOk(true)
+	, mRequestBody(mBuffer, mServer.clientBodySizeMax) {}
 
 void Request::initializeStaticData() {
 	setSupportedMethods();

@@ -56,3 +56,25 @@ std::string toString(Num num) {
 	return (converter.str());
 
 }
+
+// converts string to integral type
+// std::runtime_error is thrown on error
+template<class Num>
+Num strToNum(const std::string& numStr) {
+
+	std::istringstream converter(numStr);
+	Num result;
+	converter >> result;
+
+	if (converter.fail()) {
+
+		const std::string errorMsg =
+			std::string("strToNum(): couldn't convert '")
+			+ numStr + '\'';
+		throw std::runtime_error(errorMsg);
+
+	}
+
+	return result;
+
+}
