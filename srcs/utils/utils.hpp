@@ -45,7 +45,7 @@ void writeToStream(std::ostream& stream,
 std::string generateFileName
 	(const std::string& pathPrefix);
 
-void closeFile(const std::string& filePath);
+void removeFile(const std::string& filePath);
 
 // converts arithmetic type to string
 template <class Num>
