@@ -3,6 +3,8 @@
 
 #include <ServerManager.hpp>
 
+static const std::string tmpFilesDir = "./.tmp_files";
+
 ServerManager::ServerManager(const char* configFileName)
 	: mConfig(configFileName)
 	, mServers(mConfig.getServers())

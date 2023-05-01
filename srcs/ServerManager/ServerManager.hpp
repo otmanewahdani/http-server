@@ -39,6 +39,8 @@ class ServerManager {
 		void start();
 
 		void printConfig();
+
+		const std::string& getTmpFilesDir();
 	
 	private:
 		/******* private member objects *******/
@@ -58,6 +60,10 @@ class ServerManager {
 		FDCollection mReadFDs;
 		FDCollection mWriteFDs;
 		FDCollection mListenFDs;
+
+		// directory where the temporary files of
+			// the program will be created
+		static const std::string tmpFilesDir;
 
 		/******* private member functions *******/
 		// queries client Handlers for their state (if they need
@@ -123,5 +129,10 @@ class ServerManager {
 		// functions in different modules that initialize
 			// static structures will be called here
 		static void initializeStaticData();
+
+		// creates the temporary files directory
+			// if it doesn't exist
+		// throws std::runtime_error on error
+		void makeTmpFilesDir();
 
 };
