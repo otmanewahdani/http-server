@@ -48,6 +48,10 @@ class StatusCodeHandler {
 			(StatusCodeType code);
 
 		static void initializeStaticData();
+
+		// checks if the passed code is one of the supported
+			// redirection codes
+		static bool isRedirection(const StatusCodeType code);
 	
 	private:
 		static StatusCodeMap mStatusCodesData;
