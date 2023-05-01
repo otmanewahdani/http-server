@@ -63,3 +63,15 @@ void makeFDNonBlock(int fd) {
 		throwErrnoException("failed to make FD non-blocking");
 
 }
+
+void writeToStream(std::ostream& stream,
+	const char* str, std::streamsize count) {
+
+	stream.write(str, count);
+
+	if (stream.fail())
+		throw std::runtime_error(
+		"writeToStream(): couldn't"
+		" write to stream");
+
+}
