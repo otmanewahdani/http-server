@@ -12,6 +12,7 @@
 #include <fcntl.h>
 #include <sstream>
 #include <unistd.h>
+#include <iostream>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
@@ -33,6 +34,18 @@ void throwErrnoException(const std::string& context);
 // turns fd into a non-blocking file descriptor
 // calls throwErrnoException() in case of error
 void makeFDNonBlock(int fd);
+
+// writes count bytes from str to stream
+// throws std::runtime_error on error
+void writeToStream(std::ostream& stream,
+	const char* str, std::streamsize count);
+
+// generates a unique temporary file name
+	// and appends it to pathPrefix
+std::string generateFileName
+	(const std::string& pathPrefix);
+
+void closeFile(const std::string& filePath);
 
 // converts arithmetic type to string
 template <class Num>
