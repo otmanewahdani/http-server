@@ -129,6 +129,10 @@ class Request {
 		// returns the type of the parsed Request
 		const RequestType& getRequestType();
 
+		// returns the path where the request body is stored
+		// if there is no body, it returns an empty path
+		const std::string& getPathToBodyFileName();
+
 		/******* setters *******/
 		// sets the mStatusCode
 		void setStatusCode(const StatusCodeType& code);
@@ -188,6 +192,10 @@ class Request {
 
 		// changed to false if cannot read from socket
 		bool mSocketOk;
+
+		// the path to the parsed request
+			// body if there is one
+		std::string pathToBodyFileName;
 
 		// amount by which to read from socket
 		static size_t mReadSize;
@@ -255,6 +263,12 @@ class Request {
 			// the finish stage if no request body is needed or to
 			// the body stage and calls parseBody()
 		void determineRequestType();
+
+		// creates a path where the request body will be stored
+		// the path is created depending on the type of request
+		// for example: upload requests will have different
+			// file paths than CGI
+		void createBodyFileNamePath();
 
 		// moves to the finish stage and
 			// sets the status code

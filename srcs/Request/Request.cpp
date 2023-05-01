@@ -295,7 +295,7 @@ void Request::determineRequestType() {
 	}
 
 	// checks if the body needs to be read
-		mStage = FINISH;
+	mStage = FINISH;
 
 }
 
