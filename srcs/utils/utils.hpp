@@ -42,7 +42,7 @@ void writeToStream(std::ostream& stream,
 
 // generates a unique temporary file name
 	// and appends it to pathPrefix
-std::string generateFileName
+const std::string& generateFileName
 	(const std::string& pathPrefix);
 
 void closeFile(const std::string& filePath);

@@ -76,7 +76,7 @@ void writeToStream(std::ostream& stream,
 
 }
 
-std::string generateFileName
+const std::string& generateFileName
 	(const std::string& pathPrefix) {
 	
 	// generates a file name with the format 
@@ -101,12 +101,13 @@ std::string generateFileName
 		+ toString(pID) 
 		+ "_" + toString(counter);
 
+	// generates the full path name
 	const std::string fullPathName = 
 		pathPrefix + "/" + fileName;
 
-	//increment the counter for next calls
+	//increment the counter for the next call
 	counter++;
 	
-	return fileName;
+	return fullPathName;
 
 }
