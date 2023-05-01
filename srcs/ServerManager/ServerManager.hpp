@@ -15,6 +15,7 @@
 #include <MimeTypes.hpp>
 #include <ClientHandler.hpp>
 #include <RequestHeaders.hpp>
+#include <sys/stat.h>
 
 class ServerManager {
 
@@ -40,7 +41,7 @@ class ServerManager {
 
 		void printConfig();
 
-		const std::string& getTmpFilesDir();
+		static const std::string& getTmpFilesDir();
 	
 	private:
 		/******* private member objects *******/
@@ -63,7 +64,7 @@ class ServerManager {
 
 		// directory where the temporary files of
 			// the program will be created
-		static const std::string tmpFilesDir;
+		static const std::string mTmpFilesDir;
 
 		/******* private member functions *******/
 		// queries client Handlers for their state (if they need
@@ -133,6 +134,6 @@ class ServerManager {
 		// creates the temporary files directory
 			// if it doesn't exist
 		// throws std::runtime_error on error
-		void makeTmpFilesDir();
+		static void makeTmpFilesDir();
 
 };

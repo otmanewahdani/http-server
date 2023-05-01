@@ -3,12 +3,15 @@
 
 #include <ServerManager.hpp>
 
-static const std::string tmpFilesDir = "./.tmp_files";
+const std::string
+	ServerManager::mTmpFilesDir = "./.tmp_files/";
 
 ServerManager::ServerManager(const char* configFileName)
 	: mConfig(configFileName)
 	, mServers(mConfig.getServers())
 	, mMimeTypes(NULL) {
+
+		makeTmpFilesDir();
 
 		Network::initServersSockets(mConfig.getServers());
 		initializeStaticData();
@@ -31,6 +34,10 @@ void ServerManager::printConfig() {
 
 void ServerManager::start() {
 	manageClientHandlers();
+}
+
+const std::string& ServerManager::getTmpFilesDir() {
+	return mTmpFilesDir;
 }
 
 void ServerManager::manageClientHandlers() {
@@ -234,5 +241,26 @@ ClientHandler& ServerManager::getClientHandler
 	// returns the handler associated
 		// with ID
 	return handler->second;
+
+}
+
+void ServerManager::makeTmpFilesDir() {
+	
+	// makes the directory with the follwing
+	// permissions: read, write
+	if (mkdir(mTmpFilesDir.c_str(), 0666)) {
+		
+		// does nothing if directory already exists
+		if (errno == EEXIST)
+			return;
+
+		const std::string errorMsg =
+			std::string("makeTmpFilesDir(): couldn't "
+			" create this necessary directory: '")
+			+ mTmpFilesDir + '\'';
+
+		throw std::runtime_error(errorMsg);
+
+	}
 
 }
