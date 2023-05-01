@@ -12,6 +12,15 @@ void StatusCodeHandler::initializeStaticData() {
 	statusCodePair = std::make_pair("301", "Moved Permanently");
 	mStatusCodesData[REDIRECT_MOVE] = statusCodePair;
 	
+	statusCodePair = std::make_pair("302", "Found");
+	mStatusCodesData[REDIRECT_FOUND] = statusCodePair;
+
+	statusCodePair = std::make_pair("305", "Use Proxy");
+	mStatusCodesData[REDIRECT_PROXY] = statusCodePair;
+
+	statusCodePair = std::make_pair("307", "Temporary Redirect");
+	mStatusCodesData[REDIRECT_TEMPORARY] = statusCodePair;
+	
 	statusCodePair = std::make_pair("400", "Bad Request");
 	mStatusCodesData[BAD_REQUEST] = statusCodePair;
 
@@ -26,6 +35,9 @@ void StatusCodeHandler::initializeStaticData() {
 
 	statusCodePair = std::make_pair("413", "Request Entity Too Large");
 	mStatusCodesData[ENTITY_LARGE] = statusCodePair;
+
+	statusCodePair = std::make_pair("500", "Internal Server Error");
+	mStatusCodesData[SERVER_ERROR] = statusCodePair;
 
 	statusCodePair = std::make_pair("501", "Not Implemented");
 	mStatusCodesData[NOT_IMPLEMENTED] = statusCodePair;

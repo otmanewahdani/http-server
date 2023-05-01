@@ -17,11 +17,15 @@ class StatusCodeHandler {
 		enum StatusCodeType {
 			OK = 200,
 			REDIRECT_MOVE = 301,
+			REDIRECT_FOUND = 302,
+			REDIRECT_PROXY = 305,
+			REDIRECT_TEMPORARY = 307,
 			BAD_REQUEST = 400,
 			NOT_FOUND = 404,
 			METHOD_ALLOW = 405,
 			ENTITY_LARGE = 413,
 			URI_LONG = 414,
+			SERVER_ERROR = 500,
 			NOT_IMPLEMENTED = 501
 		};
 
