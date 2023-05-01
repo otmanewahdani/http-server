@@ -168,14 +168,6 @@ class ConfigParser {
 			(const std::vector<StatusCodeClass>& statusCodeClasses,
 			const std::string& statusCodeStr);
 
-		// converts string to integral type
-		// string must be a positive number (0 included)
-		// if number in str is too large to fit in template type
-			// std::overflow_error is thrown.
-		// std::runtime_error is thrown for other kinds of errors
-		template<class Number>
-		Number convertStrToNumber(const std::string& str);
-
 		// adds a leading slash to path if it's missing
 			// otherwise this function has no effect
 		void checkPathLeadingSlash(std::string& path);

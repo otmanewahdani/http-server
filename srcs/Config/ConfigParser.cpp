@@ -237,7 +237,7 @@ void ConfigParser::parseRedirection() {
 	// checks for conversion exceptions
 	StatusCode code = 0;
 	try {
-		code = convertStrToNumber<StatusCode>(token.value);
+		code = strToNum<StatusCode>(token.value);
 	}
 	catch (const std::exception& error) {
 		std::cerr << error.what() << '\n';
@@ -531,7 +531,7 @@ void ConfigParser::parseErrorPage() {
 	// checks for conversion exceptions
 	StatusCode code = 0;
 	try {
-		code = convertStrToNumber<StatusCode>(token.value);
+		code = strToNum<StatusCode>(token.value);
 	}
 	catch (const std::exception& error) {
 		std::cerr << error.what() << '\n';
@@ -553,7 +553,7 @@ void ConfigParser::parseClientBodySizeMax() {
 	// converts token's value to number of type Size
 	try {
 		mServerRef->clientBodySizeMax =
-			convertStrToNumber<Size>(token.value);
+			strToNum<Size>(token.value);
 	}
 	catch (const std::exception& error) {
 		std::cerr << error.what() << '\n';
@@ -616,27 +616,6 @@ bool ConfigParser::isStatusCodeMatchClasses
 
 	}
 	return classMatched;
-
-}
-
-template<class Number>
-Number ConfigParser::convertStrToNumber(const std::string& str) {
-
-	std::stringstream converter(str);
-	Number result;
-	converter >> result;
-
-	if (converter.fail()) {
-
-		if (result == std::numeric_limits<Number>::max())
-			throw std::overflow_error("number is too large to fit into "
-				"the specified type");
-		throw std::runtime_error("fatal error: couldn't convert string "
-			"to number");
-
-	}
-
-	return result;
 
 }
 
