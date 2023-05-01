@@ -78,3 +78,39 @@ RequestBody::StatusCodeType
 	return mStatusCode;
 
 }
+
+std::string::size_type
+	RequestBody::parseFullLengthBody() {
+	
+	// remaining bytes to be read
+	const std::string::size_type remaining
+		= mContentLength - mTotalReadBytes;
+
+	// if there are more bytes in the buffer
+		// than the remaining bytes to be read,
+		// only reads the remaining bytes, otherwise
+		// it reads the whole buffer
+	const std::string::size_type readBytes =
+		mBuffer.size() >= remaining ?
+		remaining : mBuffer.size();
+
+	try {
+		// appends the read bytes to the stored request body
+		writeToStream(mBodyStore, mBuffer.c_str(), readBytes);
+	}
+	catch (const std::exception& error) {
+		// sets the appropriate status code and rethrows
+		setError(StatusCodeHandler::SERVER_ERROR);
+		throw error;
+	}
+
+	// updates the total of the bytes that were read
+	mTotalReadBytes += readBytes;
+
+	// checks if the full body was read
+	if (mContentLength == mTotalReadBytes)
+		mDone = true;
+
+	return readBytes;
+	
+}

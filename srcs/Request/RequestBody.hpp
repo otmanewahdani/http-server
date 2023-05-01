@@ -104,16 +104,20 @@ class RequestBody {
 
 		/******* private member functions *******/
 		// parses body when body type is CONTENT_LENGTH
-		// returns std::string::npos on error
+		// throws std::exception on error
+		// returns the number of bytes that were consumed
+			// from the buffer
 		std::string::size_type parseFullLengthBody();
 
 		// parses body when body type is CHUNKED
-		// returns std::string::npos on error
+		// throws std::exception on error
+		// returns the number of bytes that were consumed
+			// from the buffer
 		std::string::size_type parseChunkedBody();
 
 		// sets the status and code and marks
 			// the parsing as done
 		// also closes body store file
-		void setError(StatusCodeType code);	
+		void setError(StatusCodeType code);
 
 };

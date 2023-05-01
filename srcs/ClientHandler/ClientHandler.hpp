@@ -41,6 +41,8 @@ class ClientHandler {
 			// the client is connected
 		ClientHandler(Socket ID, ConstServerRef server);
 
+		ClientHandler(const ClientHandler& handler);
+
 		// returns true if it wants to read from a socket
 		bool isRead() ;
 
