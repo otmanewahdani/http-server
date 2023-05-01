@@ -13,3 +13,11 @@ std::string::size_type
 	}
 
 }
+
+std::string::size_type RequestBody::parseChunkedBody() {
+
+	static unsigned int chunkSize;
+	const std::string::size_type
+		lineEndPos = mBuffer.find("\r\n");
+	
+}

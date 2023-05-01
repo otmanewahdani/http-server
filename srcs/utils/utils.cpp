@@ -75,3 +75,38 @@ void writeToStream(std::ostream& stream,
 		" write to stream");
 
 }
+
+std::string generateFileName
+	(const std::string& pathPrefix) {
+	
+	// generates a file name with the format 
+	// [file_pid_counter] identified by :
+	// the current process id to distinguish 
+		// between each session files
+	// the counter value to identify each file
+		// within the program session
+	static unsigned long counter;
+
+	// retrieve the current pid
+	// throws std::runtime_error on error
+	pid_t pID = getpid();
+	if(pID == -1) {
+		throw std::runtime_error("generateFileName():"
+		" Failed to retrieve the process id");
+	}
+
+	//constructs the file name using 
+		// the pid and the counter value
+	const std::string fileName = "file_" 
+		+ toString(pID) 
+		+ "_" + toString(counter);
+
+	const std::string fullPathName = 
+		pathPrefix + "/" + fileName;
+
+	//increment the counter for next calls
+	counter++;
+	
+	return fileName;
+
+}

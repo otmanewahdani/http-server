@@ -56,3 +56,23 @@ std::string toString(Num num) {
 	return (converter.str());
 
 }
+
+// converts a hexadecimal string 
+	// to an arithmetic type
+// throws std::runtime_error on error
+template <class Num>
+Num hexToDecimal(const std::string &hex) {
+
+	Num result;
+
+	std::stringstream converter(hex);
+	converter >> std::hex >> result;
+
+	if(converter.fail()) {
+		throw std::runtime_error("hexToDecimal():"
+			" not a valid hexadecimal string");
+	}
+
+	return result;
+
+}
