@@ -44,6 +44,10 @@ void StatusCodeHandler::initializeStaticData() {
 
 }
 
+bool StatusCodeHandler::isRedirection(const StatusCodeType code) {
+	return (mStatusCodesData.find(code) != mStatusCodesData.end());
+}
+
 const StatusCodeHandler::StatusCodePair&
 	StatusCodeHandler::getStatusCodeInfo
 	(StatusCodeType code) {
