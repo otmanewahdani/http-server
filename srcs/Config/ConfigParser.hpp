@@ -21,6 +21,7 @@
 #include <vector>
 #include <limits>
 #include <utils.hpp>
+#include <StatusCodeHandler.hpp>
 
 class ConfigParser {
 	
@@ -38,6 +39,8 @@ class ConfigParser {
 		typedef LocationsCollection::mapped_type* LocationReference;
 		// for example: the class of the status code 200 is 2
 		typedef unsigned char StatusCodeClass;
+		typedef StatusCodeHandler::StatusCodeType
+			StatusCodeType;
  
 		/******* public member functions *******/
 		// configuration stream is parsed through this constructor

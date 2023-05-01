@@ -244,6 +244,19 @@ void ConfigParser::parseRedirection() {
 		handleParsingError(token);
 	}
 
+	// checks if the redirect status code is supported
+		// (even if it's a 3xx class it might not be
+		// supported or might be just some meaningless
+		// status code)
+	if (StatusCodeHandler::isRedirection
+			(static_cast<StatusCodeType>(code)) == false) {
+
+		std::cerr << code << " is either an unsupported or meaningless"
+			" or meaningless redirection code\n";
+		handleParsingError(token);
+
+	}
+
 	Path redirectPath;
 	// expects next token to be a path, parses it
 	// and saves it in redirectPath;

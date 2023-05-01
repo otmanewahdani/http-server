@@ -45,7 +45,13 @@ void StatusCodeHandler::initializeStaticData() {
 }
 
 bool StatusCodeHandler::isRedirection(const StatusCodeType code) {
-	return (mStatusCodesData.find(code) != mStatusCodesData.end());
+
+	if (code != REDIRECT_MOVE && code != REDIRECT_TEMPORARY
+			&& code != REDIRECT_PROXY && code != REDIRECT_FOUND)
+		return false;
+
+	return true;
+
 }
 
 const StatusCodeHandler::StatusCodePair&
