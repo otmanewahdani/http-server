@@ -594,6 +594,8 @@ void Request::print() const {
 	else
 		std::cout << "no location match\n";
 
+	std::cout << "Body file path: '" << mBodyFileName << "'\n";
+
 	std::cout << "-------------- END --------------\n" << '\n';
 
 	std::cout.flush();
