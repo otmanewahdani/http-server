@@ -296,12 +296,114 @@ void Request::determineRequestType() {
 		return ;
 	}
 
-	// checks if the body needs to be read
-	mStage = FINISH;
+	// if the request method is not post or the request type
+		// is not an upload or cgi, then request body isn't needed
+	if (mMethod != POST || (mRequestType != UPLOAD
+		&& mRequestType != CGI)) {
+		mStage = FINISH;
+		return;
+	}
+
+	// moves to finish stage if body is unable to be parsed
+	try {
+		setBodyParsingInfo();
+	}
+	catch (const std::exception& e) {
+		mStage = FINISH;
+		Log::error(e.what());
+		return;
+	}
+
+	parseBody();
+
+}
+
+void Request::setBodyParsingInfo() {
+
+	// size of body is dealt with first
+	setBodyLengthInfo();
+
+	// the directory where the body
+		// will be stored
+	// if it's an upload request, the body
+		// will be stored in the specified
+		// upload directory of the configured
+		// location
+	// otherwise a generic directory for
+		// storing temporary files is used
+	const std::string& bodyStoreFileDir
+		= (mRequestType ==  UPLOAD) ?
+		mLocation->uploadRoute :
+		ServerManager::getTmpFilesDir();
+
+	// generates a unique filename prefixed
+		// with the set directory
+	try {
+		mBodyFileName = generateFileName(bodyStoreFileDir);	
+	}
+	catch (const std::exception& e) {
+		moveFinStage(StatusCodeHandler::SERVER_ERROR);
+		throw e;
+	}
+
+	// passes the filename where the body should be stored
+	mRequestBody.setBodyStore(mBodyFileName);
+
+}
+
+void Request::setBodyLengthInfo() {
+
+	const HeaderValue* contentLength
+		= getHeaderValue("content-length");
+	const HeaderValue* transferEncoding = NULL;
+
+	// if content length header provided
+	if (contentLength) {
+		mRequestBody.setContentLength(*contentLength);
+		mRequestBody.setBodyType
+			(RequestBody::CONTENT_LENGTH);
+	}
+	// looks for the tranfer-encoding header field
+		// if found, checks if it has the 'chunked' value
+	else if ( (transferEncoding = getHeaderValue
+				("transfer-encoding"))
+		   && *transferEncoding == "chunked" ) {
+
+		mRequestBody.setBodyType(RequestBody::CHUNKED);
+
+	}
+	// no length option is provided
+	else {
+		moveFinStage(StatusCodeHandler::LEN_REQUIRED);
+		throw std::runtime_error("setBodyLengthInfo(): "
+			"no length option was provided");
+	}
 
 }
 
 void Request::parseBody() {
+
+	try {
+
+		// gets the number of bytes that were read
+			// and consumed when parsing the body
+		const std::string::size_type readBytes
+			= mRequestBody.parse();
+
+		// and removes those consumed bytes
+		mBuffer.erase(0, readBytes);
+
+		// whole body was received
+		if (mRequestBody.isDone())
+			mStage = FINISH;
+
+	}
+	catch (const std::exception& e) {
+		Log::error(e.what());
+		// gets the corresponding error status code
+		moveFinStage(mRequestBody.getStatusCode());
+	}
+
 }
 
 bool Request::parseMethod

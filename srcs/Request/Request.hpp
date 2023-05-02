@@ -199,7 +199,7 @@ class Request {
 
 		// the path to the parsed request
 			// body if there is one
-		std::string pathToBodyFileName;
+		std::string mBodyFileName;
 
 		// amount by which to read from socket
 		static size_t mReadSize;
@@ -246,6 +246,8 @@ class Request {
 			// + post request if it's a cgi or upload
 		// the body is unchunked if the 'transfer-encoding:
 			// chunked' header is encountered
+		// removes the number of body bytes that were
+			// read from the buffer
 		void parseBody();
 
 		// returns true and sets the request method if found,
@@ -263,10 +265,28 @@ class Request {
 		// moves the buffer to the beginning of the headers
 		bool parseURL();
 
-		// determines the type of request made and either moves to
-			// the finish stage if no request body is needed or to
-			// the body stage and calls parseBody()
+		// determines the type of request made and it moves to
+			// the finish stage if no request body is needed
+			// or there is an error that prevents reading the
+			// request body, otherwise it moves to the body stage
 		void determineRequestType();
+
+		// sets the necessary information for the body
+			// to be read and stored.
+		// this information include:
+			// type of body (length is known or chunked)
+			// file name where the body is stored
+		// this information is passed to mRequestBody
+		// internal operations can throw std::exception
+		void setBodyParsingInfo();
+
+		// sets the length option required to parse the body
+		// length option is either content-length header value
+			// or chunked value of transfer-encoding header
+		// this info is passed to mRequestBody
+		// throws std::runtime_error if no length option was found
+		// internal operation may throw std::exception
+		void setBodyLengthInfo();
 
 		// creates a path where the request body will be stored
 		// the path is created depending on the type of request
@@ -284,3 +304,10 @@ class Request {
 		void logRequest();
 
 };
+
+// this include is brought down here because it contains the ServerManager include 
+// which is needed by the request class, but it can't be included directly since
+// it relies on the full ClientHandler definition and the ClientHandler definition
+// in turn cannot be included above directly because it relies on the full definition
+// of the Request class
+#include <ClientHandler.hpp>
