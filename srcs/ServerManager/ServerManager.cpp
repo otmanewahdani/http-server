@@ -248,7 +248,7 @@ void ServerManager::makeTmpFilesDir() {
 	
 	// makes the directory with the following
 	// permissions: read, write
-	if (mkdir(mTmpFilesDir.c_str(), 0666)) {
+	if (mkdir(mTmpFilesDir.c_str(), 0777)) {
 		
 		// does nothing if directory already exists
 		if (errno == EEXIST)
