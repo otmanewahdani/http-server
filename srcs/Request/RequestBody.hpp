@@ -121,7 +121,6 @@ class RequestBody {
 
 		// sets the status and code and marks
 			// the parsing as done
-		// also closes body store file
 		void setError(StatusCodeType code);
 
 };

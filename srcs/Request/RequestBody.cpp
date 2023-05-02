@@ -114,3 +114,10 @@ std::string::size_type
 	return readBytes;
 	
 }
+
+void RequestBody::setError(StatusCodeType code) {
+
+	mStatusCode = code;
+	mDone = true;
+
+}
