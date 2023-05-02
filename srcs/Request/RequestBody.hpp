@@ -39,6 +39,8 @@ class RequestBody {
 		/******* public member functions *******/
 		// takes the buffer from which the body
 			// will be read
+		// also the maximum size that the body
+			// shoudln't exceed
 		RequestBody(const std::string& buffer,
 			const Size maxBodySize);
 
@@ -47,7 +49,7 @@ class RequestBody {
 
 		// returns the number of consumed bytes
 			// from the buffer
-		// returns std::string::npos on error
+		// throws std::exception on error
 		std::string::size_type parse();
 
 		/******* setters *******/
