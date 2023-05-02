@@ -76,7 +76,7 @@ void writeToStream(std::ostream& stream,
 
 }
 
-const std::string& generateFileName
+std::string generateFileName
 	(const std::string& pathPrefix) {
 	
 	// generates a file name with the format 
@@ -85,7 +85,7 @@ const std::string& generateFileName
 		// between each session files
 	// the counter value to identify each file
 		// within the program session
-	static unsigned long counter;
+	static unsigned long counter = 0;
 
 	// retrieve the current pid
 	// throws std::runtime_error on error
@@ -106,7 +106,7 @@ const std::string& generateFileName
 		pathPrefix + "/" + fileName;
 
 	//increment the counter for the next call
-	counter++;
+	++counter;
 	
 	return fullPathName;
 
