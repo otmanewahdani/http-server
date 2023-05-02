@@ -50,6 +50,7 @@ class RequestBody {
 		// returns the number of consumed bytes
 			// from the buffer
 		// throws std::exception on error
+		// qlso returns std::string::npos on error
 		std::string::size_type parse();
 
 		/******* setters *******/
@@ -115,6 +116,7 @@ class RequestBody {
 		// throws std::exception on error
 		// returns the number of bytes that were consumed
 			// from the buffer
+		// also returns std::string::npos on error
 		std::string::size_type parseChunkedBody();
 
 		// sets the status and code and marks

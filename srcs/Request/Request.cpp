@@ -390,6 +390,10 @@ void Request::parseBody() {
 		const std::string::size_type readBytes
 			= mRequestBody.parse();
 
+		// error
+		if (readBytes == std::string::npos)
+			return moveFinStage(mRequestBody.getStatusCode());
+
 		// and removes those consumed bytes
 		mBuffer.erase(0, readBytes);
 
