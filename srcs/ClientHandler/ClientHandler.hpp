@@ -15,8 +15,8 @@
 #pragma once
 
 #include <Config.hpp>
-#include <Response.hpp>
 #include <Request.hpp>
+#include <Response.hpp>
 #include <unistd.h>
 #include <Log.hpp>
 
@@ -31,7 +31,7 @@ class ClientHandler {
 		};
 
 		/******* alias types *******/
-		typedef int Socket;
+		typedef Config::Socket Socket;
 		typedef Config::ServerRef ServerRef;
 		typedef Config::ConstServerRef ConstServerRef;
 
@@ -82,3 +82,6 @@ class ClientHandler {
 		void closeClientConnection();
 
 };
+
+// see the bottom of srcs/Request/Request.hpp for an explanation
+#include <ServerManager.hpp>

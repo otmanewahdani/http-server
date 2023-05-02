@@ -10,6 +10,14 @@ ClientHandler::ClientHandler(Socket ID, ConstServerRef server)
 	, mStage(REQUEST) // starts at the request stage
 	{}
 
+ClientHandler::ClientHandler(const ClientHandler& handler)
+	: mID(handler.mID)
+	, mServer(handler.mServer)
+	, mRequest(mID, mServer)
+	, mResponse(mID, mRequest, mServer)
+	, mStage(REQUEST) // starts at the request stage
+	{}
+
 bool ClientHandler::isRead() {
 
 	// doesn't need reading when
