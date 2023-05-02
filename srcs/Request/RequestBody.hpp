@@ -47,6 +47,9 @@ class RequestBody {
 		// returns true if parsing is over
 		bool isDone();
 
+		// returns true is request body is still valid
+		bool isValid();
+
 		// returns the number of consumed bytes
 			// from the buffer
 		// throws std::exception on error

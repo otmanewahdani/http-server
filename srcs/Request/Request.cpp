@@ -309,10 +309,18 @@ void Request::determineRequestType() {
 		setBodyParsingInfo();
 	}
 	catch (const std::exception& e) {
-		mStage = FINISH;
+		moveFinStage(mRequestBody.getStatusCode());
 		Log::error(e.what());
 		return;
 	}
+
+	// checks for extra errors that weren't thrown
+	if (mRequestBody.isValid() == false) {
+		return moveFinStage(mRequestBody.getStatusCode());
+	}
+
+	// moves to the body parsing stage
+	mStage = BODY;
 
 	parseBody();
 
@@ -391,8 +399,10 @@ void Request::parseBody() {
 			= mRequestBody.parse();
 
 		// error
-		if (readBytes == std::string::npos)
+		if (readBytes == std::string::npos) {
+			Log::error("parseBody(): body parse error");
 			return moveFinStage(mRequestBody.getStatusCode());
+		}
 
 		// and removes those consumed bytes
 		mBuffer.erase(0, readBytes);
