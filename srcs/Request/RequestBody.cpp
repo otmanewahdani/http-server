@@ -15,6 +15,10 @@ bool RequestBody::isDone() {
 	return mDone;
 }
 
+bool RequestBody::isValid() {
+	return (mStatusCode == StatusCodeHandler::OK);
+}
+
 std::string::size_type
 	RequestBody::parse() {
 	
@@ -108,8 +112,11 @@ std::string::size_type
 	mTotalReadBytes += readBytes;
 
 	// checks if the full body was read
-	if (mContentLength == mTotalReadBytes)
+	if (mContentLength == mTotalReadBytes) {
 		mDone = true;
+		// flushing the stream after reading everything
+		mBodyStore << std::flush;
+	}
 
 	return readBytes;
 	
