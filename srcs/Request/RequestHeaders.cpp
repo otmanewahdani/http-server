@@ -123,6 +123,7 @@ void RequestHeaders::setHeaderNames() {
 
 	mHeaderNames.insert("content-type");
 	mHeaderNames.insert("content-length");
+	mHeaderNames.insert("transfer-encoding");
 	mHeaderNames.insert("host");
 	mHeaderNames.insert("cookie");
 
