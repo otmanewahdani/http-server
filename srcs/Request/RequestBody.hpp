@@ -18,6 +18,7 @@
 #include <string>
 #include <Config.hpp>
 #include <StatusCodeHandler.hpp>
+#include <cstring>
 
 class RequestBody {
 
@@ -90,6 +91,11 @@ class RequestBody {
 		// stores if the body parsing is done
 		bool mDone;
 
+		// keeps track of the chunk size
+			// that needs to be read
+		// -1 if the the whole chunk read
+		int mChunkSize;
+
 		// the full length of the body to be read
 			// if the body type is CONTENT_LENGTH
 		std::string::size_type mContentLength;
@@ -106,8 +112,30 @@ class RequestBody {
 		std::string::size_type parseFullLengthBody();
 
 		// parses body when body type is CHUNKED
-		// returns std::string::npos on error
+		// returns std::string::npos on ENTITY_LARGE error
+		// throw exception on stream failure
 		std::string::size_type parseChunkedBody();
+
+		// parses the chunk size line and sets
+			// the chunk size
+		// sets the chunk size to -1 if line not found
+		// returns false on error
+		// takes the readBytes variable that stores the 
+			// consumed bytes and updates it with the
+			// line size if found (including CRLF)
+		bool parseChunkSize
+			(std::string::size_type& readBytes);
+
+		// reads the chunk size from the buffer 
+			// and write it into the storage file
+		//reads the availble data if it's less that 
+			//the chunk size, and updates the chunk
+			// size to the remaining size of the chunk
+		// takes the readBytes variable that stores the 
+			// consumed bytes and updates it with the
+			// the amount read
+		void parseChunkData
+				(std::string::size_type& readBytes);
 
 		// sets the status and code and marks
 			// the parsing as done
