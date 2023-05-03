@@ -149,12 +149,12 @@ class RequestBody {
 				(std::string::size_type& readBytes);
 
 		// returns false if the chunk separator
-		// (CRLF) not found, otherwise updates
-		// the readBytes parameter by adding
-		// the 2 bytes of the CRLF, and sets
-		// the chunk size to -1 to indicate
-		// that the whole chunk was parsed
-		// successfully
+			// (CRLF) not found, otherwise updates
+			// the readBytes parameter by adding
+			// the 2 bytes of the CRLF, and sets
+			// the chunk size to -1 to indicate
+			// that the whole chunk was parsed
+			// successfully
 		bool parseChunkSeparator
 			(std::string::size_type& readBytes);
 

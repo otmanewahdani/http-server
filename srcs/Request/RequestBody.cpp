@@ -57,7 +57,9 @@ bool RequestBody::parseChunkSize
 	(std::string::size_type& readBytes) {
 	
 	// searches for the end of chunk
-		// size line position
+		// size line position starting
+		// from the last position
+		// of the consumed data
 	const std::string::size_type
 		chunkLineEndPos = mBuffer.find("\r\n", readBytes);
 	
