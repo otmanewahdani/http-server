@@ -93,7 +93,8 @@ class RequestBody {
 
 		// keeps track of the chunk size
 			// that needs to be read
-		// -1 if the the whole chunk read
+		// set to -1 if the chunk size
+			// not retrieved yet
 		int mChunkSize;
 
 		// the full length of the body to be read
@@ -118,24 +119,44 @@ class RequestBody {
 
 		// parses the chunk size line and sets
 			// the chunk size
-		// sets the chunk size to -1 if line not found
-		// returns false on error
-		// takes the readBytes variable that stores the 
-			// consumed bytes and updates it with the
-			// line size if found (including CRLF)
+		// takes the readBytes parameter and update
+			// it by adding the full lenght
+			// of the chunk size line if found
+		// returns false in the following cases:
+		// line note found
+		// returns false on error and sets readBytes 
+			// to std::string::npos
+		// the chunk size is 0, which is the case of the
+			// last chunk in the body entity,
+			// sets mDone to true and add updates
+			// the readBytes by adding the full
+			// line size
+		// returns true if the chunkSize was 
+			// retrieved successfully 
+			// and updates the readBbytes
+		// throws exception on error
 		bool parseChunkSize
 			(std::string::size_type& readBytes);
 
-		// reads the chunk size from the buffer 
-			// and write it into the storage file
-		//reads the availble data if it's less that 
-			//the chunk size, and updates the chunk
-			// size to the remaining size of the chunk
-		// takes the readBytes variable that stores the 
-			// consumed bytes and updates it with the
-			// the amount read
-		void parseChunkData
+		// returns true if the whole chunk data is 
+			// parsed (chunk size == 0)
+		// takes the readBytes parameter and 
+			// updates it by adding the 
+			// consumed chunk data size
+		// updates the mChunkSize by subtracting
+			// the read bytes from it
+		bool parseChunkData
 				(std::string::size_type& readBytes);
+
+		// returns false if the chunk separator
+		// (CRLF) not found, otherwise updates
+		// the readBytes parameter by adding
+		// the 2 bytes of the CRLF, and sets
+		// the chunk size to -1 to indicate
+		// that the whole chunk was parsed
+		// successfully
+		bool parseChunkSeparator
+			(std::string::size_type& readBytes);
 
 		// sets the status and code and marks
 			// the parsing as done
