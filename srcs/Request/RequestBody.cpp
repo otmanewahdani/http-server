@@ -221,9 +221,10 @@ bool RequestBody::parseChunkSize
 		
 		}
 
-		// the last chunk in the body entitiy
+		// the last chunk in the body entity
 		if (mChunkSize == 0) {
-		
+			// flushes the whole body into the stream
+			mBodyStore << std::flush;
 			mDone = true;
 			return false;
 		}
