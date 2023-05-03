@@ -6,16 +6,21 @@
 
 #pragma once
 
-#include <Request.hpp>
 #include <StatusCodeHandler.hpp>
+#include <Config.hpp>
+
+// forward declaration of request
+// it's included at the bottom of the file
+// see the bottom for an explanation
+class Request;
 
 class Response {
 
 	public:
 		/******* alias types *******/
-		typedef Request::Socket Socket;
-		typedef Request::ConstServerRef ConstServerRef;
-		typedef Request::ConstLocPtr ConstLocPtr;
+		typedef Config::Socket Socket;
+		typedef Config::ConstServerRef ConstServerRef;
+		typedef Config::ConstLocPtr ConstLocPtr;
 
 		/******* public member functions *******/
 		// first parameter is the socket on which
@@ -77,3 +82,7 @@ class Response {
 		void sendRespone();
 
 };
+
+// this file was included here because it includes ClientHandler.hpp which in turn includes
+// Response.hpp  and it  relies on its full definition of the Response class
+#include <Request.hpp>
