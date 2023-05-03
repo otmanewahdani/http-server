@@ -98,6 +98,12 @@ class RequestBody {
 		// stores if the body parsing is done
 		bool mDone;
 
+		// keeps track of the chunk size
+			// that needs to be read
+		// set to -1 if the chunk size
+			// not retrieved yet
+		int mChunkSize;
+
 		// the full length of the body to be read
 			// if the body type is CONTENT_LENGTH
 		std::string::size_type mContentLength;
@@ -121,6 +127,47 @@ class RequestBody {
 			// from the buffer
 		// also returns std::string::npos on error
 		std::string::size_type parseChunkedBody();
+
+		// parses the chunk size line and sets
+			// the chunk size
+		// takes the readBytes parameter and update
+			// it by adding the full lenght
+			// of the chunk size line if found
+		// returns false in the following cases:
+		// line note found
+		// returns false on error and sets readBytes 
+			// to std::string::npos
+		// the chunk size is 0, which is the case of the
+			// last chunk in the body entity,
+			// sets mDone to true and add updates
+			// the readBytes by adding the full
+			// line size
+		// returns true if the chunkSize was 
+			// retrieved successfully 
+			// and updates the readBbytes
+		// throws exception on error
+		bool parseChunkSize
+			(std::string::size_type& readBytes);
+
+		// returns true if the whole chunk data is 
+			// parsed (chunk size == 0)
+		// takes the readBytes parameter and 
+			// updates it by adding the 
+			// consumed chunk data size
+		// updates the mChunkSize by subtracting
+			// the read bytes from it
+		bool parseChunkData
+				(std::string::size_type& readBytes);
+
+		// returns false if the chunk separator
+			// (CRLF) not found, otherwise updates
+			// the readBytes parameter by adding
+			// the 2 bytes of the CRLF, and sets
+			// the chunk size to -1 to indicate
+			// that the whole chunk was parsed
+			// successfully
+		bool parseChunkSeparator
+			(std::string::size_type& readBytes);
 
 		// sets the status and code and marks
 			// the parsing as done
