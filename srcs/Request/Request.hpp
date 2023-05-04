@@ -117,22 +117,22 @@ class Request {
 			// associated with a header name
 		// if not found, return NULL
 		const HeaderValue* getHeaderValue
-			(const HeaderName& headerName);
+			(const HeaderName& headerName) const;
 
 		// returns the requested method
-		const Method& getMethod();
+		const Method& getMethod() const;
 
 		// returns full path of the requested path
-		const std::string& getFullPath();
+		const std::string& getFullPath() const;
 
-		const StatusCodeType& getStatusCode();
+		const StatusCodeType& getStatusCode() const;
 
 		// returns the type of the parsed Request
-		const RequestType& getRequestType();
+		const RequestType& getRequestType() const;
 
 		// returns the path where the request body is stored
 		// if there is no body, it returns an empty path
-		const std::string& getPathToBodyFileName();
+		const std::string& getPathToBodyFileName() const;
 
 		/******* setters *******/
 		// sets the mStatusCode

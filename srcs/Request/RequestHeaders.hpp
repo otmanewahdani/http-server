@@ -42,7 +42,7 @@ class RequestHeaders {
 			// associated with a header name
 		// if not found, returns NULL
 		const HeaderValue* getHeaderValue
-			(const HeaderName& headerName);
+			(const HeaderName& headerName) const;
 
 		static void initializeStaticData();
 

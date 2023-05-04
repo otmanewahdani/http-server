@@ -73,7 +73,7 @@ void RequestHeaders::parse() {
 
 const RequestHeaders::HeaderValue*
 	RequestHeaders::getHeaderValue
-	(const HeaderName& headerName) {
+	(const HeaderName& headerName) const {
 
 	// finds whole header field by its header name
 	std::map<HeaderName, HeaderValue>::const_iterator

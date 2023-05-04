@@ -85,30 +85,30 @@ const std::string& Request::getURLStr() const {
 
 const Request::HeaderValue*
 	Request::getHeaderValue
-	(const HeaderName& headerName) {
+	(const HeaderName& headerName) const {
 
 	return mHeaders.getHeaderValue
 		(headerName);
 
 }
 
-const Request::Method& Request::getMethod() {
+const Request::Method& Request::getMethod() const {
 	return mMethod;
 }
 
-const std::string& Request::getFullPath() {
+const std::string& Request::getFullPath() const {
 	return mURL.getFullPath();
 }
 
 const Request::StatusCodeType&
-	Request::getStatusCode() {
+	Request::getStatusCode() const {
 
 	return mStatusCode;
 
 }
 
 const Request::RequestType&
-	Request::getRequestType() {
+	Request::getRequestType() const {
 
 	return mRequestType;
 
