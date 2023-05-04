@@ -1,0 +1,8 @@
+[2023-5-2 20:14:28] [INFO] server listening on 127.0.0.1:8080, socket id = 4
+[2023-5-2 20:14:28] [INFO] server listening on 10.11.4.10:8080, socket id = 5
+[2023-5-2 20:14:35] [INFO] on socket 7, new connection established between client 127.0.0.1:49654 and server 127.0.0.1:8080
+[2023-5-2 20:14:35] [INFO] on socket 7, POST request for url: '/cgi.php' received from client 127.0.0.1:49654 by server 127.0.0.1:8080
+[2023-5-2 20:14:35] [INFO] on socket 7, connection closed between client 127.0.0.1:49654 and server 127.0.0.1:8080
+[2023-5-2 20:17:19] [INFO] on socket 7, new connection established between client 127.0.0.1:49678 and server 127.0.0.1:8080
+[2023-5-2 20:17:19] [INFO] on socket 7, POST request for url: '/cgi.php' received from client 127.0.0.1:49678 by server 127.0.0.1:8080
+[2023-5-2 20:17:19] [INFO] on socket 7, connection closed between client 127.0.0.1:49678 and server 127.0.0.1:8080

@@ -2,6 +2,37 @@ server{
 
 	server_name name;
 
+	listen localhost;
+
+	error_page 404 /error_page.html;
+
+	location / {
+
+		allow_methods GET POST DELETE;
+
+		root /Users/owahdani/;
+		
+		autoindex on;
+
+		default /default.html;
+
+		cgi .php /usr/bin/php;
+
+		upload /Users/owahdani/upload;
+
+	}
+
+	location /upload {
+		allow_methods POST;
+		upload /Users/owahdani/upload;
+	}
+
+}
+
+server{
+
+	server_name name;
+
 	listen 10.11.4.10:8080;
 
 	error_page 404 /error_page.html;
@@ -20,39 +51,9 @@ server{
 
 		default /default.html;
 
-		cgi .php /bin/php;
+		cgi .php /usr/bin/php;
 
-		upload /goinfre;
-
-	}
-
-}
-
-server{
-
-	server_name name;
-
-	listen localhost;
-
-	error_page 404 /error_page.html;
-
-	client_body_size_max 100;
-
-	location / {
-
-		allow_methods GET POST DELETE;
-
-		redirect 301 /redirect.html; 
-
-		root /path/to/dir;
-		
-		autoindex on;
-
-		default /default.html;
-
-		cgi .php /bin/php;
-
-		upload /goinfre;
+		upload /Users/owahdani/upload;
 
 	}
 

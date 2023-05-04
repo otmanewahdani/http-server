@@ -3,6 +3,8 @@
 
 #include <Response.hpp>
 
+const size_t Response::mSendSize = 1024;
+
 Response::Response(Socket socket,
 	const Request& request, ConstServerRef server)
 	: mSocket(socket)
@@ -21,7 +23,23 @@ void Response::proceedWithSocket() {
 
 void Response::start(ConstLocPtr location) {
 
-	mLocation = location;
+	if (mStart) {
+		throw std::runtime_error("Response::start(): "
+			"the response process already started");
+	}
 	mStart = true;
 
+	mLocation = location;
+
+	mStatusCode = mRequest.getStatusCode();
+
+	// This mandatory header is always
+		// present in the response message
+	mHeaders["connection"] = "close";
+
+	generateReponse();
+
+}
+
+void generateResponse() {
 }

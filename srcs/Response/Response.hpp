@@ -8,6 +8,7 @@
 
 #include <StatusCodeHandler.hpp>
 #include <Config.hpp>
+#include <stdexcept>
 
 // forward declaration of request
 // it's included at the bottom of the file
@@ -21,6 +22,9 @@ class Response {
 		typedef Config::Socket Socket;
 		typedef Config::ConstServerRef ConstServerRef;
 		typedef Config::ConstLocPtr ConstLocPtr;
+		typedef StatusCodeHandler::StatusCodeType StatusCodeType;
+		typedef Request::HeaderName HeaderName;
+		typedef Request::HeaderValue HeaderValue;
 
 		/******* public member functions *******/
 		// first parameter is the socket on which
@@ -43,7 +47,10 @@ class Response {
 
 		// starts the reponse generating process
 		// sets mLocation to location
-		// should only be called once, otherwise
+		// gets all the necessary info it needs from
+			// the request member such us status code
+		// should only be called once in the lifetime of
+			// a Response's object, otherwise
 			// std::runtime_error is thrown
 		void start(ConstLocPtr location);
 	
@@ -66,11 +73,38 @@ class Response {
 			// configuration of the requested path
 		ConstLocPtr mLocation;
 
+		// status code to be sent
+		StatusCodeType mStatusCode;
+
 		// is response done
 		bool mDone;
 
 		// did response already start
 		bool mStart;
+
+		// buffer containing the response
+			// bytes to be sent
+		// bytes will keep being added to
+			// this buffer until there is no
+			// more bytes to be sent or an
+			// error occurs
+		std::string mBuffer;
+
+		// file where the body to be sent is stored
+			// if the response will send one
+		std::string mBodyFileName;
+
+		// the file where the respone body is
+			// stored will be turned into a
+			// file stream before sending it
+		std::ifstream mBodyStream;
+
+		// response headers
+		// connection: close header pair is always present
+		std::map<HeaderName, HeaderValue> mHeaders;
+
+		// amount of bytes sent on each send attempt
+		const static size_t mSendSize;
 
 		/******* private member functions *******/
 		// contains the main logic that generates
@@ -80,6 +114,39 @@ class Response {
 		// sends the generated response over the
 			// socket
 		void sendRespone();
+
+		/* these functions check the type of response to be made,
+		 *  generare it and set its headers in the headers members
+		 * If there is an entity body to be sent, its full path
+		 *  is set im mBodyFileName
+		 * Errors may happen during these functions so in that case
+		 *  the status code is set accordingly
+		 */
+		// checks if the reponse contains an error status and looks
+			// for the error entity to be sent if there is one
+		bool isError();
+
+		// sets the location header
+		bool isRedirect();
+
+		// checks if the response will return a regular file
+		bool isContent();
+
+		// checks if the response will return a default file
+			// which is located in the location
+			// config of the requested path (mLocation)
+		bool isDefault();
+
+		// checks if it's a cgi request and runs the CGI script
+		bool isCGI();
+
+		// checks if it's an autoindex request and generate
+			// a directory listing to be sent in the entity body
+		bool isAutoIndex();
+
+		// checks if it's a delete request and deletes the path
+			// if it can (maybe it doesn't exist or has no permissions)
+		bool isDelete();
 
 };
 
