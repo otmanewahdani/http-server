@@ -189,6 +189,9 @@ bool RequestChecker::isContent() {
 		
 	}
 
+	if (method == Request::DELETE)
+		mRequest.setStatusCode(StatusCodeHandler::NO_CONTENT);
+
 	mRequest.setRequestType(Request::CONTENT);
 	return true;
 
