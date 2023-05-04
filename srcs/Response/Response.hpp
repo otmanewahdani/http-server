@@ -103,8 +103,20 @@ class Response {
 		// connection: close header pair is always present
 		std::map<HeaderName, HeaderValue> mHeaders;
 
+		// stores if the headers-body separator is needed
+		// by default, there is a body separator unless
+			// it is provided by another response type
+			// like CGI
+		bool mIsSeparator;
+
 		// amount of bytes sent on each send attempt
 		const static size_t mSendSize;
+
+		// amount of bytes read from the body stream
+			// on each attempt
+		// these are the bytes that are sent in the
+			// response body message
+		const static size_t mReadSize;
 
 		/******* private member functions *******/
 		// contains the main logic that generates
@@ -113,7 +125,25 @@ class Response {
 
 		// sends the generated response over the
 			// socket
-		void sendRespone();
+		void sendResponse();
+
+		// appends the approriate status line
+			// to the sending buffer
+		void generateStatusLine();
+
+		// appends the appropriate headers
+			// to the sending buffer
+		void generateHeaders();
+
+		// appends a CRLF separator to the sending
+		// buffer if needed (if mIsSeparator is set)
+		void addHeadersBodySeparator();
+
+		// if the response requires a body, opens the stream
+			// of the file where the message body exists
+		// sets status code to an error code if the file
+			// couldn't be opened
+		void openBodyStream();
 
 		/* these functions check the type of response to be made,
 		 *  generare it and set its headers in the headers members
