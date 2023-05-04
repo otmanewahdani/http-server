@@ -98,12 +98,6 @@ class RequestBody {
 		// stores if the body parsing is done
 		bool mDone;
 
-		// keeps track of the chunk size
-			// that needs to be read
-		// set to -1 if the chunk size
-			// not retrieved yet
-		int mChunkSize;
-
 		// the full length of the body to be read
 			// if the body type is CONTENT_LENGTH
 		std::string::size_type mContentLength;
@@ -113,6 +107,12 @@ class RequestBody {
 		// stores the total bytes of the body 
 		// that have parsed and consumed so far
 		std::string::size_type mTotalReadBytes;
+
+		// keeps track of the chunk size
+			// that needs to be read
+		// set to -1 if the chunk size
+			// not retrieved yet
+		int mChunkSize;
 
 		/******* private member functions *******/
 		// parses body when body type is CONTENT_LENGTH

@@ -9,7 +9,8 @@ RequestBody::RequestBody(const std::string& buffer,
 	, mDone()
 	, mContentLength()
 	, mStatusCode(StatusCodeHandler::OK)
-	, mTotalReadBytes() {}
+	, mTotalReadBytes()
+	, mChunkSize(-1) {}
 
 bool RequestBody::isDone() {
 	return mDone;
@@ -105,7 +106,7 @@ std::string::size_type
 	catch (const std::exception& error) {
 		// sets the appropriate status code and rethrows
 		setError(StatusCodeHandler::SERVER_ERROR);
-		throw error;
+		throw ;
 	}
 
 	// updates the total of the bytes that were read
@@ -231,7 +232,7 @@ bool RequestBody::parseChunkSize
 	} 
 	catch(const std::exception& error) {
 		setError(StatusCodeHandler::SERVER_ERROR);
-		throw error;
+		throw ;
 	}
 
 	// add the line size and the 2 bytes
@@ -269,7 +270,7 @@ bool  RequestBody::parseChunkData
 	}
 	catch(const std::exception& error) {
 		setError(StatusCodeHandler::SERVER_ERROR);
-		throw error;
+		throw ;
 	}
 
 	// updates the chunk size for next
