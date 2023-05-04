@@ -76,8 +76,8 @@ void writeToStream(std::ostream& stream,
 
 }
 
-void removeFile(const std::string& filePath) {
-	unlink(filePath.c_str());
+bool removeFile(const std::string& filePath) {
+	return (unlink(filePath.c_str()) == 0)
 }
 
 std::string generateFileName
