@@ -16,6 +16,7 @@ class StatusCodeHandler {
 		/******* nested types *******/
 		enum StatusCodeType {
 			OK = 200,
+			NO_CONTENT = 204,
 			REDIRECT_MOVE = 301,
 			REDIRECT_FOUND = 302,
 			REDIRECT_PROXY = 305,
