@@ -45,7 +45,7 @@ void Response::start(ConstLocPtr location) {
 
 }
 
-void generateResponse() {
+void Response::generateResponse() {
 	
 	// if there is no error page
 		// to be generated
@@ -83,5 +83,60 @@ void generateResponse() {
 	generateHeaders();
 
 	addHeadersBodySeparator();
+
+}
+
+void Response::sendResponse() {
+
+	// there are still body bytes to
+		// be sent
+	if (mBodyStream.eof() == false) {
+
+		char bodyBuf[mReadSize];
+
+		// fill readBodyBytes buffer from body stream
+		mBodyStream.read(bodyBuf, mReadSize);
+
+		// if it failed before reaching end of file
+			// stops sending the response
+		if (mBodyStream.eof() == false && mBodyStream.fail())
+			mDone = true;
+		else {
+			// appends the number of read bytes from the stream
+				// to the send buffer
+			mBuffer.append(bodyBuf, mBodyStream.gcount());
+		}
+
+	}
+	// after checking the file stream,
+		// checks if there are still
+		// bytes in the buffer
+	else if (mBuffer.empty())
+			mDone = true;
+
+	// if sending wasn't stopped before
+		// because of some fatal error
+		// or sending is complete
+	if (mDone == false) {
+
+		// if there are less bytes in the buffer
+			// than the regular send size, use
+			// the buffer size for sending
+		const std::string::size_type sendSize
+			= mBuffer.size() > mSendSize ?
+			mSendSize : mBuffer.size();
+
+		const ssize_t sentBytes = write
+			(mSocket, mBuffer.c_str(), sendSize);
+
+		// if sending failed
+		if (sentBytes == -1)
+			mDone = true;
+		else {
+			// removes the sent bytes
+			mBuffer.erase(0, sentBytes);
+		}
+
+	}
 
 }

@@ -9,6 +9,7 @@
 #include <StatusCodeHandler.hpp>
 #include <Config.hpp>
 #include <stdexcept>
+#include <unistd.h>
 
 // forward declaration of request
 // it's included at the bottom of the file
@@ -94,7 +95,7 @@ class Response {
 			// if the response will send one
 		std::string mBodyFileName;
 
-		// the file where the respone body is
+		// the file stream where the response body is
 			// stored will be turned into a
 			// file stream before sending it
 		std::ifstream mBodyStream;
@@ -148,7 +149,7 @@ class Response {
 		/* these functions check the type of response to be made,
 		 *  generare it and set its headers in the headers members
 		 * If there is an entity body to be sent, its full path
-		 *  is set im mBodyFileName
+		 *  is set in mBodyFileName
 		 * Errors may happen during these functions so in that case
 		 *  the status code is set accordingly
 		 */
