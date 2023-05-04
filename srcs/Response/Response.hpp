@@ -36,6 +36,8 @@ class Response {
 		Response(Socket socket, const Request& request,
 			ConstServerRef server);
 
+		~Response();
+
 		// returns true if it still wants to write
 			// response bytes on the socket
 		// returns false if fully done sending
@@ -93,6 +95,8 @@ class Response {
 
 		// file where the body to be sent is stored
 			// if the response will send one
+		// if mIsDelBodyFile is set, this file will
+			// be removed
 		std::string mBodyFileName;
 
 		// the file stream where the response body is
@@ -109,6 +113,11 @@ class Response {
 			// it is provided by another response type
 			// like CGI
 		bool mIsSeparator;
+
+		// stores whether the file containing the sent
+			// body should be deleted
+		// it's deleted in the destructor
+		bool mIsDelBodyFile;
 
 		// amount of bytes sent on each send attempt
 		const static size_t mSendSize;

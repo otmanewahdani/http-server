@@ -15,7 +15,8 @@ Response::Response(Socket socket,
 	, mLocation()
 	, mDone()
 	, mStart()
-	, mIsSeparator(true) {}
+	, mIsSeparator(true)
+	, mIsDelBodyFile() {}
 
 bool Response::isWrite() const {
 	return mDone;
@@ -62,7 +63,7 @@ void Response::generateResponse() {
 			;
 		else if (isRedirect())
 			;
-		else if isCGI()
+		else if (isCGI())
 			;
 		else if (isAutoIndex())
 			;
