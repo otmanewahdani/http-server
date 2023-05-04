@@ -306,7 +306,11 @@ void Request::determineRequestType() {
 
 	// moves to finish stage if body is unable to be parsed
 	try {
-		setBodyParsingInfo();
+		// after no exceptions are thrown, it does an extra check
+			// for the validityy of the information needed for
+			// parsing the body
+		if (setBodyParsingInfo() == false)
+			return moveFinStage(mStatusCode);
 	}
 	catch (const std::exception& e) {
 		moveFinStage(mRequestBody.getStatusCode());
@@ -326,10 +330,12 @@ void Request::determineRequestType() {
 
 }
 
-void Request::setBodyParsingInfo() {
+bool Request::setBodyParsingInfo() {
 
 	// size of body is dealt with first
-	setBodyLengthInfo();
+	// checks if the length of the body is valid
+	if (setBodyLengthInfo() == false)
+		return false;
 
 	// the directory where the body
 		// will be stored
@@ -351,15 +357,17 @@ void Request::setBodyParsingInfo() {
 	}
 	catch (const std::exception& e) {
 		moveFinStage(StatusCodeHandler::SERVER_ERROR);
-		throw e;
+		throw ;
 	}
 
 	// passes the filename where the body should be stored
 	mRequestBody.setBodyStore(mBodyFileName);
 
+	return true;
+
 }
 
-void Request::setBodyLengthInfo() {
+bool Request::setBodyLengthInfo() {
 
 	const HeaderValue* contentLength
 		= getHeaderValue("content-length");
@@ -383,9 +391,10 @@ void Request::setBodyLengthInfo() {
 	// no length option is provided
 	else {
 		moveFinStage(StatusCodeHandler::LEN_REQUIRED);
-		throw std::runtime_error("setBodyLengthInfo(): "
-			"no length option was provided");
+		return false;
 	}
+
+	return true;
 
 }
 
@@ -408,8 +417,9 @@ void Request::parseBody() {
 		mBuffer.erase(0, readBytes);
 
 		// whole body was received
-		if (mRequestBody.isDone())
+		if (mRequestBody.isDone()) {
 			mStage = FINISH;
+		}
 
 	}
 	catch (const std::exception& e) {

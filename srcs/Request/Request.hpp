@@ -278,7 +278,8 @@ class Request {
 			// file name where the body is stored
 		// this information is passed to mRequestBody
 		// internal operations can throw std::exception
-		void setBodyParsingInfo();
+		// returns false on non-exceptional errors
+		bool setBodyParsingInfo();
 
 		// sets the length option required to parse the body
 		// length option is either content-length header value
@@ -286,7 +287,8 @@ class Request {
 		// this info is passed to mRequestBody
 		// throws std::runtime_error if no length option was found
 		// internal operation may throw std::exception
-		void setBodyLengthInfo();
+		// returns false on non-exceptional errors
+		bool setBodyLengthInfo();
 
 		// creates a path where the request body will be stored
 		// the path is created depending on the type of request
