@@ -210,7 +210,7 @@ void ServerManager::addClientHandler(Socket clientID, Socket serverID) {
 	// creates a new client handler and associates with client ID
 		// and adds it to mClientHandlers
 	std::pair<Socket, ClientHandler> newHandler( clientID,
-		ClientHandler(clientID, server) );
+		ClientHandler(clientID, server, mMimeTypes) );
 
 	// if new client handler didn't get added because a client
 		// handler with clientID exists already

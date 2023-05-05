@@ -115,3 +115,25 @@ std::string generateFileName
 	return fullPathName;
 
 }
+
+size_t getFileSize(const std::string& path) {
+
+	// info about path is set by stat()
+		// in this structure
+	struct stat pathInfo;
+
+	// if an error occurs
+	if (stat(path.c_str(), &pathInfo)) {
+
+		const std::string errorMsg =
+			std::string("getFileSize(): ")
+			+ "couldn't get size of file: '"
+			+ path + '\'';
+		throw std::runtime_error(errorMsg);
+
+	}
+
+	// returns the file size
+	return pathInfo.st_size;
+
+}

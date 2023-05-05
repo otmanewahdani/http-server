@@ -6,8 +6,8 @@ const size_t Response::mSendSize = 1024;
 
 const size_t Response::mReadSize = 1024;
 
-Response::Response(Socket socket,
-	const Request& request, ConstServerRef server)
+Response::Response(Socket socket, const Request& request,
+	ConstServerRef server, const MimeTypes& mimeTypes)
 	: mSocket(socket)
 	, mRequest(request)
 	, mServer(server)
@@ -15,7 +15,8 @@ Response::Response(Socket socket,
 	, mDone()
 	, mStart()
 	, mIsSeparator(true)
-	, mIsDelBodyFile() {}
+	, mIsDelBodyFile()
+	, mMimeTypes(mimeTypes) {}
 
 Response::~Response() {
 
