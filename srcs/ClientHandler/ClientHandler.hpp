@@ -19,6 +19,7 @@
 #include <Response.hpp>
 #include <unistd.h>
 #include <Log.hpp>
+#include <MimeTypes.hpp>
 
 class ClientHandler {
 
@@ -39,7 +40,10 @@ class ClientHandler {
 		// ID : socket identifier of the new client
 		// server: a reference to the server to which
 			// the client is connected
-		ClientHandler(Socket ID, ConstServerRef server);
+		// mimeTypes is passed to Response to aid in
+			// the reponse generation
+		ClientHandler(Socket ID, ConstServerRef server,
+			const MimeTypes& mimeTypes);
 
 		ClientHandler(const ClientHandler& handler);
 

@@ -2,11 +2,12 @@
 
 #include <ClientHandler.hpp>
 
-ClientHandler::ClientHandler(Socket ID, ConstServerRef server)
+ClientHandler::ClientHandler(Socket ID, ConstServerRef server,
+	const MimeTypes& mimeTypes)
 	: mID(ID)
 	, mServer(server)
 	, mRequest(ID, server)
-	, mResponse(ID, mRequest, mServer)
+	, mResponse(ID, mRequest, mServer, mimeTypes)
 	, mStage(REQUEST) // starts at the request stage
 	{}
 
@@ -14,7 +15,8 @@ ClientHandler::ClientHandler(const ClientHandler& handler)
 	: mID(handler.mID)
 	, mServer(handler.mServer)
 	, mRequest(mID, mServer)
-	, mResponse(mID, mRequest, mServer)
+	, mResponse(mID, mRequest, mServer,
+		handler.mResponse.getMimeTypes())
 	, mStage(REQUEST) // starts at the request stage
 	{}
 

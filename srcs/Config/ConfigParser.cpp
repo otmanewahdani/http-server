@@ -262,6 +262,18 @@ void ConfigParser::parseRedirection() {
 	// and saves it in redirectPath;
 	parsePath(redirectPath);
 
+	// The path always contains a leading slash. so to not remove the only
+		// character available  this operatiorn happens only if the path
+		// has more than one character
+	// So in the case of redirection, the leading slash will be removed so
+		// that the browser matches that path with the same location of the
+		// URL that returned the redirection.
+	// Another reason for removing that slash, is to enable redirections to
+		// other urls outside the server (full urls that begin with http://)
+	if (redirectPath.size() > 1) {
+		redirectPath.erase(0, 1);
+	}
+
 	// saves redirectPath:code pair in current location context
 	mLocationRef->redirection.first = code;
 	mLocationRef->redirection.second = redirectPath;

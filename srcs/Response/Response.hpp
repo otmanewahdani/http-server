@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <unistd.h>
 #include <utils.hpp>
+#include <MimeTypes.hpp>
 
 // forward declaration of request
 // it's included at the bottom of the file
@@ -35,7 +36,7 @@ class Response {
 			// the socket is connected and therefore
 			// contains the needed configuration info
 		Response(Socket socket, const Request& request,
-			ConstServerRef server);
+			ConstServerRef server, const MimeTypes& mimeTypes);
 
 		~Response();
 
@@ -57,6 +58,9 @@ class Response {
 			// a Response's object, otherwise
 			// std::runtime_error is thrown
 		void start(ConstLocPtr location);
+
+		// returns the mimetypes member
+		const MimeTypes& getMimeTypes() const;
 	
 	private:
 		/******* private member objects *******/
@@ -119,6 +123,9 @@ class Response {
 			// body should be deleted
 		// it's deleted in the destructor
 		bool mIsDelBodyFile;
+
+		// contains the types needed for content-type
+		const MimeTypes& mMimeTypes;
 
 		// amount of bytes sent on each send attempt
 		const static size_t mSendSize;
