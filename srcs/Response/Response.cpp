@@ -28,7 +28,7 @@ Response::~Response() {
 }
 
 bool Response::isWrite() const {
-	return mDone;
+	return (mDone == false);
 }
 
 void Response::proceedWithSocket() {
@@ -49,7 +49,7 @@ void Response::start(ConstLocPtr location) {
 
 	// This mandatory header is always
 		// present in the response message
-	mHeaders["connection"] = "close";
+	mHeaders["Connection"] = "close";
 
 	generateResponse();
 
@@ -61,39 +61,34 @@ const MimeTypes& Response::getMimeTypes() const {
 
 void Response::generateResponse() {
 	
-	// if there is no error page
-		// to be generated
-	// generates the appropriate response
-	if (isError() == false) {
+	// checks the reponse type and sets the
+		// data needed for that response type
+	// if else branching to stop checking when
+		// a response type was determined
+	if (isError())
+		;
+	else if (isContent())
+		;
+	else if (isDefault())
+		;
+	else if (isRedirect())
+		;
+	else if (isCGI())
+		;
+	else if (isAutoIndex())
+		;
+	else if (isDelete())
+		;
 
-		// checks the reponse type and sets the
-			// data needed for that response type
-		// if else branching to stop checking when
-			// a response type was determined
-		if (isContent())
-			;
-		else if (isDefault())
-			;
-		else if (isRedirect())
-			;
-		else if (isCGI())
-			;
-		else if (isAutoIndex())
-			;
-		else if (isDelete())
-			;
+	openBodyStream();
 
+	// checks if an error happened while processing
+		// and preparing the response so that an
+		// error respone could be sent
+	// opens a stream of the error file to be sent
+		// if there is one
+	if (isError())
 		openBodyStream();
-
-		// checks if an error happened while processing
-			// and preparing the response so that an
-			// error respone could be sent
-		// opens a stream of the error file to be sent
-			// if there is one
-		if (isError())
-			openBodyStream();
-
-	}
 
 	generateStatusLine();
 
@@ -105,18 +100,18 @@ void Response::generateResponse() {
 
 void Response::sendResponse() {
 
-	// there are still body bytes to
-		// be sent
-	if (mBodyStream.eof() == false) {
+	// there is a body and there are
+		// still body bytes to be sent
+	if (mBodyFileName.empty() == false && 
+		mBodyStream.eof() == false) {
 
 		char bodyBuf[mReadSize];
 
 		// fill readBodyBytes buffer from body stream
 		mBodyStream.read(bodyBuf, mReadSize);
 
-		// if it failed before reaching end of file
-			// stops sending the response
-		if (mBodyStream.eof() == false && mBodyStream.fail())
+		// if it failed, stops sending the response
+		if (mBodyStream.fail())
 			mDone = true;
 		else {
 			// appends the number of read bytes from the stream
@@ -164,7 +159,11 @@ void Response::generateHeaders() {
 			header = mHeaders.begin();
 			header != mHeaders.end(); ++header) {
 
-		// iterators over the headers and adds them to the
+		// RFC format of the header field
+		// HeaderName ":" SP HeaderValue CRLF
+		// first = header name
+		// second = header value
+		// iterates over the headers and adds them to the
 			// send buffer in an http format
 		mBuffer += header->first + ": "
 			+ header->second +"\r\n";
@@ -226,6 +225,13 @@ bool Response::isError() {
 				// root prefix to get the full path
 			mBodyFileName =
 				location->replaceByRoot(errorPagePath);
+
+			// if the error page doesn't exist in the filesystem
+				// returns immediately so that another error
+				// concerning the non-existence of this error
+				// page could be returned
+			if (isPath(mBodyFileName) == false)
+				return true;
 
 			setContentType();
 			setContentLength();
@@ -327,9 +333,16 @@ void Response::openBodyStream() {
 	mBodyStream.open(mBodyFileName.c_str(),
 		std::ofstream::in | std::ofstream::binary);
 
-	// stream couldn't be opened
-	if (!mBodyStream)
-		mStatusCode = StatusCodeHandler::SERVER_ERROR;
+	// stream was opened succesfully
+	if (mBodyStream)
+		return ;
+
+	// otherwise clears the bodyfilename and
+		// removes the headers that are associated
+		// with the entity body
+	mStatusCode = StatusCodeHandler::SERVER_ERROR;
+
+	clearEntityBodyData();
 
 }
 
@@ -404,5 +417,13 @@ void Response::generateStatusLine() {
 
 	// add the response status line to mBuffer
 	mBuffer.append(statusLine);
+
+}
+
+void Response::clearEntityBodyData() {
+
+	mBodyFileName.clear();
+	mHeaders.erase("Content-Type");
+	mHeaders.erase("Content-Length");
 
 }

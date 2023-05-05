@@ -161,7 +161,8 @@ class Response {
 
 		// if the response requires a body, opens the stream
 			// of the file where the message body exists
-		// sets status code to an error code if the file
+		// sets status code to an error code and calls
+			// clearEntityBodyData() if the file
 			// couldn't be opened
 		void openBodyStream();
 
@@ -198,9 +199,6 @@ class Response {
 			// if it can (maybe it doesn't exist or has no permissions)
 		bool isDelete();
 
-		// logs the response in the Log module
-		void logResponse();
-
 		// sets content length header of the entity body to
 			// be sent
 		void setContentLength();
@@ -209,6 +207,14 @@ class Response {
 			// and add the content-type response-header field
 			// with the retrieved type to mHeaders
 		void setContentType();
+
+		// clears the file name and headers associated
+			// with the entity body
+		// it's called in cases of error
+		void clearEntityBodyData();
+
+		// logs the response in the Log module
+		void logResponse();
 
 };
 
