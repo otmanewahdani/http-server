@@ -10,6 +10,7 @@
 #include <Config.hpp>
 #include <stdexcept>
 #include <unistd.h>
+#include <utils.hpp>
 
 // forward declaration of request
 // it's included at the bottom of the file
@@ -187,6 +188,9 @@ class Response {
 		// checks if it's a delete request and deletes the path
 			// if it can (maybe it doesn't exist or has no permissions)
 		bool isDelete();
+
+		// logs the response in the Log module
+		void logResponse();
 
 };
 

@@ -153,7 +153,6 @@ void Response::sendResponse() {
 
 }
 
-<<<<<<< HEAD
 bool Response::isRedirect() {
 	
 	// the request type is not a redirection
@@ -170,7 +169,7 @@ bool Response::isRedirect() {
 	return true;
 
 }
-=======
+
 bool Response::isError() {
 
 	// checks that the type of status code
@@ -206,4 +205,3 @@ bool Response::isError() {
 	return true;
 
 }
->>>>>>> 246814e70b1e9bb2b800dfe5495840f08c592b14
