@@ -230,3 +230,5 @@ void Response::setContentType() {
 	mHeaders["Content-Type"] = fileMimeType;
 
 }
+
+
