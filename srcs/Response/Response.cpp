@@ -1,5 +1,4 @@
-/* this file contains the implementation of the Response class
- */
+/* this file contains the implementation of the Response class */
 
 #include <Response.hpp>
 
@@ -139,5 +138,22 @@ void Response::sendResponse() {
 		}
 
 	}
+
+}
+
+bool Response::isRedirect() {
+	
+	// the request type is not a redirection
+	if (mRequest.getRequestType() != Request::REDIRECT)
+		return false;
+
+	// add The Location response-header field 
+		// which will be used to redirect the recipient
+    	// to the specified path
+	// the location path is retrieved from the redirection 
+		// directive withing mLocation
+	mHeaders["Location"] = mLocation->redirection.second;
+
+	return true;
 
 }
