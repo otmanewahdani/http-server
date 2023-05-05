@@ -207,28 +207,26 @@ bool Response::isError() {
 
 }
 
-const Response::Mimetype& 
-	Response::setMimeType() {
+void Response::setContentType() {
 	
-	// the extension of mBodyFileName
-	Extension bodyFileExtension;
-
 	// search for mBodyFileName extension pos
-	const std::string::size_type extentionPos 
+	const std::string::size_type& extentionPos
 		= mBodyFileName.rfind(".");
 	
-	// sets the extension of mBodyFileName 
-	if (extentionPos != std::string::npos)
-		bodyFileExtension 
-			= mBodyFileName.substr(extentionPos + 1);
+	// sets the mbodyFileName extension if found
+	const Extension& bodyFileExtension 
+		= extentionPos != std::string::npos ?
+		mBodyFileName.substr(extentionPos + 1): "";
 
 	// get the mime type associated to
 		// the bodyFileExtension in mMimeTypes
-	// if not found, sets to the default
+	// if not found, get the default
 		// mime type (application/octet-stream)
-	const Mimetype fileMimeType 
+	const Mimetype& fileMimeType 
 		= mMimeTypes.getType(bodyFileExtension);
 
-	return fileMimeType;
+	// add the content-type response-header field
+		// with the associated file type of mBodyFileName
+	mHeaders["Content-Type"] = fileMimeType;
 
 }
