@@ -83,9 +83,6 @@ class Response {
 			// configuration of the requested path
 		ConstLocPtr mLocation;
 
-		// associates extensions with their mime types
-		MimeTypes mMimeTypes;
-
 		// status code to be sent
 		StatusCodeType mStatusCode;
 
@@ -204,10 +201,10 @@ class Response {
 		// logs the response in the Log module
 		void logResponse();
 
-		// returns the mime type of mBodyFileName
-			// if not found, returns the default
-			// mime type (application/octet-stream)
-		const Mimetype& setMimeType();
+		// search the mime type associated to mBodyFileName
+			// and add the content-type response-header field
+			// with the retrieved type to mHeaders
+		void setContentType();
 
 };
 
