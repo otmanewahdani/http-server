@@ -38,7 +38,6 @@ bool ClientHandler::isRead() {
 		// if request is done, moves to the
 			// response stage and starts the
 			// response generation
-		mRequest.print();
 		mStage = RESPONSE;
 		mResponse.start(mRequest.getLocation());
 		return false;
