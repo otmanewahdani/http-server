@@ -264,3 +264,20 @@ void Response::setContentType() {
 	mHeaders["Content-Type"] = fileMimeType;
 
 }
+
+void Response::setContentLength() {
+
+	try {
+
+		// gets the size of the file containing
+			// the response body
+		const size_t bodyFileSize
+			= getFileSize(mBodyFileName);
+		mHeaders["Content-Length"] = toString(bodyFileSize);
+
+	}
+	catch (const std::exception& e) {
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
+	}
+
+}
