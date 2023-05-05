@@ -55,6 +55,10 @@ void Response::start(ConstLocPtr location) {
 
 }
 
+const MimeTypes& Response::getMimeTypes() const {
+	return mMimeTypes;
+}
+
 void Response::generateResponse() {
 	
 	// if there is no error page
@@ -151,6 +155,28 @@ void Response::sendResponse() {
 		}
 
 	}
+
+}
+
+void Response::generateHeaders() {
+
+	for (std::map<std::string, std::string>::const_iterator
+			header = mHeaders.begin();
+			header != mHeaders.end(); ++header) {
+
+		// iterators over the headers and adds them to the
+			// send buffer in an http format
+		mBuffer += header->first + ": "
+			+ header->second +"\r\n";
+
+	}
+
+}
+
+void Response::addHeadersBodySeparator() {
+
+	if (mIsSeparator)
+		mBuffer += "\r\n";
 
 }
 
@@ -289,6 +315,21 @@ bool Response::isDelete() {
 	}
 
 	return true;
+
+}
+
+void Response::openBodyStream() {
+
+	// there is no body to be sent
+	if (mBodyFileName.empty())
+		return;
+
+	mBodyStream.open(mBodyFileName.c_str(),
+		std::ofstream::in | std::ofstream::binary);
+
+	// stream couldn't be opened
+	if (!mBodyStream)
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
 
 }
 
