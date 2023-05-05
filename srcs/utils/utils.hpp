@@ -49,6 +49,10 @@ std::string generateFileName
 // returns true if file was removed
 bool removeFile(const std::string& filePath);
 
+// returns the size of the file
+// throws std::runtime_error on error
+size_t getFileSize(const std::string& path);
+
 // converts arithmetic type to string
 template <class Num>
 std::string toString(Num num) {
