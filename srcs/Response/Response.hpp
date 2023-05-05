@@ -23,9 +23,9 @@ class Response {
 		typedef Config::Socket Socket;
 		typedef Config::ConstServerRef ConstServerRef;
 		typedef Config::ConstLocPtr ConstLocPtr;
+		typedef Config::StatusCode StatusCode;
+		typedef Config::Path Path;
 		typedef StatusCodeHandler::StatusCodeType StatusCodeType;
-		typedef Request::HeaderName HeaderName;
-		typedef Request::HeaderValue HeaderValue;
 
 		/******* public member functions *******/
 		// first parameter is the socket on which
@@ -106,7 +106,7 @@ class Response {
 
 		// response headers
 		// connection: close header pair is always present
-		std::map<HeaderName, HeaderValue> mHeaders;
+		std::map<std::string, std::string> mHeaders;
 
 		// stores if the headers-body separator is needed
 		// by default, there is a body separator unless
@@ -131,7 +131,7 @@ class Response {
 		/******* private member functions *******/
 		// contains the main logic that generates
 			// the reponse
-		void generateReponse();
+		void generateResponse();
 
 		// sends the generated response over the
 			// socket
