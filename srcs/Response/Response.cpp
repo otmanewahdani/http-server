@@ -292,6 +292,21 @@ bool Response::isDelete() {
 
 }
 
+void Response::openBodyStream() {
+
+	// there is no body to be sent
+	if (mBodyFileName.empty())
+		return;
+
+	mBodyStream.open(mBodyFileName.c_str(),
+		std::ofstream::in | std::ofstream::binary);
+
+	// stream couldn't be opened
+	if (!mBodyStream)
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
+
+}
+
 void Response::setContentType() {
 	
 	// search for mBodyFileName extension pos
