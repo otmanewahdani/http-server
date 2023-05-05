@@ -10,6 +10,7 @@
 #include <Config.hpp>
 #include <stdexcept>
 #include <unistd.h>
+#include <MimeTypes.hpp>
 
 // forward declaration of request
 // it's included at the bottom of the file
@@ -26,6 +27,8 @@ class Response {
 		typedef Config::StatusCode StatusCode;
 		typedef Config::Path Path;
 		typedef StatusCodeHandler::StatusCodeType StatusCodeType;
+		typedef MimeTypes::MimeType Mimetype;
+		typedef std::string Extension;
 
 		/******* public member functions *******/
 		// first parameter is the socket on which
@@ -75,6 +78,9 @@ class Response {
 		// pointer to location that contains the
 			// configuration of the requested path
 		ConstLocPtr mLocation;
+
+		// associates extensions with their mime types
+		MimeTypes mMimeTypes;
 
 		// status code to be sent
 		StatusCodeType mStatusCode;
@@ -187,6 +193,11 @@ class Response {
 		// checks if it's a delete request and deletes the path
 			// if it can (maybe it doesn't exist or has no permissions)
 		bool isDelete();
+
+		// returns the mime type of mBodyFileName
+			// if not found, returns the default
+			// mime type (application/octet-stream)
+		const Mimetype& setMimeType();
 
 };
 

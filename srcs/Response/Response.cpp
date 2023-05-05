@@ -153,7 +153,6 @@ void Response::sendResponse() {
 
 }
 
-<<<<<<< HEAD
 bool Response::isRedirect() {
 	
 	// the request type is not a redirection
@@ -170,7 +169,7 @@ bool Response::isRedirect() {
 	return true;
 
 }
-=======
+
 bool Response::isError() {
 
 	// checks that the type of status code
@@ -206,4 +205,29 @@ bool Response::isError() {
 	return true;
 
 }
->>>>>>> 246814e70b1e9bb2b800dfe5495840f08c592b14
+
+const Response::Mimetype& 
+	Response::setMimeType() {
+	
+	// the extension of mBodyFileName
+	Extension bodyFileExtension;
+
+	// search for mBodyFileName extension pos
+	const std::string::size_type extentionPos 
+		= mBodyFileName.rfind(".");
+	
+	// sets the extension of mBodyFileName 
+	if (extentionPos != std::string::npos)
+		bodyFileExtension 
+			= mBodyFileName.substr(extentionPos + 1);
+
+	// get the mime type associated to
+		// the bodyFileExtension in mMimeTypes
+	// if not found, sets to the default
+		// mime type (application/octet-stream)
+	const Mimetype fileMimeType 
+		= mMimeTypes.getType(bodyFileExtension);
+
+	return fileMimeType;
+
+}
