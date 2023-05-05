@@ -18,6 +18,15 @@ Response::Response(Socket socket,
 	, mIsSeparator(true)
 	, mIsDelBodyFile() {}
 
+Response::~Response() {
+
+	// deletes the file containing the body
+		// if it should be deleted
+	if (mIsDelBodyFile)
+		removeFile(mBodyFileName);
+
+}
+
 bool Response::isWrite() const {
 	return mDone;
 }
@@ -42,7 +51,7 @@ void Response::start(ConstLocPtr location) {
 		// present in the response message
 	mHeaders["connection"] = "close";
 
-	generateReponse();
+	generateResponse();
 
 }
 
@@ -75,7 +84,10 @@ void Response::generateResponse() {
 		// checks if an error happened while processing
 			// and preparing the response so that an
 			// error respone could be sent
-		isError();
+		// opens a stream of the error file to be sent
+			// if there is one
+		if (isError())
+			openBodyStream();
 
 	}
 
@@ -139,5 +151,41 @@ void Response::sendResponse() {
 		}
 
 	}
+
+}
+
+bool Response::isError() {
+
+	// checks that the type of status code
+		// represents an error
+	if (mStatusCode < 400 || mStatusCode > 500)
+		return false;
+
+	// checks if there is a page set to be sent
+		// for that error status code
+	std::map<StatusCode, Path>::const_iterator errorPage
+		= mServer.errorPages.find(mStatusCode);
+	
+	// if an error page is found
+	if (errorPage != mServer.errorPages.end()) {
+
+		const Path& errorPagePath = errorPage->second;
+
+		ConstLocPtr location
+			= mServer.matchLocation(errorPagePath);
+
+		// if the error page matches a location
+			// gets the full path of the page and
+			// sets the file path of the body to it
+		if (location) {
+			// replaces the location prefix by the
+				// root prefix to get the full path
+			mBodyFileName =
+				location->replaceByRoot(errorPagePath);
+		}
+
+	}
+
+	return true;
 
 }
