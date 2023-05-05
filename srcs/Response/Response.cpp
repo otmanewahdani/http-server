@@ -234,7 +234,27 @@ bool Response::isDefault() {
 		!= Request::DEFAULT)
 		return false;
 
+	// get the default file name defined
+		// in mLocation and prepend the
+		// location route to it
+	const std::string& DefaultFileName 
+		= mLocation->route + mLocation->defaultFile;
+	
+	// construct the full path of the default file
+		// by replacing the DefaultFileName
+		// prefix that matches the location
+		// route with the location root
+	const std::string& DefaultFileFullPath
+		= mLocation->replaceByRoot(DefaultFileName);
+	
+	// set the mBodyFileName to the
+		// full path of the default file
+	mBodyFileName = DefaultFileFullPath;
+
+	// add the content-type response-header field 
 	setContentType();
+
+	// add the content-lenght response-header field
 	setContentLength();
 
 	return true;
@@ -248,6 +268,10 @@ void Response::setContentType() {
 		= mBodyFileName.rfind(".");
 	
 	// sets the mbodyFileName extension if found
+		// starting from the pos after
+		// the extension dot
+	// if not found the bodyFileExtension
+		// will be left empty
 	const Extension& bodyFileExtension 
 		= extentionPos != std::string::npos ?
 		mBodyFileName.substr(extentionPos + 1) : "";
