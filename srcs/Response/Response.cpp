@@ -241,6 +241,37 @@ bool Response::isDefault() {
 
 }
 
+bool Response::isCGI() {
+	// to be completed
+	return false;
+}
+
+bool Response::isAutoIndex() {
+	// to be completed
+	return false;
+}
+
+bool Response::isDelete() {
+
+	if (mRequest.getMethod()
+		!= Request::DELETE)
+		return false;
+
+	const std::string& pathToBeDeleted
+		= mRequest.getFullPath();
+
+	// if file couldn't be deleted
+	if (removeFile(pathToBeDeleted)
+		== false) {
+
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
+
+	}
+
+	return true;
+
+}
+
 void Response::setContentType() {
 	
 	// search for mBodyFileName extension pos
