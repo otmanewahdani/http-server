@@ -50,6 +50,7 @@ void Response::start(ConstLocPtr location) {
 	// This mandatory header is always
 		// present in the response message
 	mHeaders["Connection"] = "close";
+	mHeaders["Server"] = "Flouta-Otmane/1.0X";
 
 	generateResponse();
 
@@ -67,6 +68,8 @@ void Response::generateResponse() {
 		// a response type was determined
 	if (isError())
 		;
+	else if (isDelete())
+		;
 	else if (isContent())
 		;
 	else if (isDefault())
@@ -76,8 +79,6 @@ void Response::generateResponse() {
 	else if (isCGI())
 		;
 	else if (isAutoIndex())
-		;
-	else if (isDelete())
 		;
 
 	openBodyStream();
@@ -110,9 +111,12 @@ void Response::sendResponse() {
 		// fill readBodyBytes buffer from body stream
 		mBodyStream.read(bodyBuf, mReadSize);
 
-		// if it failed, stops sending the response
-		if (mBodyStream.fail())
+		// if it failed before reaching eof,
+			// stops sending the response
+		if (mBodyStream.eof() == false
+			&&  mBodyStream.fail()) {
 			mDone = true;
+		}
 		else {
 			// appends the number of read bytes from the stream
 				// to the send buffer
@@ -329,6 +333,11 @@ void Response::openBodyStream() {
 	// there is no body to be sent
 	if (mBodyFileName.empty())
 		return;
+
+	// if there is already a file associated
+		// with the stream it closes it first
+	if (mBodyStream.is_open())
+		mBodyStream.close();
 
 	mBodyStream.open(mBodyFileName.c_str(),
 		std::ofstream::in | std::ofstream::binary);
