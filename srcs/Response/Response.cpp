@@ -195,13 +195,47 @@ bool Response::isError() {
 			// gets the full path of the page and
 			// sets the file path of the body to it
 		if (location) {
+			
 			// replaces the location prefix by the
 				// root prefix to get the full path
 			mBodyFileName =
 				location->replaceByRoot(errorPagePath);
+
+			setContentType();
+			setContentLength();
+
 		}
 
 	}
+
+	return true;
+
+}
+
+bool Response::isContent() {
+
+	if (mRequest.getRequestType()
+		!= Request::CONTENT)
+		return false;
+
+	// gets path of the file to be served
+	mBodyFileName = mRequest.getFullPath();
+
+	setContentType();
+	setContentLength();
+
+	return true;
+
+}
+
+bool Response::isDefault() {
+
+	if (mRequest.getRequestType()
+		!= Request::DEFAULT)
+		return false;
+
+	setContentType();
+	setContentLength();
 
 	return true;
 

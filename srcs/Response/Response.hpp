@@ -182,10 +182,10 @@ class Response {
 		// sets the location header
 		bool isRedirect();
 
-		// checks if the response will return a regular file
+		// checks if the response will serve a regular file
 		bool isContent();
 
-		// checks if the response will return a default file
+		// checks if the response will serve a default file
 			// which is located in the location
 			// config of the requested path (mLocation)
 		bool isDefault();
@@ -203,6 +203,10 @@ class Response {
 
 		// logs the response in the Log module
 		void logResponse();
+
+		// sets content length header of the entity body to
+			// be sent
+		void setContentLength();
 
 		// returns the mime type of mBodyFileName
 			// if not found, returns the default
