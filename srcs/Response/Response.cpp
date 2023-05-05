@@ -55,6 +55,10 @@ void Response::start(ConstLocPtr location) {
 
 }
 
+const MimeTypes& Response::getMimeTypes() const {
+	return mMimeTypes;
+}
+
 void Response::generateResponse() {
 	
 	// if there is no error page
