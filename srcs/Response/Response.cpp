@@ -154,6 +154,28 @@ void Response::sendResponse() {
 
 }
 
+void Response::generateHeaders() {
+
+	for (std::map<std::string, std::string>::const_iterator
+			header = mHeaders.begin();
+			header != mHeaders.end(); ++header) {
+
+		// iterators over the headers and adds them to the
+			// send buffer in an http format
+		mBuffer += header->first + ": "
+			+ header->second +"\r\n";
+
+	}
+
+}
+
+void Response::addHeadersBodySeparator() {
+
+	if (mIsSeparator)
+		mBuffer += "\r\n";
+
+}
+
 bool Response::isRedirect() {
 	
 	// the request type is not a redirection
