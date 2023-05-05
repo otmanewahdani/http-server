@@ -336,3 +336,32 @@ void Response::setContentLength() {
 	}
 
 }
+
+void Response::generateStatusLine() {
+
+	// get mStatuscode info
+	// the first element of the pair represents
+		// the string format of mStatuscode
+	// the second element is the reason phrase 
+		// associated to mStatusCode
+	const StatusCodeHandler::StatusCodePair 
+		statusCodePair = StatusCodeHandler::
+		getStatusCodeInfo(mStatusCode);
+	
+	// construct the response status line
+		// that has the format:
+		// [HTTP-Version SP Status-Code SP Reason-Phrase CRLF]
+	const std::string statusLine 
+		// the http version including the first space
+		= "HTTP/1.1 "
+		// string format of mStatusCode
+		+ statusCodePair.first
+		+ " "
+		// textual reason phrase
+		+ statusCodePair.second
+		+ "\r\n";
+
+	// add the response status line to mBuffer
+	mBuffer.append(statusLine);
+
+}
