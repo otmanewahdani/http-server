@@ -298,7 +298,19 @@ void ConfigParser::parsePath(Path& pathLoc) {
 }
 
 void ConfigParser::parseRoot() {
+
 	parsePath(mLocationRef->root);
+
+	// if the root path is a directory appends a slash to it because in case
+		// there was no slash there will be issues when creating full paths
+		// from the root.
+	// For example, root = /path, location = /, the request path = /file.
+		// it will match with loccation and then the location route will
+		// be replaced by the root which will lead to the following path:
+		// /pathfile. As you can see this is clearly wrong
+	if (isDir(mLocationRef->root))
+		mLocationRef->root += '/';
+
 }
 
 void ConfigParser::parseDefault() {
