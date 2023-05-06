@@ -114,6 +114,13 @@ const Request::RequestType&
 
 }
 
+const std::string&
+	Request::getPathToBodyFileName() const {
+
+	return mBodyFileName;
+
+}
+
 void Request::setStatusCode
 	(const StatusCodeType& code) {
 
