@@ -5,6 +5,8 @@
 
 const int CGI::mWaitTime = 1;
 
+const size_t CGI::mMaxHeadersSize = 400;
+
 CGI::CGI(const Request& request)
 	: mStatusCode(StatusCodeHandler::OK)
 	, mContentLength()
@@ -130,16 +132,24 @@ void CGI::setScriptIO() {
 
 void CGI::setEnv() {
 
+	// boilerplate exception message
+		// to be used by different sections
+		// of this function
 	const std::string errorMsg
 		= "CGI::setEnv(): missing "
 		"necessary environment values";
 
+	// overwrite environment variables if
+		// they already exist
 	const bool overwite
 		= true;
 	
 	setenv("PATH_INFO", mScriptPath.c_str(), overwite);
 	setenv("SCRIPT_FILENAME", mScriptPath.c_str(), overwite);
 	setenv("SCRIPT_NAME", mScriptPath.c_str(), overwite);
+
+	// This is a necessary environment variable
+		// needed by php scripts
 	setenv("REDIRECT_STATUS", "200", overwite);
 
 	const std::string& queryString 
@@ -161,7 +171,17 @@ void CGI::setEnv() {
 
 		setenv("REQUEST_METHOD", "POST", overwite);
 
-		header = mRequest.getHeaderValue("content-length");
+		// searches for the content length of the input
+			// body that the CGI will read
+		// first it searches for the content-length header,
+			// if found it is set as the length of the input file
+		// else it looks for the transfer-encoding header
+			// with the 'chunked' value, if it finds it,
+			// then the size of the file containing the
+			// is calculated unchunked body and set to the length
+		// if neither option is available, then an exception since
+			// the cgi cannot determine the length on its own
+ 		header = mRequest.getHeaderValue("content-length");
 		if (header)
 			setenv("CONTENT_LENGTH", header->c_str(), overwite);
 		else {
@@ -189,6 +209,61 @@ void CGI::setEnv() {
 	else 
 		throw std::runtime_error(errorMsg);
 	
+}
+
+void CGI::setContentLength() {
+
+	// boilerplate exception message
+	// to be used by different sections
+	// of this function
+	const std::string errorMsg = 
+		"CGI::setContentLength(): couldn't"
+		" read the script's output";
+
+	// stores the headers from the script's output.
+	// and it's possible to have bytes
+	// after the headers if mMaxHeadersSize
+	// exceeds the total byte count of the headers
+	// but tha's not an issue since we only care
+	// about the CRLF body separator. However we
+	// could also not reach all the headers, if
+	// mMazHeadersSize is less than the actual size
+	// of the headers, in that case this is an error
+	// since the headers are too large
+	std::string headers(mMaxHeadersSize, '\0');
+
+	// opens the file stream containing script's output
+	std::ifstream outputStream(mOutputFilePath.c_str(),
+		std::ofstream::in | std::ofstream::binary);
+
+	outputStream.read(&headers[0], mMaxHeadersSize);
+	// if reading fails before reaching EOF
+	if (outputStream.eof() == false
+		&& outputStream.fail()) {
+		
+		throw std::runtime_error(errorMsg);
+
+	}
+
+	// sets the headers to the actual size
+		// that was read
+	headers.resize(outputStream.gcount());
+
+	const std::string::size_type bodySeparatorPos
+		= headers.find("\r\n\r\n");
+
+	// if the body separator wasn't found
+	if (bodySeparatorPos == std::string::npos)
+		throw std::runtime_error(errorMsg);
+	
+	const size_t outpuFileSize =
+		getFileSize(mOutputFilePath);
+	
+	// the size of the entity body without
+		// the headers and the body separator
+	mContentLength = outpuFileSize - 
+		(bodySeparatorPos + 4);
+
 }
 
 const std::string& CGI::findExecutable() {
@@ -229,3 +304,4 @@ const std::string& CGI::findExecutable() {
 	return executable->second;
 
 }
+
