@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <utils.hpp>
 #include <MimeTypes.hpp>
+#include <Log.hpp>
 
 // forward declaration of request
 // it's included at the bottom of the file

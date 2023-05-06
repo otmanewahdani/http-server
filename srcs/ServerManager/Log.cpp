@@ -103,11 +103,17 @@ void Log::request(const Socket socket,
 
 }
 
-void Log::response(const Socket socket) {
+void Log::response(const Socket socket,
+	const std::string& info) {
 
-	// response sent to client by server
+	// operation description
+	const std::string op =
+		std::string("response: ")
+		+ '"' + info + '"' + " sent";
+
+	// response: info sent to client by server
 	logClientServerOperation(socket, mInfoNotice,
-		"response sent", "to", "by");
+		op, "to", "by");
 
 }
 

@@ -207,7 +207,6 @@ void Request::parseRequestLine() {
 
 		if (mBuffer.size() > mRequestLineSizeLimit) {
 			// Request-URI Too Long
-			Log::error("Request: URI too long");
 			return moveFinStage
 				(StatusCodeHandler::URI_LONG);
 		}
@@ -219,7 +218,6 @@ void Request::parseRequestLine() {
 	// found but exceeds limit
 	if (endOfLinePos > mRequestLineSizeLimit) {
 		// Request-URI Too Long
-		Log::error("Request: URI too long");
 		return moveFinStage
 			(StatusCodeHandler::URI_LONG);
 	}
@@ -260,7 +258,6 @@ void Request::parseHeaders() {
 
 		if (mBuffer.size() > mHeadersSizeLimit) {
 			// header fields entity Too Large
-			Log::error("Request: headers too large");
 			return moveFinStage
 				(StatusCodeHandler::ENTITY_LARGE);
 		}
@@ -272,7 +269,6 @@ void Request::parseHeaders() {
 	// found but exceeds limit
 	if (endOfHeadersPos > mHeadersSizeLimit) {
 		//header fields entity Too Large
-		Log::error("Request: headers too large");
 		return moveFinStage
 			(StatusCodeHandler::ENTITY_LARGE);
 	}
@@ -298,7 +294,6 @@ void Request::determineRequestType() {
 
 	// checks if the request is valid
 	if (mRequestChecker.isValid() == false) {
-		Log::error("RequestChecker: invalid request");
 		mStage = FINISH;
 		return ;
 	}
@@ -509,7 +504,6 @@ bool Request::parseURL() {
 	// if url is invalid move to finish stage
 		// with the appropriate error status code
 	if (mURL.isValid() == false) {
-		Log::error("Request URL: Invalid URL");
 		moveFinStage(mURL.getStatusCode());
 		return false;
 	}

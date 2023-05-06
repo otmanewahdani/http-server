@@ -127,8 +127,10 @@ void Response::sendResponse() {
 	// after checking the file stream,
 		// checks if there are still
 		// bytes in the buffer
-	else if (mBuffer.empty())
+	else if (mBuffer.empty()) {
 			mDone = true;
+			logResponse();
+	}
 
 	// if sending wasn't stopped before
 		// because of some fatal error
@@ -434,5 +436,86 @@ void Response::clearEntityBodyData() {
 	mBodyFileName.clear();
 	mHeaders.erase("Content-Type");
 	mHeaders.erase("Content-Length");
+
+}
+
+void Response::logResponse() {
+
+	const std::string statusCode
+		= std::string("status code: ")
+			+ toString(mStatusCode);
+
+	const std::string& requestedFullPath
+		= mRequest.getFullPath();
+
+	const Request::RequestType requestType =
+		mRequest.getRequestType();
+
+	const Request::Method method =
+		mRequest.getMethod();
+
+	std::string operation;
+
+	// an error response
+	if (mStatusCode >= 400) {
+		if (mBodyFileName.empty())
+			operation = "error with no page";
+		else {
+			operation += "error containing page '"
+			+ mBodyFileName + '\''; 
+		}
+	}
+	else if (requestType == Request::REDIRECT) {
+		operation = "redirection to the URL: '";
+		operation += mLocation->redirection.second;
+		operation += '\'';
+	}
+	else if (method == Request::DELETE) {
+		operation = "deleted file: ";
+	}
+	else if (requestType == Request::DEFAULT
+		|| requestType == Request::CONTENT) {
+		operation = "served file: ";
+	}
+	else if (requestType == Request::UPLOAD) {
+		operation = "file uploaded to: '";
+		operation += mRequest.getPathToBodyFileName();
+		operation += '\'';
+	}
+	else if (requestType == Request::CGI) {
+		operation = "executed CGI script: ";
+	}
+	else if (requestType == Request::AUTOINDEX) {
+		operation = "generated listing for "
+			"directory: '";
+		operation += requestedFullPath;
+		operation += '\'';
+	}
+
+	// adding the requested file if it's
+		// relevant to the response
+	if (method == Request::DELETE
+		|| requestType == Request::CONTENT
+		|| requestType == Request::CGI) {
+
+		operation += '\'';
+		operation += requestedFullPath;
+		operation += '\'';
+
+	}
+
+	// adding the file name containing the body
+		// if it's relevant to response
+	if (requestType == Request::DEFAULT) {
+
+		operation += '\'';
+		operation += mBodyFileName;
+		operation += '\'';
+
+	}
+
+	operation.insert(0, statusCode + ", ");
+
+	Log::response(mSocket, operation);
 
 }

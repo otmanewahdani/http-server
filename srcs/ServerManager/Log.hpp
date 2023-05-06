@@ -39,7 +39,8 @@ class Log {
 
 		// logs request that was sent from socket's
 			// server to socket's client
-		static void response(const Socket socket);
+		static void response(const Socket socket,
+			const std::string& info);
 
 		// logs that a connection the client specified
 			// with the given socket is closed
