@@ -487,16 +487,15 @@ void Response::logResponse() {
 	}
 	else if (requestType == Request::AUTOINDEX) {
 		operation = "generated listing for "
-			"directory: '";
-		operation += requestedFullPath;
-		operation += '\'';
+			"directory: ";
 	}
 
 	// adding the requested file if it's
 		// relevant to the response
 	if (method == Request::DELETE
 		|| requestType == Request::CONTENT
-		|| requestType == Request::CGI) {
+		|| requestType == Request::CGI
+		|| requestType == Request::AUTOINDEX) {
 
 		operation += '\'';
 		operation += requestedFullPath;
