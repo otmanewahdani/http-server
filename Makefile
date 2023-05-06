@@ -15,7 +15,7 @@ CONFIG_SRC := Config.cpp ConfigParser.cpp ConfigLexer.cpp
 
 NET_SRC := Network.cpp
 
-RESPONSE_SRC := Response.cpp StatusCodeHandler.cpp
+RESPONSE_SRC := Response.cpp StatusCodeHandler.cpp CGI.cpp
 
 REQUEST_SRC := Request.cpp RequestHeaders.cpp RequestChecker.cpp \
 			URL.cpp RequestBody.cpp
