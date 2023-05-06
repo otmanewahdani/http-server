@@ -2,6 +2,7 @@
     text/html                             html htm shtml
     text/css                              css
     text/xml                              xml
+	text/pug							  pug
     image/gif                             gif
     image/jpeg                            jpeg jpg
     application/javascript                js
