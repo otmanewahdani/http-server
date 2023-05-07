@@ -13,6 +13,7 @@
 #include <sstream>
 #include <unistd.h>
 #include <iostream>
+#include <dirent.h>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
@@ -52,6 +53,22 @@ bool removeFile(const std::string& filePath);
 // returns the size of the file
 // throws std::runtime_error on error
 size_t getFileSize(const std::string& path);
+
+// gets the files and directories within
+	// a specified directory
+// throws std::runtime_error on failure
+std::vector<std::string>
+	getDirContent(const std::string& dir);
+
+// gets the last modified time of a file
+	// in tm format
+// throws std::runtime_error on failure
+struct tm* getLastModifiedTime
+	(const std::string& path);
+
+// converts time to the following stringified 
+	// format [day-month-year hour:min]
+std::string timeToStr(struct tm* time);
 
 // converts arithmetic type to string
 template <class Num>
