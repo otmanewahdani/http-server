@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <dirent.h>
+#include <vector>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);

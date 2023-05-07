@@ -137,3 +137,34 @@ size_t getFileSize(const std::string& path) {
 	return pathInfo.st_size;
 
 }
+
+std::vector<std::string>
+	getDirContent(const std::string& dir) {
+
+	DIR* directory = opendir(dir.c_str());
+
+	if (directory == NULL)
+		throw std::runtime_error(
+		"getDirContent(): cannot open dir");
+
+	std::vector<std::string> entries;
+
+	// iterates over the entries in the directory
+		// and adds them to vector of entries
+	struct dirent* entry = readdir(directory);
+	while (entry != NULL) {
+
+		// adding the entry's name using its length
+		entries.push_back(
+			std::string(entry->d_name, entry->d_namlen));
+
+		// gets next entry
+		entry = readdir(directory);
+
+	}
+
+	closedir(directory);
+
+	return entries;
+
+}
