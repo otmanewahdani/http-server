@@ -46,8 +46,7 @@ void CGI::manageExecution() {
 		if (execl(executable.c_str(), 
 			mScriptPath.c_str(), NULL) == -1) {
 			
-			mStatusCode = StatusCodeHandler::SERVER_ERROR;
-			return ;
+			exit(EXIT_FAILURE);
 
 		}
 
@@ -114,7 +113,10 @@ void CGI::setScriptIO() {
 	
 	}
 
-	const int output = open(mOutputFilePath.c_str(),  O_WRONLY);
+	// opens in write mode and clears any existing
+		// data if the file exists already
+	const int output = open(mOutputFilePath.c_str(),
+		O_WRONLY | O_TRUNC);
 	if (output == -1) {
 		throw std::runtime_error(errorMsg
 		+ "open " + mOutputFilePath + " for output");

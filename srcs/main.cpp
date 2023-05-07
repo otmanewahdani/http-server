@@ -16,7 +16,10 @@ int main(int ac, char** av) {
 
 		std::cerr << "Exception: "
 			<< error.what() << '\n';
+		exit(EXIT_FAILURE);
 
 	}
+
+	exit(EXIT_SUCCESS);
 
 }
