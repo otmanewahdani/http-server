@@ -348,6 +348,10 @@ bool Response::isCGI() {
 		mStatusCode = StatusCodeHandler::SERVER_ERROR;
 	}
 
+	// do not add a body seprator to the headers since
+		// there is one inclued in the cgi output
+	mIsSeparator = false;
+
 	// after the cgi is done running, deletes
 		// the temporary file containing the request
 		// body (which is the cgi's input)

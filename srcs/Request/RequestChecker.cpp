@@ -108,10 +108,10 @@ bool RequestChecker::isCGI() {
 	if (extensionPos == std::string::npos)
 		return false;
 
-	// extracts the extension and checks if
-		// it's a supported cgi extension
+	// extracts the extension without the dot
+		// and checks if it's a supported cgi extension
 	const std::string extension
-		= path.substr(extensionPos);
+		= path.substr(extensionPos + 1);
 
 	// not a supported cgi extension
 	if (mLocation->supportedCGIs.find(extension)
