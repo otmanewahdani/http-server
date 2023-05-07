@@ -323,7 +323,8 @@ void ConfigParser::parseCGI() {
 	Token token = mLexer.next();
 	isExtension(token);
 
-	const Extension& extension = token.value;
+	// extracts the extension without the dot
+	const Extension extension = token.value.substr(1);
 	if (!mConfig.isCGIExtensionSupported(extension)) {
 		std::cerr << extension << " extension";
 		std::cerr << " isn't a supported CGI extension\n";
