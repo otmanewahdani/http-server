@@ -34,14 +34,51 @@ server{
 		upload /Users/owahdani/upload;
 	}
 
+	location / {
+		root /Users/owahdani/http-server/www;
+		default upload.html;
+	}
+
+	location /error_pages {
+		root /Users/owahdani/http-server/www/error_pages;
+	}
+
+
 }
 
 server {
 
-	listen localhost:6060;
+	server_name CGI;
+
+	listen 6060;
 
 	error_page 404 error_pages/404-page/index.html;
 
 	error_page 500 error_pages/500-page/index.html;
+
+	location / {
+
+		allow_methods GET POST;
+
+		root /Users/owahdani/http-server/www/CGI-bin;
+
+		cgi .php /Users/owahdani/CGI/php-cgi;
+
+		cgi .pl /usr/bin/perl;
+
+	}
+
+	location /info.html {
+		root /Users/owahdani/http-server/www/info.html;
+	}
+
+	location /Users/owahdani/upload/ {
+		allow_methods GET;
+		root /Users/owahdani/upload/;
+	}
+
+	location /error_pages {
+		root /Users/owahdani/http-server/www/error_pages;
+	}
 
 }
