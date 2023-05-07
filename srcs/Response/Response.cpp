@@ -300,8 +300,61 @@ bool Response::isDefault() {
 }
 
 bool Response::isCGI() {
-	// to be completed
-	return false;
+	
+	if (mRequest.getRequestType()
+		!= Request::CGI) {
+
+		return false;
+
+	}
+
+	// deletes the output of the cgi script
+		// after it is sent
+	mIsDelBodyFile = true;
+
+	CGI CGIhandler(mRequest);
+
+	// cgi script will read the request body
+		// only if there is one
+	if (mRequest.getMethod() == Request::POST) {
+		CGIhandler.setInputFilePath
+			(mRequest.getPathToBodyFileName());
+	}
+
+	// gets the temporary directory where the cgi
+		// output will be stored
+	const std::string& tmpDir =
+		ServerManager::getTmpFilesDir();
+
+	try {
+
+		// generates the file path for cgi output
+			// and makes it the path to the entity
+			// body to be sent
+		mBodyFileName = generateFileName(tmpDir);
+		CGIhandler.setOutputFilePath(mBodyFileName);
+
+		try {
+			CGIhandler.run();
+		}
+		// there was an error in the cgi's output
+		catch (const std::exception& e) {
+			mStatusCode = CGIhandler.getStatusCode();
+		}
+
+	}
+	// file name couldn't be generated
+	catch (const std::exception& e) {
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
+	}
+
+	// after the cgi is done running, deletes
+		// the temporary file containing the request
+		// body (which is the cgi's input)
+	removeFile(mRequest.getPathToBodyFileName());
+
+	return true;
+
 }
 
 bool Response::isAutoIndex() {
