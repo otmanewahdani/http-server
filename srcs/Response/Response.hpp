@@ -222,3 +222,5 @@ class Response {
 // this file was included here because it includes ClientHandler.hpp which in turn includes
 // Response.hpp  and it  relies on its full definition of the Response class
 #include <Request.hpp>
+// this include is also here because it contains the Request include...
+#include <CGI.hpp>

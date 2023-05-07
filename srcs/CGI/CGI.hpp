@@ -83,7 +83,14 @@ class CGI {
 			// the functions that prepare the script's environment
 			// and waits for its termination
 		// sets the status code to an error code if
-			// an error happens (e.g. couldn't execute)
+			// an error happens before creating the
+			// new process and after it is finished 
+			// (e.g. couldn't read from the script's ouput file)
+		// if an error happens within the new process, the process
+			// simply exits and no error is set (though the error
+			// would be set implicitly when reading from the script's
+			// output file and no output would be found since it exited
+			// prematurely)
 		void manageExecution();
 
 		// waits for the script to execute for a defined

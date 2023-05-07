@@ -35,19 +35,24 @@ void CGI::manageExecution() {
 		// set for the cgi to be run
 	if (pid == 0) {
 
-		setEnv();
+		try {
 
-		setScriptIO();
+			setEnv();
 
-		const std::string& executable 
-			= findExecutable();
+			setScriptIO();
+
+			const std::string& executable 
+				= findExecutable();
 		
-		// checks execution failure 
-		if (execl(executable.c_str(), 
-			mScriptPath.c_str(), NULL) == -1) {
-			
-			exit(EXIT_FAILURE);
+			// checks execution failure 
+			if (execl(executable.c_str(), 
+				mScriptPath.c_str(), NULL) == -1) {
+				exit(EXIT_FAILURE);
+			}
 
+		}
+		catch (const std::exception& e) {
+				exit(EXIT_FAILURE);
 		}
 
 	}
