@@ -24,6 +24,20 @@ void CGI::run() {
 
 }
 
+void CGI::setInputFilePath
+	(const std::string& path) {
+	
+	mInputFilePath = path;
+
+}
+
+void CGI::setOutputFilePath
+	(const std::string& path) {
+	
+	mOutputFilePath = path;
+
+}
+
 bool CGI::isValid() {
 
 	return (mStatusCode ==
@@ -266,6 +280,7 @@ void CGI::setContentLength() {
 	if (outputStream.eof() == false
 		&& outputStream.fail()) {
 		
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
 		throw std::runtime_error(errorMsg);
 
 	}
@@ -278,8 +293,12 @@ void CGI::setContentLength() {
 		= headers.find("\r\n\r\n");
 
 	// if the body separator wasn't found
-	if (bodySeparatorPos == std::string::npos)
+	if (bodySeparatorPos == std::string::npos) {
+		
+		mStatusCode = StatusCodeHandler::SERVER_ERROR;
 		throw std::runtime_error(errorMsg);
+
+	}
 	
 	const size_t outpuFileSize =
 		getFileSize(mOutputFilePath);
