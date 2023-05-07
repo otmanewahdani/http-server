@@ -139,7 +139,7 @@ void CGI::setScriptIO() {
 	// opens in write mode and clears any existing
 		// data if the file exists already
 	const int output = open(mOutputFilePath.c_str(),
-		O_WRONLY | O_TRUNC);
+		O_WRONLY | O_TRUNC | O_CREAT, 0666);
 	if (output == -1) {
 		throw std::runtime_error(errorMsg
 		+ "open " + mOutputFilePath + " for output");
