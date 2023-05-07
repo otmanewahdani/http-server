@@ -78,8 +78,11 @@ void CGI::manageExecution() {
 		
 			// checks execution failure 
 			if (execl(executable.c_str(), 
-				mScriptPath.c_str(), NULL) == -1) {
+				executable.c_str(), mScriptPath.c_str(),
+				NULL) == -1) {
+
 				exit(EXIT_FAILURE);
+
 			}
 
 		}
