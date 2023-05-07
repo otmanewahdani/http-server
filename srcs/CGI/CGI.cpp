@@ -24,6 +24,24 @@ void CGI::run() {
 
 }
 
+bool CGI::isValid() {
+
+	return (mStatusCode ==
+		StatusCodeHandler::OK);
+
+}
+
+CGI::StatusCodeType 
+	CGI::getStatusCode() {
+
+	return mStatusCode;
+
+}
+
+size_t CGI::getContentLength() {
+	return mContentLength;
+}
+
 void CGI::manageExecution() {
 
 	// creates a new process for the
