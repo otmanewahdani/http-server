@@ -11,6 +11,7 @@
 #include <utils.hpp>
 #include <vector>
 #include <Config.hpp>
+#include <stdexcept>
 
 class AutoIndex {
 
@@ -34,14 +35,18 @@ class AutoIndex {
 		/******* private member objects *******/
 		// the file path where the generated html
 			// listing will be saved
-		const std::string mListingFilePath;
+		std::string mListingFilePath;
 
 		// the input directory that will be listed
-		const std::string mDirPath;
+		std::string mDirPath;
 
 		// pointer to location that contains the
 			// configuration of the requested path
 		ConstLocPtr mLocation;
+
+		// stream where the output of the autoindex
+			// listing will be generated
+		std::ofstream mListingStream;
 
 		// contains the first lines of the listing 
 			// html file , this part of the html file
@@ -58,28 +63,28 @@ class AutoIndex {
 		static const std::string mListingHtmlFooter;
 
 		/******* private member functions *******/
+
+		/* all generate*() functions call external functions
+		 *  that may throw std::exception
+		 */
 		
 		// extracts the input directory content
-			// and returns string format of
-			// an html list that stores the info
-			// of each element of the input dir
-		// throws std::runtime_error on failure
-		const std::string generateDirListing();
+			// writes an html section of table rows for each element
+			// to the listing to the listing stream member
+		void generateDirListing();
 
 		// takes the input directory element
 		// returns the element info in the format
 			// [File Size Last-Modified] encapsulated 
 			// in a <tr> html tag
-		// throws std::runtime_error on failure
-		const std::string generateDirElementRow
+		std::string generateDirElementRow
 			(const std::string& dirElement);
 		
 		// takes the input directory element
 		// returns the link that will be used
 			// to request the given element
 			// encapsulated in a <td> html tag
-		// throws std::runtime_error on failure
-		const std::string generateLinkCell
+		std::string generateLinkCell
 			(const std::string& dirElement);
 
 		// takes the input directory element
@@ -88,23 +93,37 @@ class AutoIndex {
 			// a '-' character is returned
 		// the element size will be encapsulated 
 			// in a <td> html tag
-		// throws std::runtime_error on failure
-		const std::string generateSizeCell
+		std::string generateSizeCell
 			(const std::string& dirElement);
 
 		// takes the input directory element
 		// returns the last modification time
 			// of the given element encapsulated in 
 			// a <td> html tag
-		// throws std::runtime_error on failure
-		const std::string generateTimeCell
+		std::string generateTimeCell
 			(const std::string& dirElement);
 
-		const std::string encapsulateInTag
-			(const std::string& content, const std::string tag);
+		/* all encapsulte*() functions call encapsulateInTag()
+		 *  for their encapsulation needs
+		 */
+		// takes content and inserts beginTag at its beginning
+			// and endTage at its end
+		// example : content = name, btag = <td>, etag = </td>
+		//  content becomes <td>content</td>
+		void encapsulateInTag(std::string& content,
+				const std::string& beginTag, const std::string& endTag);
 
-		const std::string encapsulateInHyperLink
-			(const std::string& content);
+		// takes a link and puts it in an anchor tag like this:
+			// <a href='link'> and encapsulates the content
+			// between that tag and this one </a>
+		void encapsulateInHyperLink(std::string& content,
+				const std::string& link);
+
+		// encapsultes content between <td> and </td>
+		void encapsulateTableCell(std::string& content);
+
+		// encapsultes content between <tr> and </tr>
+		void encapsulateTableRow(std::string& content);
 		
 };
 

@@ -24,11 +24,10 @@ AutoIndex::AutoIndex(const std::string& dirPath,
 
 void AutoIndex::generate() {
 	
-	// opens the output file that will contains
+	// opens the output file that will contain
 		// the generated html
-	std::ofstream listingStream;
-	listingStream.open(mListingFilePath.c_str(),  
-		std::ofstream::in | std::ofstream::binary);
+	mListingStream.open(mListingFilePath.c_str(),  
+		std::ofstream::out | std::ofstream::trunc);
 
 	// file couldn't be opened
 	if (!listingStream) {
@@ -43,37 +42,40 @@ void AutoIndex::generate() {
 	// writes the listing html header which contains
 		// the first structural html lines into
 		// the output file
-	listingStream << mListingHtmlHeader;
+	mListingStream << mListingHtmlHeader;
 
-	// generates string format of the html directory
-		// listing and write it into the output file
-	listingStream << generateDirListing();
+	generateDirListing();
 
 	// writes the listing html footer which contains
 		// the closing html tags into
 		// the output file
-	listingStream << mListingHtmlFooter;
+	mListingStream << mListingHtmlFooter;
 
-	listingStream.close();
+	mListingStream.close();
 
 }
 
-const std::string AutoIndex::generateDirListing() {
+void AutoIndex::generateDirListing() {
 
+	// gets all the elements within the director
 	const std::vector<std::string> dirContent 
 		= getDirContent(mDirPath);
-	
-	std::string dirContentList;
 
 	std::vector<std::string>::const_iterator dirElement;
-	for(dirElement = dirContent.begin(); 
+	// the listing starts at the third element because
+		// the first two elements are '.' and '..' and
+		// they're not needed
+	for(dirElement = dirContent.begin() + 2; 
 		dirElement != dirContent.end(); ++dirElement) {
 		
-		dirContentList += generateDirElementRow(*dirElement);
+		mListingStream << generateDirElementRow(*dirElement);
+		if (mListingStream.fail()) {
+			throw std::runtime_error
+				("generateDirListing(): "
+				 "couldn't write to stream");
+		}
 	
 	}
-
-	return dirContentList;
 
 }
 
@@ -84,11 +86,12 @@ const std::string AutoIndex::generateDirElementRow
 	const std::string elementSizeCell = generateSizeCell(dirElement);
 	const std::string elementTimeCell = generateTimeCell(dirElement);
 
-	const std::string dirElementInfo 
+	std::string dirElementRow 
 		= elementLinkCell + elementSizeCell + elementTimeCell;
 
-	const std::string dirElementRow =
-		encapsulateInTag(dirElementInfo, "tr");
+	// joins all the table cells and encapsulates
+		// them in a table row
+	encapsulateTableRow(dirElementRow);
 
 	return dirElementRow;
 
