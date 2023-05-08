@@ -79,8 +79,8 @@ void AutoIndex::generateDirListing() {
 
 }
 
-const std::string AutoIndex::generateDirElementRow
-		(const std::string& dirElement) {
+std::string AutoIndex::generateDirElementRow
+	(const std::string& dirElement) {
 	
 	const std::string elementLinkCell = generateLinkCell(dirElement);
 	const std::string elementSizeCell = generateSizeCell(dirElement);
@@ -183,5 +183,38 @@ void AutoIndex::encapsulateTableCell
 	const std::string closeTdTag = "</td>";
 
 	encapsulateInTag(content, openTdTag, closeTdTag);
+
+}
+
+std::string AutoIndex::generateLinkCell
+	(const std::string& dirElement) {
+
+	// gets the URL of the element
+	const std::string& relativePath
+		= mLocation->replaceByLocRoute(dirElement);
+
+	std::string dirElementHyperLinked(dirElement);
+
+	// turns the URL into a hyperlink and 
+		// encapsulates it in an anchor tag
+	encapsulateInHyperLink(dirElementHyperLinked,
+			relativePath);
+
+	// finally turns it into a table cell
+	encapsulateTableCell(dirElementHyperLinked);
+
+	return dirElementHyperLinked;
+
+}
+
+void AutoIndex::encapsulateInHyperLink(std::string& content,
+	const std::string& link) {
+
+	const std::string openAnchorTag = std::string(
+		"<a href='" + link + "'>";
+	
+	const std::string closeAnchorTag = "</a>";
+
+	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
 
 }
