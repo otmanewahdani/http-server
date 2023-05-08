@@ -103,11 +103,11 @@ std::string AutoIndex::generateSizeCell
 	// stores the size of the given directory element
 	const size_t elementSize = getFileSize(dirElement);
 
-	// if the given directory element
-		// is a sub directory stores '-' character
-		// to indicates that the element size
-		// won't be displayed, otherwise
-		// stores the element size
+	// stores directory element size if it's a file
+	// stores '-' character incase of the given 
+		// directory element is a sub directory 
+		// to indicates that the sub directory size
+		// won't be displayed
 	std::string elementSizeCell = 
 		isDir(mDirPath + dirElement) == false ? 
 		toString(elementSize) : "-";
@@ -116,6 +116,29 @@ std::string AutoIndex::generateSizeCell
 		// a table cell
 	encapsulateTableCell(elementSizeCell);
 	
+	// returns the elemnt size cell 
+		// in the format <td>size</td>
 	return elementSizeCell;
+
+}
+
+std::string AutoIndex::generateTimeCell
+		(const std::string& dirElement) {
+	
+	// gets the last modified time of the given
+		// directory element in tm format
+	// throws std::runtime_error on failure
+	const std::tm* lastModifiedTime 
+		= getLastModifiedTime(dirElement);
+	
+	// converts the file last modification time
+		// to the stringified format [day-mon-year hour:min]
+	std::string elementTimeCell = timeToStr(lastModifiedTime);
+
+	// encapsulate the element last modification 
+		// time into a table cell
+	encapsulateTableCell(elementTimeCell);
+
+	return elementTimeCell;
 
 }
