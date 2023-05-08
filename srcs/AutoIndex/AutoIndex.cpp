@@ -4,7 +4,10 @@
 
 const std::string AutoIndex::mListingHtmlHeader
 	= "<!DOCTYPE html><html>"
-	"<head><title>Directory Listing</title></head>"
+	"<head><title>Directory Listing</title>"
+     "<style> table, th, td {"
+	 "padding-right: 100px;}"
+    " </style></head>"
 	"<body><h1>Directory Listing</h1>"
 	"<table style=\"font-size: 25px\">"
     "<thead><tr><th>Name</th>"
@@ -16,9 +19,9 @@ const std::string AutoIndex::mListingHtmlFooter
 	"</body></html>";
 
 AutoIndex::AutoIndex(const std::string& dirPath, 
-	const std::string& listingFilePath,
+	const std::string& listingFileOutputPath,
 	ConstLocPtr location)
-	: mListingFilePath(listingFilePath) 
+	: mListingFilePath(listingFileOutputPath) 
 	, mDirPath(dirPath)
 	, mLocation(location) {}
 
@@ -30,7 +33,7 @@ void AutoIndex::generate() {
 		std::ofstream::out | std::ofstream::trunc);
 
 	// file couldn't be opened
-	if (!listingStream) {
+	if (!mListingStream) {
 
 		const std::string errorMsg =
 			std::string("generate(): couldn't open file: '")
@@ -43,6 +46,11 @@ void AutoIndex::generate() {
 		// the first structural html lines into
 		// the output file
 	mListingStream << mListingHtmlHeader;
+	if (mListingStream.fail()) {
+		throw std::runtime_error
+			("generate(): "
+			 "couldn't write to stream");
+	}
 
 	generateDirListing();
 
@@ -50,6 +58,11 @@ void AutoIndex::generate() {
 		// the closing html tags into
 		// the output file
 	mListingStream << mListingHtmlFooter;
+	if (mListingStream.fail()) {
+		throw std::runtime_error
+			("generate(): "
+			 "couldn't write to stream");
+	}
 
 	mListingStream.close();
 
@@ -82,9 +95,17 @@ void AutoIndex::generateDirListing() {
 std::string AutoIndex::generateDirElementRow
 	(const std::string& dirElement) {
 	
-	const std::string elementLinkCell = generateLinkCell(dirElement);
-	const std::string elementSizeCell = generateSizeCell(dirElement);
-	const std::string elementTimeCell = generateTimeCell(dirElement);
+	// gets the absolute path of the element
+		// within the directory
+	// if there is no directory slash at the end
+		// it appends it
+	const std::string dirElementFullPath
+		= mDirPath + (mDirPath.back() == '/' ? "" : "/")
+		+ dirElement;
+
+	const std::string elementLinkCell = generateLinkCell(dirElementFullPath);
+	const std::string elementSizeCell = generateSizeCell(dirElementFullPath);
+	const std::string elementTimeCell = generateTimeCell(dirElementFullPath);
 
 	std::string dirElementRow 
 		= elementLinkCell + elementSizeCell + elementTimeCell;
@@ -109,7 +130,7 @@ std::string AutoIndex::generateSizeCell
 		// to indicates that the sub directory size
 		// won't be displayed
 	std::string elementSizeCell = 
-		isDir(mDirPath + dirElement) == false ? 
+		isDir(dirElement) == false ? 
 		toString(elementSize) : "-";
 	
 	// encapsulate the element size into 
@@ -141,6 +162,27 @@ std::string AutoIndex::generateTimeCell
 
 	// returns the
 	return elementTimeCell;
+
+}
+
+std::string AutoIndex::generateLinkCell
+	(const std::string& dirElement) {
+
+	// gets the URL of the element
+	const std::string& relativePath
+		= mLocation->replaceByLocRoute(dirElement);
+
+	std::string dirElementHyperLinked(dirElement);
+
+	// turns the URL into a hyperlink and 
+		// encapsulates it in an anchor tag
+	encapsulateInHyperLink(dirElementHyperLinked,
+			relativePath);
+
+	// finally turns it into a table cell
+	encapsulateTableCell(dirElementHyperLinked);
+
+	return dirElementHyperLinked;
 
 }
 
@@ -183,38 +225,5 @@ void AutoIndex::encapsulateTableCell
 	const std::string closeTdTag = "</td>";
 
 	encapsulateInTag(content, openTdTag, closeTdTag);
-
-}
-
-std::string AutoIndex::generateLinkCell
-	(const std::string& dirElement) {
-
-	// gets the URL of the element
-	const std::string& relativePath
-		= mLocation->replaceByLocRoute(dirElement);
-
-	std::string dirElementHyperLinked(dirElement);
-
-	// turns the URL into a hyperlink and 
-		// encapsulates it in an anchor tag
-	encapsulateInHyperLink(dirElementHyperLinked,
-			relativePath);
-
-	// finally turns it into a table cell
-	encapsulateTableCell(dirElementHyperLinked);
-
-	return dirElementHyperLinked;
-
-}
-
-void AutoIndex::encapsulateInHyperLink(std::string& content,
-	const std::string& link) {
-
-	const std::string openAnchorTag = std::string(
-		"<a href='" + link + "'>";
-	
-	const std::string closeAnchorTag = "</a>";
-
-	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
 
 }

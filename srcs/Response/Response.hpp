@@ -13,6 +13,7 @@
 #include <utils.hpp>
 #include <MimeTypes.hpp>
 #include <Log.hpp>
+#include <AutoIndex.hpp>
 
 // forward declaration of request
 // it's included at the bottom of the file

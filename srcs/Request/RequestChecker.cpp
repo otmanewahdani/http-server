@@ -24,10 +24,10 @@ bool RequestChecker::isValid() {
 		return false;
 
 	if ( isRedirect()
-		|| isAutoIndex()
 		|| isCGI()
 		|| isUpload()
 		|| isDefault()
+		|| isAutoIndex()
 		|| isContent() ) {
 
 		return true;

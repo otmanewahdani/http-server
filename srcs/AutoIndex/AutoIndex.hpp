@@ -24,7 +24,7 @@ class AutoIndex {
 
 		/******* public member functions *******/
 		AutoIndex(const std::string& dirPath, 
-			const std::string& listingFilePath,
+			const std::string& listingFileOutputPath,
 			ConstLocPtr location);
 		
 		// generates the listing html file
