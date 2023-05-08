@@ -97,18 +97,28 @@ std::string AutoIndex::generateDirElementRow
 
 }
 
-const std::string AutoIndex::generateSizeCell
+std::string AutoIndex::generateSizeCell
 	(const std::string& dirElement) {
 
-	const std::string elementSize = 
+	// stores the size of the given directory element
+	const size_t elementSize = getFileSize(dirElement);
+
+	// stores directory element size if it's a file
+	// stores '-' character incase of the given 
+		// directory element is a sub directory 
+		// to indicates that the sub directory size
+		// won't be displayed
+	std::string elementSizeCell = 
 		isDir(mDirPath + dirElement) == false ? 
-		toString(getFileSize(dirElement))
-		: "-";
+		toString(elementSize) : "-";
 	
-	const std::string elementSizeCell 
-		= encapsulateInTag(elementSize, "td");
+	// encapsulate the element size into 
+		// a table cell
+	encapsulateTableCell(elementSizeCell);
 	
-	return elementSize;
+	// returns the elemnt size cell 
+		// in the format <td>size</td>
+	return elementSizeCell;
 
 }
 
@@ -142,5 +152,26 @@ void AutoIndex::encapsulateInHyperLink(std::string& content,
 	const std::string closeAnchorTag = "</a>";
 
 	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
+
+}
+
+std::string AutoIndex::generateTimeCell
+		(const std::string& dirElement) {
+	
+	// gets the last modified time of the given
+		// directory element in tm format
+	// throws std::runtime_error on failure
+	const std::tm* lastModifiedTime 
+		= getLastModifiedTime(dirElement);
+	
+	// converts the file last modification time
+		// to the stringified format [day-mon-year hour:min]
+	std::string elementTimeCell = timeToStr(lastModifiedTime);
+
+	// encapsulate the element last modification 
+		// time into a table cell
+	encapsulateTableCell(elementTimeCell);
+
+	return elementTimeCell;
 
 }
