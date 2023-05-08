@@ -16,9 +16,11 @@ const std::string AutoIndex::mHtmlListingFooter
 	"</body></html>";
 
 AutoIndex::AutoIndex(const std::string& dirPath, 
-	const std::string& outputFilePath)
+	const std::string& outputFilePath,
+	ConstLocPtr location)
 	:mOutputFilePath(outputFilePath) 
-	, mDirPath(dirPath) {}
+	, mDirPath(dirPath)
+	, mLocation(location) {}
 
 void AutoIndex::generate() {
 
