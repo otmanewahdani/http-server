@@ -224,3 +224,22 @@ std::string timeToStr(const std::tm* time) {
 	return timeStr;
 
 }
+
+std::string getCurrentDir() {
+
+	// creates a buffer that can hold
+		// the maximum length possible of a path
+	char dirNameBuff[MAXPATHLEN];
+
+	// on error, gets the error message that
+		// is copied by getwd() to the buffer
+	if (getwd(dirNameBuff) == NULL) {
+		const std::string errorMsg =
+			std::string("getCurrentDir(): ")
+			+ dirNameBuff;
+		throw std::runtime_error(errorMsg);
+	}
+
+	return dirNameBuff;
+
+}

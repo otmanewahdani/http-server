@@ -18,6 +18,7 @@
 #include <dirent.h>
 #include <vector>
 #include <ctime>
+#include <sys/param.h>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
@@ -74,6 +75,11 @@ const std::tm* getLastModifiedTime
 	// format [day-mon-year hour:min]
 	// example [10-Apr-2020 10:20]
 std::string timeToStr(const std::tm* time);
+
+// gets the full path of the current
+	// working directory
+// std::runtime_error is thrown on error
+std::string getCurrentDir();
 
 // converts arithmetic type to string
 template <class Num>
