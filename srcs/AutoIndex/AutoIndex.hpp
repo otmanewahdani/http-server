@@ -20,17 +20,21 @@ class AutoIndex {
 
 		/******* public member functions *******/
 		AutoIndex(const std::string& dirPath, 
-			const std::string& outputFilePath,
+			const std::string& listingFilePath,
 			ConstLocPtr location);
 		
-		// generates the listing
+		// generates the listing html file
+			// by extracting the input directory
+			// elements and saves the generated 
+			// html in the outputFile
+		// throws std::runtime_error on failure
 		void generate();
 
 	private:
 		/******* private member objects *******/
 		// the file path where the generated html
 			// listing will be saved
-		const std::string mOutputFilePath;
+		const std::string mListingFilePath;
 
 		// the input directory that will be listed
 		const std::string mDirPath;
@@ -44,17 +48,57 @@ class AutoIndex {
 			// is independent of the input directory
 			// content and only defines the first
 			// structural lines
-		static const std::string mHtmlListingHeader;
+		static const std::string mListingHtmlHeader;
 
 		// contains the ending lines of the listing
 			// html file, this part is independent
 			// of the input directory content,
 			// and only defines the closing
 			// tags of the listing html file
-		static const std::string mHtmlListingFooter;
+		static const std::string mListingHtmlFooter;
 
 		/******* private member functions *******/
-		const std::string& getDirEntityInfo
+		
+		// extracts the input directory elements
+			// and returns string format of
+			// an html list that stores the info
+			// of each element of the input dir
+		// throws std::runtime_error on failure
+		const std::string& generateDirListing();
+
+		// takes the input directory element
+		// returns the element info in the format
+			// [File Size Last-Modified] encapsulated 
+			// in a <tr> html tag
+		// throws std::runtime_error on failure
+		const std::string& generateDirElementInfo
 			(const std::string& dirEntity);
+		
+		// takes the input directory element
+		// returns the link that will be used
+			// to request the given element
+			// encapsulated in a <td> html tag
+		// throws std::runtime_error on failure
+		const std::string& generateDirElementLink
+			(const std::string& dirEntity);
+
+		// takes the input directory element
+		// returns the given element size
+			// if it's a file otherwise
+			// a '-' character is returned
+		// the element size will be encapsulated 
+			// in a <td> html tag
+		// throws std::runtime_error on failure
+		const std::string& generateDirElementSize
+			(const std::string& dirEntity);
+
+		// takes the input directory element
+		// returns the last modification time
+			// of the given element encapsulated in 
+			// a <td> html tag
+		// throws std::runtime_error on failur
+		const std::string& generateDirElementTime
+			(const std::string& dirEntity);
+		
 };
 
