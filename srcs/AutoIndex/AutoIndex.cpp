@@ -97,17 +97,25 @@ const std::string AutoIndex::generateDirElementRow
 
 }
 
-const std::string AutoIndex::generateSizeCell
+std::string AutoIndex::generateSizeCell
 	(const std::string& dirElement) {
 
-	const std::string elementSize = 
+	// stores the size of the given directory element
+	const size_t elementSize = getFileSize(dirElement);
+
+	// if the given directory element
+		// is a sub directory stores '-' character
+		// to indicates that the element size
+		// won't be displayed, otherwise
+		// stores the element size
+	std::string elementSizeCell = 
 		isDir(mDirPath + dirElement) == false ? 
-		toString(getFileSize(dirElement))
-		: "-";
+		toString(elementSize) : "-";
 	
-	const std::string elementSizeCell 
-		= encapsulateInTag(elementSize, "td");
+	// encapsulate the element size into 
+		// a table cell
+	encapsulateTableCell(elementSizeCell);
 	
-	return elementSize;
+	return elementSizeCell;
 
 }
