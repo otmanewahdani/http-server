@@ -79,6 +79,30 @@ std::string Config::LocationContext::replaceByRoot
 
 }
 
+std::string Config::LocationContext::replaceByLocRoute
+	(const std::string& path) const {
+	
+	// takes the end position of the root
+		// prefix in the path
+	const std::string::size_type
+		endOfRootPrefixPos = root.size();
+
+	// if the root doesn't exist in the path
+	if (path.compare(0, endOfRootPrefixPos, root)) {
+		const std::string errorMsg
+			= std::string("LocationContext::"
+				"replaceByLocRoute(): couldn't find ")
+			+ '\'' + root + "' in '" + path + '\'';
+		throw std::runtime_error(errorMsg);
+	}
+
+	// removes the root prefix and prepends
+		// the location route to it
+	return (route +
+		std::string(path, endOfRootPrefixPos));
+
+}
+
 Config::ConstLocPtr Config::ServerContext::matchLocation
 	(const std::string& path) const {
 			

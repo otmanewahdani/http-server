@@ -52,6 +52,14 @@ class Config {
 			std::string replaceByRoot
 				(const std::string& path) const ;
 
+			// replaces the root part by the
+				// location route
+			// reverse operation of replaceByRoot()
+			// if no root prefix is found in the
+				// prefix std::runtime_error is thrown
+			std::string replaceByLocRoute
+				(const std::string& path) const ;
+
 		};
 
 		/******* alias types *******/
