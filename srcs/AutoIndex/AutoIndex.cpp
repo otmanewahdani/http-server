@@ -35,7 +35,7 @@ void AutoIndex::generate() {
 
 		const std::string errorMsg =
 			std::string("generate(): couldn't open file: '")
-			+ mOutputFilePath + '\'';
+			+ mListingFilePath + '\'';
 		throw std::runtime_error(errorMsg);
 
 	}
@@ -55,5 +55,56 @@ void AutoIndex::generate() {
 	listingStream << mListingHtmlFooter;
 
 	listingStream.close();
+
+}
+
+const std::string AutoIndex::generateDirListing() {
+
+	const std::vector<std::string> dirContent 
+		= getDirContent(mDirPath);
+	
+	std::string dirContentList;
+
+	std::vector<std::string>::const_iterator dirElement;
+	for(dirElement = dirContent.begin(); 
+		dirElement != dirContent.end(); ++dirElement) {
+		
+		dirContentList += generateDirElementRow(*dirElement);
+	
+	}
+
+	return dirContentList;
+
+}
+
+const std::string AutoIndex::generateDirElementRow
+		(const std::string& dirElement) {
+	
+	const std::string elementLinkCell = generateLinkCell(dirElement);
+	const std::string elementSizeCell = generateSizeCell(dirElement);
+	const std::string elementTimeCell = generateTimeCell(dirElement);
+
+	const std::string dirElementInfo 
+		= elementLinkCell + elementSizeCell + elementTimeCell;
+
+	const std::string dirElementRow =
+		encapsulateInTag(dirElementInfo, "tr");
+
+	return dirElementRow;
+
+}
+
+const std::string AutoIndex::generateSizeCell
+	(const std::string& dirElement) {
+
+	const std::string elementSize = 
+		isDir(mDirPath + dirElement) == false ? 
+		toString(getFileSize(dirElement))
+		: "-";
+	
+	const std::string elementSizeCell 
+		= encapsulateInTag(elementSize, "td");
+	
+	return elementSize;
 
 }

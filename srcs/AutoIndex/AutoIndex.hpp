@@ -59,28 +59,28 @@ class AutoIndex {
 
 		/******* private member functions *******/
 		
-		// extracts the input directory elements
+		// extracts the input directory content
 			// and returns string format of
 			// an html list that stores the info
 			// of each element of the input dir
 		// throws std::runtime_error on failure
-		const std::string& generateDirListing();
+		const std::string generateDirListing();
 
 		// takes the input directory element
 		// returns the element info in the format
 			// [File Size Last-Modified] encapsulated 
 			// in a <tr> html tag
 		// throws std::runtime_error on failure
-		const std::string& generateDirElementInfo
-			(const std::string& dirEntity);
+		const std::string generateDirElementRow
+			(const std::string& dirElement);
 		
 		// takes the input directory element
 		// returns the link that will be used
 			// to request the given element
 			// encapsulated in a <td> html tag
 		// throws std::runtime_error on failure
-		const std::string& generateDirElementLink
-			(const std::string& dirEntity);
+		const std::string generateLinkCell
+			(const std::string& dirElement);
 
 		// takes the input directory element
 		// returns the given element size
@@ -89,16 +89,22 @@ class AutoIndex {
 		// the element size will be encapsulated 
 			// in a <td> html tag
 		// throws std::runtime_error on failure
-		const std::string& generateDirElementSize
-			(const std::string& dirEntity);
+		const std::string generateSizeCell
+			(const std::string& dirElement);
 
 		// takes the input directory element
 		// returns the last modification time
 			// of the given element encapsulated in 
 			// a <td> html tag
-		// throws std::runtime_error on failur
-		const std::string& generateDirElementTime
-			(const std::string& dirEntity);
+		// throws std::runtime_error on failure
+		const std::string generateTimeCell
+			(const std::string& dirElement);
+
+		const std::string encapsulateInTag
+			(const std::string& content, const std::string tag);
+
+		const std::string encapsulateInHyperLink
+			(const std::string& content);
 		
 };
 
