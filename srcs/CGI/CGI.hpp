@@ -95,7 +95,8 @@ class CGI {
 
 		// waits for the script to execute for a defined
 			// amount of time. if it takes more, then the script
-			// times out and status code is set accordingly
+			// times out and status code is set accordingly and also
+			// throws std::runtime_error
 		// takes the process id of the executed script
 		void waitForScript(const pid_t pid);
 

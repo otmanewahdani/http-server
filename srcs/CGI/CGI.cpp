@@ -119,8 +119,15 @@ void CGI::waitForScript(const pid_t pid) {
 		mStatusCode = StatusCodeHandler::SERVER_ERROR;
 		// kills the script if it didn't terminate
 			// on time
-		if (status == 0)
+		if (status == 0) {
+
 			kill(pid, SIGKILL);
+			const std::string errorMsg = std::string(
+				"CGI::waitForScript(): ") + mScriptPath
+				+ " timed out";
+			throw std::runtime_error(errorMsg);
+
+		}
 
 		return ;
 	}
