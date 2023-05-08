@@ -79,17 +79,12 @@ void AutoIndex::generateDirListing() {
 
 }
 
-std::string AutoIndex::generateDirElementRow
-	(const std::string& dirElement) {
+const std::string AutoIndex::generateDirElementRow
+		(const std::string& dirElement) {
 	
-	// appends the element to its directoruy
-		// to get its full path
-	const std::string dirElementFullPath
-		= mDirPath + '/' + dirElement;
-
-	const std::string elementLinkCell = generateLinkCell(dirElementFullPath);
-	const std::string elementSizeCell = generateSizeCell(dirElementFullPath);
-	const std::string elementTimeCell = generateTimeCell(dirElementFullPath);
+	const std::string elementLinkCell = generateLinkCell(dirElement);
+	const std::string elementSizeCell = generateSizeCell(dirElement);
+	const std::string elementTimeCell = generateTimeCell(dirElement);
 
 	std::string dirElementRow 
 		= elementLinkCell + elementSizeCell + elementTimeCell;
@@ -114,37 +109,16 @@ std::string AutoIndex::generateSizeCell
 		// to indicates that the sub directory size
 		// won't be displayed
 	std::string elementSizeCell = 
-		isDir(dirElement) == false ? 
+		isDir(mDirPath + dirElement) == false ? 
 		toString(elementSize) : "-";
 	
 	// encapsulate the element size into 
 		// a table cell
 	encapsulateTableCell(elementSizeCell);
 	
-	// returns the element size cell 
+	// returns the elemnt size cell 
 		// in the format <td>size</td>
 	return elementSizeCell;
-
-}
-
-std::string AutoIndex::generateLinkCell
-	(const std::string& dirElement) {
-
-	// gets the URL of the element
-	const std::string& relativePath
-		= mLocation->replaceByLocRoute(dirElement);
-
-	std::string dirElementHyperLinked(dirElement);
-
-	// turns the URL into a hyperlink and 
-		// encapsulates it in an anchor tag
-	encapsulateInHyperLink(dirElementHyperLinked,
-			relativePath);
-
-	// finally turns it into a table cell
-	encapsulateTableCell(dirElementHyperLinked);
-
-	return dirElementHyperLinked;
 
 }
 
@@ -165,6 +139,7 @@ std::string AutoIndex::generateTimeCell
 		// time into a table cell
 	encapsulateTableCell(elementTimeCell);
 
+	// returns the
 	return elementTimeCell;
 
 }
@@ -173,10 +148,21 @@ void AutoIndex::encapsulateInHyperLink(std::string& content,
 	const std::string& link) {
 
 	const std::string openAnchorTag = std::string(
-		"<a href='" + link + "'>";
+		"<a href='" + link + "'>");
 	
 	const std::string closeAnchorTag = "</a>";
 
 	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
+
+}
+
+void AutoIndex::encapsulateTableCell
+	(std::string& content) {
+
+	const std::string openTdTag = "<td>";
+
+	const std::string closeTdTag = "</td>";
+
+	encapsulateInTag(content, openTdTag, closeTdTag);
 
 }
