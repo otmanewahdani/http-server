@@ -180,3 +180,22 @@ void AutoIndex::encapsulateInHyperLink(std::string& content,
 	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
 
 }
+
+void AutoIndex::encapsulateInTag(std::string& content,
+	const std::string& beginTag, const std::string& endTag) {
+
+	content.insert(0, beginTag);
+
+	content.append(endTag);
+
+}
+
+void AutoIndex::encapsulateTableRow(std::string& content) {
+	
+	const std::string openTRtag = "<tr>";
+
+	const std::string closeTRtag = "</tr";
+
+	encapsulateInTag(content, openTRtag, closeTRtag);
+
+}
