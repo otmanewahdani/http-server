@@ -470,6 +470,14 @@ void ConfigParser::defaultInitUnfilledLocationFields() {
 		&& !mLocationRef->del)
 		mLocationRef->get = true;
 
+	// if no root path was specified,
+		// initiliazes it to current diretory
+	if (mLocationRef->root.empty()) {
+		mLocationRef->root = getCurrentDir();
+		// see parseRoot() for explanation
+		mLocationRef->root += '/';
+	}
+
 }
 
 bool ConfigParser::isStrNumerical(const std::string& str) {
