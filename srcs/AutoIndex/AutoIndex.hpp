@@ -3,6 +3,9 @@
  * passed to it. The listing is in the following format:
  *  [File Size Last-Modified], and the generated html listing
  *  will be saved in the file path that is passed to it
+ * A hyperlink will be embedded in the File name containing
+ *  A URL to the file. The URL will be relative to the location
+ *  parameter that's passed to this class
  */
 
 #pragma once
@@ -111,13 +114,13 @@ class AutoIndex {
 		// example : content = name, btag = <td>, etag = </td>
 		//  content becomes <td>content</td>
 		void encapsulateInTag(std::string& content,
-				const std::string& beginTag, const std::string& endTag);
+			const std::string& beginTag, const std::string& endTag);
 
 		// takes a link and puts it in an anchor tag like this:
 			// <a href='link'> and encapsulates the content
 			// between that tag and this one </a>
 		void encapsulateInHyperLink(std::string& content,
-				const std::string& link);
+			const std::string& link);
 
 		// encapsultes content between <td> and </td>
 		void encapsulateTableCell(std::string& content);
