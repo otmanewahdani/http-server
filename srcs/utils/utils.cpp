@@ -168,3 +168,59 @@ std::vector<std::string>
 	return entries;
 
 }
+
+const std::tm* getLastModifiedTime
+	(const std::string& path) {
+
+	// info about path is set by stat()
+		// in this structure
+	struct stat pathInfo;
+
+	// if file doesn't exist
+	if (stat(path.c_str(), &pathInfo)) {
+		const std::string errorMsg =
+			std::string("getLastModifiedTime(): ")
+			+ "couldn't get info of path: '"
+			+ path + '\'';
+		throw std::runtime_error(errorMsg);
+	}
+
+	// gets the last modified time in local time
+	const std::tm* lastModifiedTime =
+		std::localtime(&pathInfo.st_mtime);
+
+	if (lastModifiedTime == NULL) {
+		const std::string errorMsg =
+			std::string("getLastModifiedTime(): ")
+			+ "couldn't convert to local time the "
+			" last modified time of : '"
+			+ path + '\'';
+		throw std::runtime_error(errorMsg);
+	}
+
+	return lastModifiedTime;
+
+}
+
+std::string timeToStr(const std::tm* time) {
+
+	const static size_t timeStrSize = 32;
+
+	// allocates memory in advance to be filled
+		// by time
+	// the produced time won't be more than
+		// timeStr
+	std::string timeStr(timeStrSize, '\0');
+
+	const size_t actualTimeStrSize
+		= std::strftime(
+		const_cast<char*>(timeStr.data()),
+		timeStrSize, "%d-%b-%Y %H:%M", time);
+
+	// reduces the string to the number
+		// of bytes actuallly written
+	timeStr.resize(actualTimeStrSize);
+
+	return timeStr;
+
+}

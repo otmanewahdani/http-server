@@ -1,7 +1,9 @@
 /* this file contains the prototypes of general utility
- 	functions that are not associated to any classed
+ 	functions that are not associated to any classes
  * these functions usually have very small tasks and
  * can be used by different components regardless of their domain
+ * However most of the functions revolve around getting file properties
+ *  and conveting integral values to strings and vice-versa
  */
 
 #pragma once
@@ -15,6 +17,7 @@
 #include <iostream>
 #include <dirent.h>
 #include <vector>
+#include <ctime>
 
 // returns true if path is a directory
 bool isDir(const std::string& path);
@@ -62,14 +65,15 @@ std::vector<std::string>
 	getDirContent(const std::string& dir);
 
 // gets the last modified time of a file
-	// in tm format
+	// in local time tm format
 // throws std::runtime_error on failure
-struct tm* getLastModifiedTime
+const std::tm* getLastModifiedTime
 	(const std::string& path);
 
 // converts time to the following stringified 
-	// format [day-month-year hour:min]
-std::string timeToStr(struct tm* time);
+	// format [day-mon-year hour:min]
+	// example [10-Apr-2020 10:20]
+std::string timeToStr(const std::tm* time);
 
 // converts arithmetic type to string
 template <class Num>
