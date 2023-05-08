@@ -82,9 +82,14 @@ void AutoIndex::generateDirListing() {
 std::string AutoIndex::generateDirElementRow
 	(const std::string& dirElement) {
 	
-	const std::string elementLinkCell = generateLinkCell(dirElement);
-	const std::string elementSizeCell = generateSizeCell(dirElement);
-	const std::string elementTimeCell = generateTimeCell(dirElement);
+	// appends the element to its directoruy
+		// to get its full path
+	const std::string dirElementFullPath
+		= mDirPath + '/' + dirElement;
+
+	const std::string elementLinkCell = generateLinkCell(dirElementFullPath);
+	const std::string elementSizeCell = generateSizeCell(dirElementFullPath);
+	const std::string elementTimeCell = generateTimeCell(dirElementFullPath);
 
 	std::string dirElementRow 
 		= elementLinkCell + elementSizeCell + elementTimeCell;
@@ -109,14 +114,14 @@ std::string AutoIndex::generateSizeCell
 		// to indicates that the sub directory size
 		// won't be displayed
 	std::string elementSizeCell = 
-		isDir(mDirPath + dirElement) == false ? 
+		isDir(dirElement) == false ? 
 		toString(elementSize) : "-";
 	
 	// encapsulate the element size into 
 		// a table cell
 	encapsulateTableCell(elementSizeCell);
 	
-	// returns the elemnt size cell 
+	// returns the element size cell 
 		// in the format <td>size</td>
 	return elementSizeCell;
 
@@ -143,18 +148,6 @@ std::string AutoIndex::generateLinkCell
 
 }
 
-void AutoIndex::encapsulateInHyperLink(std::string& content,
-	const std::string& link) {
-
-	const std::string openAnchorTag = std::string(
-		"<a href='" + link + "'>";
-	
-	const std::string closeAnchorTag = "</a>";
-
-	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
-
-}
-
 std::string AutoIndex::generateTimeCell
 		(const std::string& dirElement) {
 	
@@ -173,5 +166,17 @@ std::string AutoIndex::generateTimeCell
 	encapsulateTableCell(elementTimeCell);
 
 	return elementTimeCell;
+
+}
+
+void AutoIndex::encapsulateInHyperLink(std::string& content,
+	const std::string& link) {
+
+	const std::string openAnchorTag = std::string(
+		"<a href='" + link + "'>";
+	
+	const std::string closeAnchorTag = "</a>";
+
+	encapsulateInTag(content, openAnchorTag, closeAnchorTag);
 
 }
