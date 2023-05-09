@@ -26,11 +26,9 @@ SERVER_SRC :=  Multiplexer.cpp Log.cpp ServerManager.cpp
 
 GENERAL_SRC := utils.cpp MimeTypes.cpp main.cpp Tokenizer.cpp
 
-#TEST_SRC := test.cpp
-
 SRCS := $(CONFIG_SRC) $(GENERAL_SRC) $(NET_SRC) \
 	$(SERVER_SRC) $(CLIENT_SRC) $(RESPONSE_SRC) \
-	$(REQUEST_SRC) $(TEST_SRC)
+	$(REQUEST_SRC)
 
 VPATH = $(patsubst %.cpp,%/,$(SRCS) ) 
 
@@ -40,7 +38,7 @@ INCS = $(addprefix -I,$(VPATH))
 
 OBJ = $(addprefix $(OBJ_DIR), $(patsubst %.cpp,%.o,$(SRCS)) )
 
-NAME = webserv
+NAME = http-server
 
 all: $(NAME)
 
