@@ -44,10 +44,12 @@ all: $(NAME)
 
 $(OBJ_DIR)%.o : %.cpp %.hpp
 	@test -d $(OBJ_DIR) || mkdir $(OBJ_DIR)
+	@echo -e "\e[1;32m\u2705 compiling $<\e[0m"
 	@$(CC) $(CPPFLAGS) $(INCS) $< -o $@
 
 $(OBJ_DIR)main.o: $(SRCS_DIR)main.cpp
 	@test -d $(OBJ_DIR) || mkdir $(OBJ_DIR)
+	@echo -e "\e[1;32m\u2705 compiling $<\e[0m"
 	@$(CC) $(CPPFLAGS) $(INCS) $< -o $@
 
 $(NAME): $(OBJ)
