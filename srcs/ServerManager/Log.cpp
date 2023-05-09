@@ -41,8 +41,7 @@ void Log::addTimeDate() {
 void Log::socketBinding(const Socket socket) {
 
 	const std::string socketLog =
-		"socket id = " +
-		std::to_string(socket);
+		"socket id = " + toString(socket);
 
 	// current operation description
 	const std::string op =
@@ -159,7 +158,7 @@ void Log::logClientServerOperation(
 	const std::string& serverPrep) {
 
 	const std::string socketLog =
-		"on socket " + std::to_string(socket)
+		"on socket " + toString(socket)
 		+ ", ";
 
 	/* the "reason:" field contains the explanation

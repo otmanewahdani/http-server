@@ -9,8 +9,10 @@
 #pragma once
 
 #include <string>
+#include <cstring>
 #include <sys/stat.h>
 #include <sys/errno.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <sstream>
 #include <unistd.h>

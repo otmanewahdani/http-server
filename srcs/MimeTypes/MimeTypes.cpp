@@ -8,8 +8,9 @@ const std::string MimeTypes::defaultMimeFile = "./mime_types_files/mime.types";
 
 MimeTypes::MimeTypes(const char* fileNamePath) {
 
-    if (!fileNamePath)
+    if (!fileNamePath) {
         fileNamePath = defaultMimeFile.c_str();
+	}
 
 	std::ifstream mimeFile(fileNamePath);
 	if (!mimeFile) {

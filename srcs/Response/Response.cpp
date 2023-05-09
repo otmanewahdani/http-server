@@ -78,8 +78,9 @@ void Response::generateResponse() {
 		;
 	else if (isCGI())
 		;
-	else if (isAutoIndex())
+	else if (isAutoIndex()) {
 		;
+	}
 
 	openBodyStream();
 

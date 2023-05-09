@@ -183,7 +183,7 @@ Config::ConstServerRef Config::getServerRef
 	if (server == mServers.end()) {
 		std::string error = "couldn't find a server "
 			"that has this socket id: ";
-		error += std::to_string(socketID);
+		error += toString(socketID);
 		throw std::invalid_argument(error);
 	}
 

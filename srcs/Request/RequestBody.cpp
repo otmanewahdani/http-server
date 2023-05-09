@@ -30,6 +30,11 @@ std::string::size_type
 			return parseFullLengthBody();
 	}
 
+	// this statement is to silent gcc compiler
+		// warnings since mBodyType will always
+		// either be CHUNKED or CONTENT_LENGTH
+	return 0;
+
 }
 
 void RequestBody::setBodyType(const BodyType type) {

@@ -100,7 +100,7 @@ std::string AutoIndex::generateDirElementRow
 	// if there is no directory slash at the end
 		// it appends it
 	const std::string dirElementFullPath
-		= mDirPath + (mDirPath.back() == '/' ? "" : "/")
+		= mDirPath + (mDirPath[mDirPath.size() - 1] == '/' ? "" : "/")
 		+ dirElement;
 
 	const std::string elementLinkCell = generateLinkCell(dirElementFullPath);

@@ -217,7 +217,7 @@ void ServerManager::addClientHandler(Socket clientID, Socket serverID) {
 	if (mClientHandlers.insert(newHandler).second == false) {
 		std::string error = "couldn't create a new client handler"
 			" with clientID: ";
-		error += std::to_string(clientID);
+		error += toString(clientID);
 		error += " because it exists already";
 		throw std::invalid_argument(error);
 	}
@@ -234,7 +234,7 @@ ClientHandler& ServerManager::getClientHandler
 		const std::string error = std::string
 			("couldn't find client handler"
 			" with socket id: ")
-			+ std::to_string(ID);
+			+ toString(ID);
 		throw std::invalid_argument(error);
 	}
 

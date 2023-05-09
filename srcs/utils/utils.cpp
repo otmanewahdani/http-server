@@ -52,7 +52,7 @@ bool isPathExec(const std::string& path) {
 void throwErrnoException(const std::string& context) {
 
 	std::string errorMsg = context + ": ";
-	errorMsg += strerror(errno);
+	errorMsg += std::strerror(errno);
 	throw std::runtime_error(errorMsg);
 
 }
@@ -154,9 +154,8 @@ std::vector<std::string>
 	struct dirent* entry = readdir(directory);
 	while (entry != NULL) {
 
-		// adding the entry's name using its length
-		entries.push_back(
-			std::string(entry->d_name, entry->d_namlen));
+		// adding the entry's name
+		entries.push_back(std::string(entry->d_name));
 
 		// gets next entry
 		entry = readdir(directory);
@@ -231,13 +230,8 @@ std::string getCurrentDir() {
 		// the maximum length possible of a path
 	char dirNameBuff[MAXPATHLEN];
 
-	// on error, gets the error message that
-		// is copied by getwd() to the buffer
-	if (getwd(dirNameBuff) == NULL) {
-		const std::string errorMsg =
-			std::string("getCurrentDir(): ")
-			+ dirNameBuff;
-		throw std::runtime_error(errorMsg);
+	if (getcwd(dirNameBuff, MAXPATHLEN) == NULL) {
+			throwErrnoException("getCurrentDir()");
 	}
 
 	return dirNameBuff;

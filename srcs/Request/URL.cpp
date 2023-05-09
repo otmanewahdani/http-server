@@ -38,7 +38,7 @@ void URL::parse(const std::string& url) {
 void URL::parseUrl(const std::string& url) {
 
 	// if the url is empty or doesn't starts with the root
-	if (url.empty() || url.front() != '/') {
+	if (url.empty() || url[0] != '/') {
 		setErrorStatusCode(StatusCodeHandler::BAD_REQUEST);
 		return ;
 	}
