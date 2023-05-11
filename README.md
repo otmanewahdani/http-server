@@ -19,7 +19,7 @@
 ## Features
 - GET, POST, DELETE methods
 - Can be configured with a configuration file (see [Configuration](#configuration) section)
-- CGI script execution through CGI/1.1 interface as defined by [RFC 3875](https://datatracker.ietf.org/doc/html/rfc3875)
+- CGI script execution through CGI/1.1 interface as defined by [RFC 3875](https://datatracker.ietf.org/doc/html/rfc3875) without query string support
 - CGI timeout (it is a useful in that some faulty scripts can waste the server's resources by running for too long)
 - Cookies and session management
 - Logs its operations in a log file (see [Demo](#demo) section)
@@ -30,7 +30,7 @@
 ## Configuration
 - You can create a configuration file and pass it as the first argument to the program or change [defaultConfigFileName in Config.cpp in line 9](srcs/Config/Config.cpp) so that the program can directly pick your default config file without passing it as the first argument.
 - There are 2 contexts in the configuration file grammar:
-  1. #### Server Context:
+  1. #### Server Context
   Since this http server supports hosting multiple websites, multiple servers can be setup to create a customized configuration for each website. Even the same website or service can be handled with different servers using different parameters. These parameters can be tuned using these following keywords:
   
     - server: this is how you open a server's context. All the keywords that will be listed next can only to be included within this context and need to be surrounded by an opening curly brace and a closing one. Anything outside this braced scoping doesn't belong to that specified context.
@@ -39,7 +39,7 @@
     - client_body_size_max: limits the client's body to a max number of bytes that can be sent with a POST request. a 0 value or if ommitted, no limit is applied. A 413 status code is retuned in case, a client's request body surpasses this limit.
     - error_pages: web pages or files along with status codes can be set to be returned when an error happens. For example, when a 404 error is detected, the server will search for a 404 page that is set to be returned in case of a 404 error, if it finds one it will include it in the response.
    
-  2. #### Location Context:
+  2. #### Location Context
   This is a nested context within the server context. Like the server context's keywords, the location context cannot exists outside of the server's context. The location scope specifies parameters for URL routes. URLs for the same server can have different configurations depending on which location context they fall under. Here is its grammar:
   
   - location: This is the keyword the declares the location context. It must be followed by the configured route and an open curly brace and just as the server context, all locations parameters will be terminated by a closing brace. if the route argument is a directory, the configuration will be applied to all URLs that are subpaths of this route. If the route is a specific file, then the parameters will apply to URL only. The keywords that come next can only be used within this context.
@@ -50,6 +50,24 @@
   - autoindex: enables directory listing if the requested URL is a directory and autoindex is set to 'on'. if set to 'off' or not specified, then it is not enabled.
   - cgi: specifies a cgi script's extension (like .php) and an executable path (e.g /bin/php) to be used for running scripts with that extension.
   - upload: defines an absolute path of a directory where uploads will be saved. Uploads will be automatically triggered if the requested method is POST, the URL is a directory and upload is enabled for that URL's location.
+ 
+  ##### configuration example (this example is not realistic. It is only meant to showcase the syntax)
+```
+  server {   
+      server_name example.com;
+      listen localhost:8080;
+      error_pages 404 /404.html;
+      error_pages 500 /404.html;    
+      location / {
+          allow_methods GET POST DELETE;
+          root /path/to/real/directory;
+          redirect 301 http://example.com;
+          default /index.html;
+          autoindex on;
+          cgi .pl /bin/perl;
+          cgi .py /bin/python3;      
+    }    
+```
 
 ## Setup
 - It is a no brainer that if you want to use this server you will need a c++ compiler (preferrably gcc or clang).
@@ -61,22 +79,21 @@ First in your terminal, clone and go to the base directory:
 ```bash
 git clone https://github.com/otmanewahdani/http-server.git && cd http-server
 ```
-- ### Compiling and running the demo programs
-  The Makefile has rules for compiling 3 separate demo programs (which are the main.cpp's in each container's directory) that demonstrate the 3 containers: vector, stack and map. So for compiling and running the demo program, do the following :
-  
-  ```bash
-  make map && cd map && ./map
-  ```
-  :bulb: The same procedure works for the other two containers, just substitute map with vector or stack.<br />
-  
-  :warning: The program output is long and unintelligible since it's only meant to be used by the testing script.<br />
-  
-- ### Running the tests
-  Like it was explained in the features section, each container can be benchmarked and tested separately against the original STL containers. Thus make sure you are in the base directory (same location as the Makefile) and run the following to execute the tests:
-  ```bash
-    make test-map
-  ```
-  :bulb: if you want to test the other containers, just keep the same command and substitute map with the name of the container.<br />
+Write your configuration file according to the [configuration section](#configuration) and run:
+```bash
+make
+```
+after that run the web server like this:
+```bash
+./http-server [config-file]
+```
+if you wish to run it without passing the config file as the first argument, see the introduction to the [configuration](#configuration)
+
+Now go to a browser and type in the ip address and port you set up in your configuration file, followed by a valid URL that belongs to your configured [location](#location-context)
+ 
+ ```
+ ip-address:port/URL
+ ```
   #### Illustration
   <img src="./.img/container testing illustration.gif" alt="Illustration of how container tests are run" width="600" height="100" />
 - ### Using the Library in your own program
