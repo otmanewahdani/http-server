@@ -99,8 +99,11 @@ Now go to a browser and type in the ip address and port you set up in your confi
   #### log file
   <img src="demo_files/log-demo.png" alt="log file demo">
   
+  #### AutoIndex
+  <img src="demo_files/auto-index-demo.png" alt="auto index demo" width="700" height="350">
+  
   #### Response Headers
-  <img src="demo_files/response-headers-demo.png" alt="response headers demp">
+  <img src="demo_files/response-headers-demo.png" alt="response headers demo">
 
 ## Project Status
 Project is: _complete_
