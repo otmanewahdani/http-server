@@ -19,7 +19,7 @@
 ## Features
 - GET, POST, DELETE methods
 - Can be configured with a configuration file (see [Configuration](#configuration) section)
-- CGI script execution through CGI/1.1 interface as defined by [RFC 3875](https://datatracker.ietf.org/doc/html/rfc3875) without query string support
+- CGI script execution through CGI/1.1 interface as defined by [RFC 3875](https://datatracker.ietf.org/doc/html/rfc3875) with query string support
 - CGI timeout (it is a useful in that some faulty scripts can waste the server's resources by running for too long)
 - Cookies and session management
 - Logs its operations in a log file (see [Demo](#demo) section)
