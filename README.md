@@ -1,5 +1,5 @@
 # HTTP-Server
-> An HTTP server built from scratch using C++. This is a group project that was completed by @otmanewahdani and @flouta.
+> An HTTP server built from scratch using C++. This is a group project that was completed by [Otmane Wahdani](https://github.com/otmanewahdani) and [Fatime-Zahra Louta](https://github.com/flouta).
 
 ## Table of Contents
 * [Overview](#overview)
@@ -28,7 +28,7 @@
 - Accepts direct uploads
 
 ## Configuration
-- You can create a configuration file and pass it as the first argument to the program or change [defaultConfigFileName in Config.cpp in line 9](srcs/Config/Config.cpp) so that the program can directly pick your default config file without passing it as the first argument.
+- You can create a configuration file and pass it as the first argument to the program or edit [the default configuration file](config_files/default_config) so that the program can directly pick your default config file without passing it as the first argument.
 - There are 2 contexts in the configuration file grammar:
   1. #### Server Context
   Since this http server supports hosting multiple websites, multiple servers can be setup to create a customized configuration for each website. Even the same website or service can be handled with different servers using different parameters. These parameters can be tuned using these following keywords:
@@ -73,7 +73,6 @@
 - It is a no brainer that if you want to use this server you will need a c++ compiler (preferrably gcc or clang).
 - A Unix environment was used to develop and test this program, specifically Linux and Darwin for MacOs. So no guarantees that it will compile smoothly in any other environment. For Linux, Bash is needed. And for a Darwin-based Macos, Zsh works best with the building process.
 
-
 ## Usage
 First in your terminal, clone and go to the base directory:
 ```bash
@@ -94,39 +93,14 @@ Now go to a browser and type in the ip address and port you set up in your confi
  ```
  ip-address:port/URL
  ```
-  #### Illustration
-  <img src="./.img/container testing illustration.gif" alt="Illustration of how container tests are run" width="600" height="100" />
-- ### Using the Library in your own program
-  1. #### Including the library's header files
-      First, in your preprocessor include directive use only the name of the header file like this:
-      ```c++
-      #include <vector.hpp>
-      #include <map.hpp>
-      #include <stack.hpp>
-      #include <type_traits.hpp>
-      #include <utility.hpp>
-      #include <iterator.hpp>
-      #include <algorithm.hpp>
-      ```
-      :bulb: It's not necessary to include all of the header files, just include the ones you need.<br />
-      
-      Then, specify the path to ft_containers in any way you want (I included an example on how you might wanna do it, just replace parent-directories with the file path leading to ft_containers) and supplement the following flags to your compiler:
-      ```bash
-      export FT_CONTAINERS_PATH="parent-directories/ft_containers"
-      export FT_CONTAINERS_INCS="-I$FT_CONTAINERS_PATH/vector/incs -I$FT_CONTAINERS_PATH/map/incs -I$FT_CONTAINERS_PATH/stack/incs -I$FT_CONTAINERS_PATH/algorithm -I$FT_CONTAINERS_PATH/iterator -I$FT_CONTAINERS_PATH/utility -I$FT_CONTAINERS_PATH/type_traits"
-      
-      <your-compiler> <your-program-source-files> $FT_CONTAINERS_INCS
-      ```
-      :bulb: Again you don't need to use all the flags. Only use what you need<br />
-  2. #### Using the containers in your code
-      They will be used the same way as the STL containers with only a slight difference. Since the standard containers are defined in the std namespace, std is prepended along with the scope resolution operator to the name of the container like this:
-      ```c++
-      std::vector<int> emptyVector;
-      ```
-      But for this library ft needs to be prepended to all type names like the following:
-      ```c++
-      ft::map<int, char*> emptyMap;
-      ```
+ 
+## Demo
+  
+  #### log file
+  <img src="demo_files/log-demo.png" alt="log file demo">
+  
+  #### Response Headers
+  <img src="demo_files/response-headers-demo.png" alt="response headers demp">
 
 ## Project Status
 Project is: _complete_
